@@ -49,7 +49,12 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .row .card.tx .t{-webkit-line-clamp:4}
 .row.b>:nth-child(1),.row.b>:nth-child(2){flex-grow:2}
 .row.c{--ih:calc(100cqw * .2)}
-.row.c.tt .card{height:170px}
+.row.c.tt .card{height:130px}
+.card.tx .meta{text-transform:uppercase;font-size:10px}
+.card.tx .tm{display:none}
+.row.c.tt .bd{padding:10px 12px}
+.row.c.tt .t{font-size:13px;-webkit-line-clamp:3}
+.row.c.tt .s{-webkit-line-clamp:1;font-size:11px}
 .stack{display:flex;flex-direction:column}
 .stack .card{flex:1 1 0;min-height:0;margin:0 0 16px}
 .stack .card:last-child{margin-bottom:0}
@@ -326,6 +331,8 @@ function group(ts){
   if (age < 3 * 3600e3) return "Most recent";
   if (ts >= day.getTime()) return "Today";
   if (ts >= day.getTime() - 864e5) return "Yesterday";
+  if (ts >= day.getTime() - 7 * 864e5) return "This week";
+  if (ts >= day.getTime() - 14 * 864e5) return "Last week";
   return "Earlier";
 }
 function renderSide(){
@@ -338,25 +345,41 @@ function renderSide(){
 function cardHtml(a){
   return `<a class="card ${a.ok ? "m" : "tx"}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
-    <div class="bd"><div class="meta"><b dir="auto">${esc(a.source)}</b> &nbsp;${ago(a.date)}</div>
+    <div class="bd"><div class="meta"><b dir="auto">${esc(a.source)}</b> <span class="tm">&nbsp;${ago(a.date)}</span></div>
     <div class="t" dir="auto">${esc(a.title)}</div>
     <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div></div></a>`;
 }
 /* grid mode: arrange cards by what each item has. Good image -> big tile; no/small image -> compact text tile */
 function mosaic(items){
-  const M = items.filter(a => a.ok), T = items.filter(a => !a.ok);
   const h = l => l.map(cardHtml).join("");
-  let out = "", useB = false;
-  while (M.length || T.length){
-    if (M.length >= 2 && T.length && (useB || M.length < 3)){
-      out += `<div class="row b">${h(M.splice(0, 2))}<div class="stack">${h(T.splice(0, 3))}</div></div>`; useB = false;
-    } else if (M.length >= 3){
-      out += `<div class="row a">${h(M.splice(0, 3))}</div>`; useB = true;
-    } else if (M.length === 2){
-      out += `<div class="row d">${h(M.splice(0, 2))}</div>`;
+  // Rows are built from consecutive items only, so newest-to-oldest order is never broken across rows.
+  const takeB = i => {                       // 2 image cards + a stack of 1-3 text cards
+    const M = [], T = []; let j = i;
+    while (j < items.length){
+      const a = items[j];
+      if (a.ok){ if (M.length === 2) break; M.push(a); } else { if (T.length === 3) break; T.push(a); }
+      j++;
+    }
+    return M.length === 2 && T.length ? {M, T, n: j - i} : null;
+  };
+  const isA = i => items[i] && items[i].ok && items[i + 1] && items[i + 1].ok && items[i + 2] && items[i + 2].ok;
+  let out = "", i = 0, useB = false;
+  while (i < items.length){
+    const B = takeB(i);
+    if (useB && B){
+      out += `<div class="row b">${h(B.M)}<div class="stack">${h(B.T)}</div></div>`; i += B.n; useB = false;
+    } else if (isA(i)){
+      out += `<div class="row a">${h(items.slice(i, i + 3))}</div>`; i += 3; useB = true;
+    } else if (B){
+      out += `<div class="row b">${h(B.M)}<div class="stack">${h(B.T)}</div></div>`; i += B.n; useB = false;
+    } else if (items[i].ok && items[i + 1] && items[i + 1].ok && !(items[i + 2] && !items[i + 2].ok)){
+      out += `<div class="row d">${h(items.slice(i, i + 2))}</div>`; i += 2;
+    } else if (!items[i].ok){                // run of text-only items: compact tiles, up to 6 per row
+      let j = i; while (j < items.length && !items[j].ok && j - i < 6) j++;
+      out += `<div class="row c tt">${h(items.slice(i, j))}</div>`; i = j;
     } else {
-      const rest = [...M.splice(0), ...T.splice(0, 4 - M.length)].slice(0, 4);
-      out += `<div class="row c ${rest.some(a => a.ok) ? "" : "tt"}">${h(rest)}</div>`;
+      const part = items.slice(i, i + 4);
+      out += `<div class="row c ${part.some(a => a.ok) ? "" : "tt"}">${h(part)}</div>`; i += part.length;
     }
   }
   return out;
