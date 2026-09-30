@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,29 +37,37 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .card .t{font-size:16px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card .s{color:var(--mute);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:auto}
 .grid .feed{max-width:1220px}
-.row{display:grid;gap:16px;margin-bottom:16px}
-.row .card{flex-direction:column;height:auto;margin:0;min-width:0}
-.row .card .im{width:100%;flex:1;min-height:0}
+.feed{container-type:inline-size}
+.row{display:flex;flex-wrap:wrap;margin:0 -8px 8px;--ih:calc(100cqw * .285)}
+.row>.card,.row>.stack{flex:1 1 0;min-width:0;margin:8px}
+.row .card{flex-direction:column;height:auto}
+.row .card .im{width:100%;height:var(--ih);flex:none}
+.row .card .bd{height:150px;flex:none;overflow:hidden}
 .row .card .t{-webkit-line-clamp:2}
 .row .card .s{-webkit-line-clamp:2}
-.row.a{grid-template-columns:repeat(3,1fr);height:430px}
-.row.b{grid-template-columns:2fr 2fr 1fr;height:430px}
-.row.d{grid-template-columns:1fr 1fr;height:430px}
-.row.c{grid-template-columns:repeat(4,1fr);height:330px}
-.row.c.tt{height:190px}
-.row.c .card .im{flex:none;height:170px}
-.stack{display:flex;flex-direction:column;gap:16px;min-height:0}
-.stack .card{flex:1;min-height:0}
+.row .card.tx .bd{height:auto;flex:1}
+.row .card.tx .t{-webkit-line-clamp:4}
+.row.b>:nth-child(1),.row.b>:nth-child(2){flex-grow:2}
+.row.c{--ih:calc(100cqw * .2)}
+.row.c.tt .card{height:170px}
+.stack{display:flex;flex-direction:column}
+.stack .card{flex:1 1 0;min-height:0;margin:0 0 16px}
+.stack .card:last-child{margin-bottom:0}
 .stack .s{display:none}
-.card.tx .bd{height:100%}
-.card.tx .t{-webkit-line-clamp:4}
-.card.tx .s{-webkit-line-clamp:2}
 .stack .card.tx .t{-webkit-line-clamp:3}
+@container (max-width:600px){
+  .row{--ih:calc(100cqw * .42)}
+  .row>.card{flex:1 1 calc(50% - 16px)}
+  .row.a>.card:nth-child(3){flex:1 1 calc(100% - 16px);flex-direction:row}
+  .row.a>.card:nth-child(3) .im{width:50%;height:auto}
+  .row.b>.stack{flex:1 1 calc(100% - 16px);flex-direction:row;flex-wrap:wrap}
+  .row.b .stack .card{flex:1 1 40%;height:150px;margin:0 8px 8px}
+  .row.c.tt .card{height:150px}
+}
 .end{text-align:center;color:var(--mute);font-size:12px;letter-spacing:.04em;margin:50px 0 34px}
-.rec3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.rtile{height:110px;background:#232a33 center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;text-align:center;padding:0 10px}
+.rec3{display:flex;margin:0 -8px}
+.rtile{flex:1 1 0;min-width:0;margin:0 8px;height:110px;background:#232a33 center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;text-align:center;padding:0 10px}
 .tact{display:flex;gap:10px;align-items:center}
-@media(max-width:900px){.row{grid-template-columns:1fr!important;height:auto!important}.row .card .im{flex:none;height:200px}.stack .card{flex:none}}
 .empty{text-align:center;color:var(--mute);margin-top:90px}
 .add{max-width:780px;margin:50px auto}
 .search{width:100%;height:34px;border-radius:17px;border:1px solid var(--blue);background:#0a0f17;color:var(--text);padding:0 16px;font-size:13px;outline:none}
