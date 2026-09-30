@@ -1,1 +1,474 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal news</title>
+<style>
+:root{--bg:#02050b;--panel:#2b323b;--panel2:#343c47;--line:#1c222b;--text:#e9edf2;--mute:#8c97a5;--blue:#3c9bff;--red:#ff1b2d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",system-ui,sans-serif;min-height:100vh}
+header{height:69px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 20px}
+.logo{width:30px;height:30px;border:5px solid var(--red);border-radius:50%;position:relative}
+.logo:after{content:"";position:absolute;inset:-1px 6px;border:3px solid #fff0;background:none}
+header h1{font-size:17px;font-weight:400;margin:0}
+.layout{display:flex;min-height:calc(100vh - 70px)}
+aside{width:230px;border-right:1px solid var(--line);padding:26px 18px;flex:none}
+aside a{display:block;color:var(--text);text-decoration:none;padding:6px 0;cursor:pointer;font-size:13px}
+aside a:hover{color:var(--blue)}aside a.on{color:var(--blue)}
+aside .grp{margin:26px 0 4px;color:var(--blue);font-size:13px;cursor:default}
+aside .src{padding-left:12px;display:flex;justify-content:space-between;gap:6px;align-items:center}
+aside .src span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+aside .src button{opacity:0;background:none;border:0;color:var(--mute);cursor:pointer;font-size:15px}
+aside .src:hover button{opacity:1}
+main{flex:1;padding:26px 20px 60px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top h2{font-size:16px;font-weight:400;margin:0}
+.toggle{display:flex;border-radius:16px;overflow:hidden;border:0;background:#2b323b}
+.toggle button{width:40px;height:32px;border:0;background:none;color:#fff;cursor:pointer}
+.toggle button.on{background:var(--blue)}
+.feed{max-width:860px;margin:40px auto 0}
+.feed h3{font-size:15px;font-weight:400;margin:38px 0 14px}
+.card{display:flex;background:var(--panel);border:1px solid #39424e;margin-bottom:16px;color:inherit;text-decoration:none;height:156px;overflow:hidden}
+.card:hover{background:var(--panel2)}
+.card .im{width:248px;flex:none;background:#1a1f27 center/cover}
+.card .bd{padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.meta{font-size:12px;color:var(--mute)}.meta b{color:var(--blue);font-weight:400}
+.card .t{font-size:16px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .s{color:var(--mute);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:auto}
+.grid .feed{max-width:1220px}
+.row{display:grid;gap:16px;margin-bottom:16px}
+.row .card{flex-direction:column;height:auto;margin:0;min-width:0}
+.row .card .im{width:100%;flex:1;min-height:0}
+.row .card .t{-webkit-line-clamp:2}
+.row .card .s{-webkit-line-clamp:2}
+.row.a{grid-template-columns:repeat(3,1fr);height:430px}
+.row.b{grid-template-columns:2fr 2fr 1fr;height:430px}
+.row.d{grid-template-columns:1fr 1fr;height:430px}
+.row.c{grid-template-columns:repeat(4,1fr);height:330px}
+.row.c.tt{height:190px}
+.row.c .card .im{flex:none;height:170px}
+.stack{display:flex;flex-direction:column;gap:16px;min-height:0}
+.stack .card{flex:1;min-height:0}
+.stack .s{display:none}
+.card.tx .bd{height:100%}
+.card.tx .t{-webkit-line-clamp:4}
+.card.tx .s{-webkit-line-clamp:2}
+.stack .card.tx .t{-webkit-line-clamp:3}
+.end{text-align:center;color:var(--mute);font-size:12px;letter-spacing:.04em;margin:50px 0 34px}
+.rec3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rtile{height:110px;background:#232a33 center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;text-align:center;padding:0 10px}
+.tact{display:flex;gap:10px;align-items:center}
+@media(max-width:900px){.row{grid-template-columns:1fr!important;height:auto!important}.row .card .im{flex:none;height:200px}.stack .card{flex:none}}
+.empty{text-align:center;color:var(--mute);margin-top:90px}
+.add{max-width:780px;margin:50px auto}
+.search{width:100%;height:34px;border-radius:17px;border:1px solid var(--blue);background:#0a0f17;color:var(--text);padding:0 16px;font-size:13px;outline:none}
+.found{margin:10px 6px;font-size:13px}
+.found .row{display:flex;align-items:center;gap:10px;padding:4px 0}
+.found .ok{color:var(--blue)}.found .err{color:#ff7b7b}
+.box{background:var(--panel);border:1px solid #39424e;margin-top:28px;padding:14px 18px}
+.box h4{margin:0 0 10px;font-size:15px;font-weight:400}
+.rec .row{display:flex;justify-content:space-between;align-items:center;padding:5px 6px}
+.rec .row:hover{background:#3d4652}
+.rec .row small{color:var(--mute)}
+.rec .row.added{opacity:.55}
+.lnk{background:none;border:0;color:var(--blue);cursor:pointer;font-size:12px;text-decoration:underline}
+.btn{background:#454d58;color:#fff;border:0;padding:8px 20px;cursor:pointer;font-size:13px}
+.btn:hover{background:#56606c}
+.actions{display:flex;justify-content:flex-end;margin-top:12px}
+dialog{background:var(--panel);color:var(--text);border:1px solid #4a5460;width:min(560px,92vw);padding:18px}
+dialog::backdrop{background:#000a}
+dialog li{margin:8px 0}dialog a{color:var(--text)}
+.set{margin-top:30px;font-size:12px;color:var(--mute)}
+.set input{width:100%;background:#0a0f17;border:1px solid #39424e;color:var(--text);padding:6px 10px;margin-top:6px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media(max-width:760px){aside{display:none}.card .im{width:120px}.card{height:140px}}
+[dir=auto]{unicode-bidi:plaintext}
+</style>
+</head>
+<body>
+<header><div class="logo"></div><h1>Personal news</h1></header>
+<div class="layout">
+  <aside id="side"></aside>
+  <main>
+    <div class="top"><h2 id="ttl"></h2>
+      <div class="tact"><button class="btn" id="rmcur" data-rmcur style="display:none">Remove from my sources</button><div class="toggle" id="tg"><button data-v="list" title="List">&#9776;</button><button data-v="grid" title="Grid">&#9638;</button></div></div>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+<dialog id="dlg"><div id="dlgBody"></div><div class="actions"><button class="btn" onclick="dlg.close()">Close</button></div></dialog>
+
+<script>
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
+};
+const CATALOG = [
+  {title:"BBC News", url:"https://feeds.bbci.co.uk/news/rss.xml"},
+  {title:"Spiegel Online", url:"https://www.spiegel.de/schlagzeilen/index.rss"},
+  {title:"Hacker News", url:"https://hnrss.org/frontpage"},
+  {title:"The Verge", url:"https://www.theverge.com/rss/index.xml"},
+  {title:"The New York Times", url:"https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"},
+  {title:"Digiato", url:"https://digiato.com/feed"},
+  {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits/dev.atom"}
+];
+const COMMON_PATHS = ["/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
+
+let sources = store.get("sources", []);   // {url,title}
+let articles = {};                        // url -> [items]
+let state = {page: sources.length ? "news" : "add", src: null};
+let viewMode = store.get("view", "list");
+
+/* ---------- networking ---------- */
+const customProxy = () => store.get("proxy", "");
+function proxies(){
+  const list = [u => u,
+    u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+    u => "https://corsproxy.io/?" + encodeURIComponent(u)];
+  const c = customProxy();
+  if (c) list.unshift(u => c.includes("{url}") ? c.replace("{url}", encodeURIComponent(u)) : c + u);
+  return list;
+}
+async function fetchText(url, ms = 9000){
+  let lastErr;
+  for (const p of proxies()){
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+    try {
+      const r = await fetch(p(url), {signal: ctl.signal});
+      clearTimeout(t);
+      if (r.ok) return await r.text();
+      lastErr = new Error("HTTP " + r.status);
+    } catch (e) { clearTimeout(t); lastErr = e; }
+  }
+  throw lastErr || new Error("Network error");
+}
+
+/* ---------- parsing ---------- */
+function parseFeed(text){
+  const doc = new DOMParser().parseFromString(text.trim(), "text/xml");
+  if (doc.querySelector("parsererror")) return null;
+  const root = doc.documentElement, name = root.localName.toLowerCase();
+  const txt = (el, tag) => { const n = el && [...el.children].find(c => c.localName === tag); return n ? n.textContent.trim() : ""; };
+  const all = (el, tag) => [...el.getElementsByTagNameNS("*", tag)];
+  if (name === "rss" || name === "rdf"){
+    const ch = root.querySelector("channel") || root;
+    const items = [...doc.getElementsByTagNameNS("*", "item")].map(it => {
+      const html = txt(it, "encoded") || txt(it, "description");
+      const enc = [...it.children].find(c => c.localName === "enclosure" && /image/.test(c.getAttribute("type") || ""));
+      const media = all(it, "thumbnail")[0] || all(it, "content").find(c => /image/.test(c.getAttribute("type") || c.getAttribute("medium") || ""));
+      return {title: txt(it, "title"), link: txt(it, "link") || txt(it, "guid"),
+        date: Date.parse(txt(it, "pubDate") || txt(it, "date")) || 0,
+        html, img: (enc && enc.getAttribute("url")) || (media && media.getAttribute("url")) || firstImg(html)};
+    });
+    return {kind: "RSS", title: txt(ch, "title"), items};
+  }
+  if (name === "feed"){
+    const items = [...doc.getElementsByTagNameNS("*", "entry")].map(it => {
+      const links = [...it.children].filter(c => c.localName === "link");
+      const l = links.find(x => (x.getAttribute("rel") || "alternate") === "alternate") || links[0];
+      const html = txt(it, "content") || txt(it, "summary");
+      const media = all(it, "thumbnail")[0];
+      return {title: txt(it, "title"), link: l ? l.getAttribute("href") : "",
+        date: Date.parse(txt(it, "published") || txt(it, "updated")) || 0,
+        html, img: (media && media.getAttribute("url")) || firstImg(html)};
+    });
+    return {kind: "Atom", title: txt(root, "title"), items};
+  }
+  return null;
+}
+function firstImg(html){
+  const m = /<img[^>]+src=["']([^"']+)["']/i.exec(html || ""); return m ? m[1] : "";
+}
+function plain(html){
+  const d = new DOMParser().parseFromString(html || "", "text/html");
+  return (d.body.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+/* ---------- RSS/Atom discovery ---------- */
+const looksFeed = t => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000));
+function normalizeUrl(s){
+  s = s.trim();
+  if (!s || /\s/.test(s) || !s.includes(".")) return null;
+  if (!/^https?:\/\//i.test(s)) s = "https://" + s;
+  try { return new URL(s).href } catch { return null }
+}
+async function probe(url){
+  try {
+    const t = await fetchText(url, 7000);
+    if (!looksFeed(t)) return null;
+    const f = parseFeed(t);
+    return f ? {url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length} : null;
+  } catch { return null }
+}
+async function discover(input, onStep){
+  const url = normalizeUrl(input);
+  if (!url) return [];
+  const found = new Map();
+  const add = r => r && !found.has(r.url) && found.set(r.url, r);
+
+  onStep("Checking page…");
+  let html = "";
+  try { html = await fetchText(url); } catch {}
+  if (html && looksFeed(html)) {                       // the URL itself is a feed
+    const f = parseFeed(html);
+    if (f) return [{url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length}];
+  }
+  // 1) <link rel="alternate" type="application/rss+xml|atom+xml">
+  if (html){
+    const d = new DOMParser().parseFromString(html, "text/html");
+    const base = d.querySelector("base[href]") ? new URL(d.querySelector("base").getAttribute("href"), url).href : url;
+    const cands = [...d.querySelectorAll('link[rel~="alternate"][href]')]
+      .filter(l => /(rss|atom)\+xml|application\/(xml|feed)|text\/xml/i.test(l.type || ""))
+      .map(l => { try { return new URL(l.getAttribute("href"), base).href } catch { return null } })
+      .filter(Boolean);
+    // 2) anchors that look like feeds
+    const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
+      .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
+      .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
+    onStep("Found " + cands.length + " declared feed link(s), verifying…");
+    const res = await Promise.all([...new Set([...cands, ...anchors])].slice(0, 8).map(probe));
+    res.forEach(add);
+  }
+  // 3) well-known paths on origin and on the given path
+  if (!found.size){
+    const u = new URL(url), bases = new Set([u.origin]);
+    if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
+    const tries = [];
+    bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
+    onStep("Trying common feed paths…");
+    // in small batches to avoid flooding
+    for (let i = 0; i < tries.length && !found.size; i += 6){
+      (await Promise.all(tries.slice(i, i + 6).map(probe))).forEach(add);
+    }
+  }
+  return [...found.values()];
+}
+
+/* ---------- data ---------- */
+const cssUrl = u => "url('" + u.replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
+const ic = store.get("ic", {}); let icT;
+function icSave(){ clearTimeout(icT); icT = setTimeout(() => { const k = Object.keys(ic); if (k.length > 600) k.slice(0, k.length - 600).forEach(x => delete ic[x]); store.set("ic", ic); }, 1000); }
+let active = 0; const waiting = [];
+const limit = fn => new Promise(r => { const run = async () => { active++; try { r(await fn()); } finally { active--; waiting.length && waiting.shift()(); } }; active < 6 ? run() : waiting.push(run); });
+const probeImg = u => new Promise(res => {
+  if (!u) return res(false);
+  const i = new Image(); i.referrerPolicy = "no-referrer";
+  const t = setTimeout(() => res(false), 8000);
+  i.onload = () => { clearTimeout(t); res(i.naturalWidth >= 300 && i.naturalHeight >= 160); };   // small images count as "no image"
+  i.onerror = () => { clearTimeout(t); res(false); };
+  i.src = u;
+});
+async function ogImage(link){
+  try {
+    const d = new DOMParser().parseFromString(await fetchText(link, 7000), "text/html");
+    const m = d.querySelector('meta[property="og:image"],meta[name="og:image"],meta[name="twitter:image"],meta[property="twitter:image"]');
+    return m && m.content ? new URL(m.content, link).href : "";
+  } catch { return ""; }
+}
+let rt; const soon = () => { clearTimeout(rt); rt = setTimeout(() => state.page === "news" ? render() : renderSide(), 350); };
+async function resolveItem(a){
+  const c = ic[a.link];
+  if (c){ a.img = c.img; a.ok = c.ok; a.done = true; return soon(); }
+  a.ok = await limit(() => probeImg(a.img));
+  if (!a.ok){                                   // no/small/broken image in the feed: read og:image from the article page
+    const o = await limit(() => ogImage(a.link));
+    if (o && o !== a.img){ a.img = o; a.ok = await limit(() => probeImg(o)); }
+  }
+  a.done = true; ic[a.link] = {img: a.img, ok: a.ok}; icSave(); soon();
+}
+async function loadSource(s){
+  try {
+    const f = parseFeed(await fetchText(s.url));
+    const items = f ? f.items.map(i => ({...i, source: s.title, sourceUrl: s.url})) : [];
+    articles[s.url] = items;
+    items.sort((a, b) => b.date - a.date).slice(0, 30).forEach(resolveItem);
+  } catch { articles[s.url] = []; }
+  soon();
+}
+async function refreshAll(){
+  await Promise.all(sources.filter(s => !articles[s.url]).map(loadSource));
+  render();
+}
+function addSource(s){
+  if (sources.some(x => x.url === s.url)) return;
+  sources.push({url: s.url, title: s.title});
+  store.set("sources", sources);
+}
+function removeSource(url){
+  sources = sources.filter(s => s.url !== url); delete articles[url];
+  store.set("sources", sources);
+  if (state.src === url) state.src = null;
+  if (!sources.length) state.page = "add";
+  render();
+}
+
+/* ---------- UI ---------- */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function ago(ts){
+  if (!ts) return "";
+  const m = Math.max(1, Math.round((Date.now() - ts) / 60000));
+  if (m < 60) return m + " m ago";
+  const h = Math.round(m / 60); if (h < 24) return h + " h ago";
+  const d = Math.round(h / 24); return d + " d ago";
+}
+function group(ts){
+  const age = Date.now() - ts, day = new Date(); day.setHours(0,0,0,0);
+  if (age < 3 * 3600e3) return "Most recent";
+  if (ts >= day.getTime()) return "Today";
+  if (ts >= day.getTime() - 864e5) return "Yesterday";
+  return "Earlier";
+}
+function renderSide(){
+  $("#side").innerHTML =
+    `<a data-go="all" class="${state.page==="news"&&!state.src?"on":""}">Top 50</a>
+     <div class="grp">&#9662; My sources</div>` +
+    sources.map(s => `<div class="src"><a data-src="${esc(s.url)}" class="${state.src===s.url?"on":""}" style="flex:1;min-width:0"><span dir="auto">${esc(s.title)}</span></a><button data-rm="${esc(s.url)}" title="Remove source" aria-label="Remove ${esc(s.title)}">&times;</button></div>`).join("") +
+    `<a data-go="add" class="${state.page==="add"?"on":""}" style="margin-top:6px">Add sources</a>`;
+}
+function cardHtml(a){
+  return `<a class="card ${a.ok ? "m" : "tx"}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer">
+    ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
+    <div class="bd"><div class="meta"><b dir="auto">${esc(a.source)}</b> &nbsp;${ago(a.date)}</div>
+    <div class="t" dir="auto">${esc(a.title)}</div>
+    <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div></div></a>`;
+}
+/* grid mode: arrange cards by what each item has. Good image -> big tile; no/small image -> compact text tile */
+function mosaic(items){
+  const M = items.filter(a => a.ok), T = items.filter(a => !a.ok);
+  const h = l => l.map(cardHtml).join("");
+  let out = "", useB = false;
+  while (M.length || T.length){
+    if (M.length >= 2 && T.length && (useB || M.length < 3)){
+      out += `<div class="row b">${h(M.splice(0, 2))}<div class="stack">${h(T.splice(0, 3))}</div></div>`; useB = false;
+    } else if (M.length >= 3){
+      out += `<div class="row a">${h(M.splice(0, 3))}</div>`; useB = true;
+    } else if (M.length === 2){
+      out += `<div class="row d">${h(M.splice(0, 2))}</div>`;
+    } else {
+      const rest = [...M.splice(0), ...T.splice(0, 4 - M.length)].slice(0, 4);
+      out += `<div class="row c ${rest.some(a => a.ok) ? "" : "tt"}">${h(rest)}</div>`;
+    }
+  }
+  return out;
+}
+function renderNews(){
+  const all = sources.filter(s => !state.src || s.url === state.src)
+    .flatMap(s => articles[s.url] || []).filter(a => a.title)
+    .sort((a, b) => b.date - a.date).slice(0, 50);
+  const list = all.filter(a => a.done);
+  const loading = sources.some(s => !articles[s.url]) || list.length < all.length;
+  if (!list.length) return `<div class="empty">${loading ? "Loading your sources…" : "No articles yet. Check your connection or add another source."}</div>`;
+  const groups = [];
+  for (const a of list){
+    const g = a.date ? group(a.date) : "Earlier";
+    const last = groups[groups.length - 1];
+    if (last && last.g === g) last.items.push(a); else groups.push({g, items: [a]});
+  }
+  let out = `<div class="feed">`;
+  for (const G of groups)
+    out += `<h3>${G.g}</h3>` + (viewMode === "grid" ? mosaic(G.items) : G.items.map(cardHtml).join(""));
+  const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
+  if (recs.length && !loading)
+    out += `<div class="end">END OF NEWS STREAM</div><h3>Recommended</h3><div class="rec3">` +
+      recs.map(c => `<div class="rtile" data-u="${esc(c.url)}"><span>${esc(c.title)}</span><button class="btn" data-addrec="${esc(c.url)}">Add to my sources</button></div>`).join("") + `</div>`;
+  return out + `</div>`;
+}
+const recImg = {};
+function hydrateRec(){
+  document.querySelectorAll(".rtile").forEach(async el => {
+    const u = el.dataset.u;
+    if (!(u in recImg)) recImg[u] = (async () => { try { const f = parseFeed(await fetchText(u)); const it = f.items.find(i => i.img); return it ? it.img : ""; } catch { return ""; } })();
+    const img = await recImg[u];
+    if (img && el.isConnected) el.style.backgroundImage = "linear-gradient(#0007,#000b)," + cssUrl(img);
+  });
+}
+function renderAdd(){
+  const rec = CATALOG.map(c => {
+    const has = sources.some(s => s.url === c.url);
+    return `<div class="row ${has?"added":""}"><span>${esc(c.title)} <small>- ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
+      <span>${has ? "&#10003; Added" : `<button class="lnk" data-prev="${esc(c.url)}">Preview</button> <button class="lnk" data-addrec="${esc(c.url)}">Add</button>`}</span></div>`;
+  }).join("");
+  return `<div class="add">
+    <input id="q" class="search" placeholder="Enter a site or feed address, e.g. digiato.com" autocomplete="off" spellcheck="false">
+    <div class="found" id="found"></div>
+    <div class="box rec"><h4>&#9662; Recommended</h4>${rec}
+      <div class="actions"><button class="btn" data-go="news">Start reading</button></div></div>
+    <div class="set">CORS proxy (optional): feeds are fetched directly, then through public proxies. To use your own, enter a prefix or a template with {url}.
+      <input id="proxy" placeholder="http://localhost:8787/?url={url}" value="${esc(customProxy())}"></div>
+  </div>`;
+}
+function render(){
+  renderSide();
+  document.body.classList.toggle("grid", viewMode === "grid");
+  document.querySelectorAll("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
+  $("#tg").style.visibility = state.page === "news" ? "visible" : "hidden";
+  $("#rmcur").style.display = state.page === "news" && state.src ? "" : "none";
+  if (state.page === "add"){
+    $("#ttl").textContent = "Add sources"; const keep = $("#q") && $("#q").value;
+    $("#view").innerHTML = renderAdd(); if (keep) $("#q").value = keep;
+  } else {
+    $("#ttl").textContent = state.src ? (sources.find(s => s.url === state.src) || {}).title : "My sources";
+    $("#view").innerHTML = renderNews(); hydrateRec();
+  }
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", async e => {
+  const t = e.target.closest("[data-go],[data-src],[data-rm],[data-rmcur],[data-prev],[data-addrec],[data-v]");
+  if (!t) return;
+  const d = t.dataset;
+  if (d.v){ viewMode = d.v; store.set("view", viewMode); return render(); }
+  if (d.go){ state.page = d.go === "add" ? "add" : "news"; state.src = null; if (state.page === "news") refreshAll(); return render(); }
+  if (d.src){ state.page = "news"; state.src = d.src; return render(); }
+  if (d.rm) return removeSource(d.rm);
+  if ("rmcur" in d) return state.src && removeSource(state.src);
+  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); addSource(c); loadSource(c); return render(); }
+  if (d.prev){
+    const c = CATALOG.find(x => x.url === d.prev);
+    $("#dlgBody").innerHTML = `<h4 style="margin:0 0 8px">${esc(c.title)}</h4><div class="meta">Loading preview…</div>`; dlg.showModal();
+    try {
+      const f = parseFeed(await fetchText(c.url));
+      $("#dlgBody").innerHTML = `<h4 style="margin:0 0 8px">${esc(c.title)}</h4><ul dir="auto" style="padding-inline-start:18px">` +
+        f.items.slice(0, 6).map(i => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${esc(i.title)}</a></li>`).join("") + `</ul>`;
+    } catch { $("#dlgBody").innerHTML = `<h4>${esc(c.title)}</h4><div class="meta">Couldn't load this preview.</div>`; }
+  }
+});
+let timer, seq = 0;
+document.addEventListener("input", e => {
+  if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
+  if (e.target.id !== "q") return;
+  clearTimeout(timer);
+  const v = e.target.value, my = ++seq, box = $("#found");
+  if (!v.trim()){ box.innerHTML = ""; return; }
+  timer = setTimeout(async () => {
+    if (!normalizeUrl(v)){
+      const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
+      box.innerHTML = hits.length ? hits.map(c => `<div class="row"><span>${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">Add</button></div>`).join("")
+        : `<span class="err">No match. Enter a site address such as example.com.</span>`;
+      return;
+    }
+    box.innerHTML = `<span class="meta">Looking for feeds…</span>`;
+    const res = await discover(v, m => { if (my === seq) box.innerHTML = `<span class="meta">${esc(m)}</span>`; });
+    if (my !== seq) return;
+    if (!res.length){ box.innerHTML = `<span class="err">No RSS or Atom feed found at this address. Try the feed URL directly, or set a CORS proxy below.</span>`; return; }
+    box.innerHTML = res.map(r => {
+      const has = sources.some(s => s.url === r.url);
+      return `<div class="row"><span class="ok">&#10003;</span><span dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} &middot; ${esc(r.url)}</span>
+        ${has ? `<span class="meta">Added</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>Add</button>`}</div>`;
+    }).join("");
+  }, 450);
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-found]"); if (!b) return;
+  const s = JSON.parse(b.dataset.found); addSource(s); loadSource(s).then(render);
+  b.outerHTML = `<span class="meta">Added</span>`; renderSide();
+});
+
+render();
+refreshAll();
+</script>
+</body>
+</html>
