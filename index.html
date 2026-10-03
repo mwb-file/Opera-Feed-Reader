@@ -300,6 +300,29 @@ aside .grp button:hover{color:var(--blue)}
   .streak-bar{height:100px}
 }
 
+/* ============ Share button (on cards) ============ */
+.card-action.share-btn{position:absolute;inset-inline-end:38px;top:0;width:34px;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-dim);background:transparent;cursor:pointer;opacity:0;transition:opacity var(--t),color var(--t);flex:none;border:0}
+.card:hover .card-action.share-btn{opacity:.7}
+.card-action.share-btn:hover{opacity:1;color:var(--blue)}
+@media(max-width:760px){.card-action.share-btn{opacity:.7}}
+
+/* Share menu (floating popup) */
+.share-menu{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--line-2);border-radius:var(--radius);box-shadow:var(--shadow);min-width:180px;padding:6px;display:none;flex-direction:column;gap:2px}
+.share-menu.open{display:flex}
+.share-menu button{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:6px;font-size:13px;text-align:start;width:100%;transition:background var(--t)}
+.share-menu button:hover{background:var(--panel-2)}
+.share-menu .ico{font-size:15px;width:20px;text-align:center;flex:none;color:var(--blue)}
+
+/* ============ Source favicons (sidebar) ============ */
+.src-fav{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
+.src-favicon{width:16px;height:16px;border-radius:3px;display:inline-block;vertical-align:middle}
+.src-favicon.placeholder{font-size:14px;color:var(--mute);line-height:18px}
+
+/* ============ Reader mode: TTS + Share buttons ============ */
+#rdTTS, #rdShare{position:relative}
+#rdTTS.active{color:var(--blue);background:var(--blue-soft)}
+#rdTTS.active::after{content:"";position:absolute;inset:0;border-radius:inherit;border:1px solid var(--blue);opacity:.4}
+
 main{flex:1;padding-block:22px 80px;padding-inline:26px;min-width:0}
 
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap}
@@ -735,55 +758,6 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
   .src-row .mini{ opacity:1; width:34px; height:34px; font-size:15px }
   aside .grp{ font-size:12px; margin:18px 8px 8px }
 }
-/* ============ Add-source feed list ============ */
-.found-head{
-  display:flex;justify-content:space-between;align-items:center;
-  margin:14px 4px 8px;font-size:12px;color:var(--mute);
-  gap:10px;flex-wrap:wrap;
-}
-.found-head .stat{font-weight:500}
-.feed-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.feed-row{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 14px;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius-sm);
-  transition:border-color var(--t),box-shadow var(--t),transform var(--t);
-}
-.feed-row:hover{border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-1px)}
-.feed-row.added{opacity:.58}
-.feed-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.feed-title{
-  font-size:14px;font-weight:600;line-height:1.4;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  color:var(--text);
-}
-.feed-meta{
-  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-  font-size:11px;color:var(--mute);
-}
-.feed-kind{
-  font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-  padding:1px 7px;border-radius:8px;
-  background:var(--blue-soft);color:var(--blue);flex:none;
-}
-.feed-url{
-  direction:ltr;unicode-bidi:embed;
-  font-family:"SF Mono",Menlo,Consolas,monospace;
-  font-size:10.5px;
-  max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  color:var(--text-dim);opacity:.85;
-}
-.feed-count{color:var(--mute)}
-.feed-added{
-  font-size:12px;color:var(--green);font-weight:500;flex:none;
-  white-space:nowrap;
-}
-.btn.small{padding:6px 14px;font-size:12px}
-@media(max-width:560px){
-  .feed-url{max-width:160px}
-}
 [dir=auto]{unicode-bidi:plaintext}
 </style>
 </head>
@@ -857,6 +831,8 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
       </div>
       <button class="rd-btn" id="rdFontDec" aria-label="">A−</button>
       <button class="rd-btn" id="rdFontInc" aria-label="">A+</button>
+      <button class="rd-btn" id="rdTTS" aria-label="" title="">🔊</button>
+      <button class="rd-btn" id="rdShare" aria-label="" title="">↗</button>
       <button class="rd-btn" id="rdStar" aria-label="">★</button>
       <button class="rd-btn" id="rdOpen" aria-label="">↗</button>
     </div>
@@ -898,9 +874,6 @@ const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(
 /* ============ i18n ============ */
 const LANGS = {
   fa: {
-    feedsFound: "{n} فید پیدا شد",
-    addAll: "افزودن همه",
-    itemsCount: "{n} خبر",
     dir: "rtl", name: "Persian", nativeName: "فارسی",
     appTitle: "اخبار شخصی",
     searchPlaceholder: "جستجو در خبرها…  (کلید /)",
@@ -1038,12 +1011,23 @@ const LANGS = {
     statsNoStreak: "بی‌دنباله",
     statsBestStreak: "بهترین دنباله: {n} روز",
     statsArticle: "{n} خبر",
-    statsAvgPerDay: "میانگین: {n} خبر در روز"
+    statsAvgPerDay: "میانگین: {n} خبر در روز",
+    share: "اشتراک‌گذاری",
+    shareTelegram: "اشتراک در تلگرام",
+    shareTwitter: "اشتراک در توییتر",
+    copyLink: "کپی لینک",
+    linkCopied: "لینک کپی شد",
+    readAloud: "خواندن صوتی",
+    stopReading: "توقف خواندن",
+    pauseReading: "مکث",
+    resumeReading: "ادامه",
+    nextArticle: "مقاله‌ی بعدی (J)",
+    prevArticle: "مقاله‌ی قبلی (K)",
+    themeAuto: "خودکار (پیروی از سیستم)",
+    readingSpeed: "سرعت خواندن",
+    readingVoice: "صدا"
   },
   en: {
-    feedsFound: "{n} feed(s) found",
-    addAll: "Add all",
-    itemsCount: "{n} items",
     dir: "ltr", name: "English", nativeName: "English",
     appTitle: "Personal news",
     searchPlaceholder: "Search articles…  (press /)",
@@ -1181,7 +1165,21 @@ const LANGS = {
     statsNoStreak: "No streak",
     statsBestStreak: "Best streak: {n} days",
     statsArticle: "{n} article(s)",
-    statsAvgPerDay: "Average: {n} per day"
+    statsAvgPerDay: "Average: {n} per day",
+    share: "Share",
+    shareTelegram: "Share to Telegram",
+    shareTwitter: "Share to Twitter",
+    copyLink: "Copy link",
+    linkCopied: "Link copied",
+    readAloud: "Read aloud",
+    stopReading: "Stop reading",
+    pauseReading: "Pause",
+    resumeReading: "Resume",
+    nextArticle: "Next article (J)",
+    prevArticle: "Previous article (K)",
+    themeAuto: "Auto (follow system)",
+    readingSpeed: "Reading speed",
+    readingVoice: "Voice"
   }
 };
 
@@ -1237,6 +1235,8 @@ function applyLang(){
   const fI = $("#rdFontInc"); if (fI){ fI.title = t("larger"); fI.setAttribute("aria-label", t("larger")); }
   const st = $("#rdStar"); if (st) st.title = t("save");
   const op = $("#rdOpen"); if (op){ op.title = t("openOriginal"); op.setAttribute("aria-label", t("openOriginal")); }
+  const tts = $("#rdTTS"); if (tts){ tts.title = t("readAloud"); tts.setAttribute("aria-label", t("readAloud")); }
+  const rdShare = $("#rdShare"); if (rdShare){ rdShare.title = t("share"); rdShare.setAttribute("aria-label", t("share")); }
   const fb = $("#rdFontBtn"); if (fb) fb.title = t("changeFont");
   const pv = $("#pvCloseBtn"); if (pv) pv.textContent = t("close");
   const st2 = $("#setDone"); if (st2) st2.textContent = t("done");
@@ -1291,6 +1291,26 @@ if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list"
 let density = store.get("density", "cozy");
 let sortMode = store.get("sort", "newest");
 let theme = store.get("theme", "dark");
+/* Auto theme: follows prefers-color-scheme */
+let prefersDarkMq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+function effectiveTheme(){
+  if (theme === "auto" && prefersDarkMq){
+    return prefersDarkMq.matches ? "dark" : "light";
+  }
+  return theme === "light" ? "light" : "dark";
+}
+function applyTheme(){
+  const eff = effectiveTheme();
+  document.documentElement.dataset.theme = eff;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", eff === "dark" ? "#070b12" : "#f4f7fb");
+}
+if (prefersDarkMq){
+  /* React to system theme changes when in auto mode */
+  prefersDarkMq.addEventListener("change", () => {
+    if (theme === "auto") applyTheme();
+  });
+}
 let fontId = store.get("font", "sahel");
 let saved = store.get("saved", []);
 let read = new Set(store.get("read", []));
@@ -1496,143 +1516,88 @@ async function probe(url){
     return f ? {url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length} : null;
   } catch { return null }
 }
-/* Probe ALL candidate URLs in parallel, collecting every successful feed.
-   Unlike probeRace, this does NOT stop at the first hit — it collects all
-   feeds found before the deadline expires. Calls onFound(feed, currentList)
-   as soon as each one resolves so the UI can update live. */
-async function probeAll(urls, onFound, deadlineMs = 8000){
-  const results = [];
-  const seen = new Set();
-  if (!urls.length) return results;
-
-  let finishAll;
-  const allDone = new Promise(r => { finishAll = r; });
-  let completed = 0;
-  const total = urls.length;
-
-  for (const u of urls){
-    (async () => {
-      try {
-        const r = await probe(u);
-        if (r && !seen.has(r.url)){
-          seen.add(r.url);
-          results.push(r);
-          if (onFound) onFound(r, results.slice());
-        }
-      } catch {}
-      completed++;
-      if (completed === total) finishAll();
-    })();
+/* Probe many URLs in parallel — returns as soon as any succeeds, or after all settle.
+   Uses Promise.any so a single success short-circuits the rest.
+   Optional deadlineMs caps the total time — we abort waiting and return what we have. */
+async function probeRace(urls, onFound, deadlineMs){
+  if (!urls.length) return [];
+  const promises = urls.map(async u => {
+    const r = await probe(u);
+    if (r){ onFound && onFound(r); return r; }
+    /* throw so Promise.any keeps waiting for others */
+    throw new Error("not-feed");
+  });
+  /* If deadline set, race against a timeout promise */
+  const racers = [...promises];
+  if (deadlineMs){
+    racers.push(new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("probeRace-deadline")), deadlineMs)
+    ));
   }
-
-  await Promise.race([
-    allDone,
-    new Promise(r => setTimeout(r, deadlineMs))
-  ]);
-  return results;
+  try {
+    /* Promise.any resolves on first success; if all reject, returns AggregateError */
+    const first = await Promise.any(racers);
+    return [first];
+  } catch (e) {
+    /* All probes failed (or deadline expired) */
+    return [];
+  }
 }
-
 async function discover(input, onStep){
   const url = normalizeUrl(input);
   if (!url) return [];
+  const found = new Map();
+  const add = r => r && !found.has(r.url) && found.set(r.url, r);
 
+  /* Abort signal so caller can cancel if input changes */
   const myToken = ++discoverToken;
   const isCancelled = () => myToken !== discoverToken;
-  const deadline = Date.now() + 16000;
+  /* Overall deadline: 12s — fail fast if a site is unreachable / blocks all proxies */
+  const deadline = Date.now() + 12000;
   const isExpired = () => Date.now() > deadline;
 
-  const found = [];
-  const seen = new Set();
-  const push = r => {
-    if (r && !seen.has(r.url)){
-      seen.add(r.url);
-      found.push(r);
-      return true;
-    }
-    return false;
-  };
-  const notify = () => onStep && onStep(null, found.slice());
-
-  /* --- Step 1: fetch the given URL --- */
-  onStep && onStep(t("checkingPage"));
+  onStep(t("checkingPage"));
   let html = "";
   try { html = await fetchText(url, 6000); } catch {}
-  if (isCancelled()) return found;
-
-  /* If the URL itself is a feed, that's the single answer */
-  if (html && looksFeed(html)){
+  if (isCancelled() || isExpired()) return [...found.values()];
+  if (html && looksFeed(html)) {
     const f = parseFeed(html);
-    if (f){
-      push({
-        url,
-        title: f.title || new URL(url).hostname,
-        kind: f.kind,
-        count: f.items.length,
-        isDirect: true
-      });
-      notify();
-    }
-    return found;
+    if (f) return [{url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length}];
   }
-
-  /* --- Step 2: collect feed candidates from the HTML --- */
-  const candidates = new Set();
   if (html){
     const d = new DOMParser().parseFromString(html, "text/html");
-    let base = url;
-    const baseEl = d.querySelector("base[href]");
-    if (baseEl){ try { base = new URL(baseEl.getAttribute("href"), url).href } catch {} }
-
-    /* <link rel="alternate" type="application/rss+xml" href="..."> */
-    for (const l of d.querySelectorAll('link[rel~="alternate"][href]')){
-      const type = (l.getAttribute("type") || "").toLowerCase();
-      if (/rss|atom|\bxml\b|feed/.test(type)){
-        try { candidates.add(new URL(l.getAttribute("href"), base).href) } catch {}
-      }
-    }
-    /* <a href="/feed"> or similar anchors */
-    for (const a of d.querySelectorAll("a[href]")){
-      const h = a.getAttribute("href") || "";
-      if (/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)(\?|$)|\?feed=/i.test(h)){
-        try { candidates.add(new URL(h, base).href) } catch {}
-      }
+    const base = d.querySelector("base[href]") ? new URL(d.querySelector("base").getAttribute("href"), url).href : url;
+    const cands = [...d.querySelectorAll('link[rel~="alternate"][href]')]
+      .filter(l => /(rss|atom)\+xml|application\/(xml|feed)|text\/xml/i.test(l.type || ""))
+      .map(l => { try { return new URL(l.getAttribute("href"), base).href } catch { return null } })
+      .filter(Boolean);
+    const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
+      .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
+      .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
+    const allCands = [...new Set([...cands, ...anchors])].slice(0, 8);
+    onStep(t("verifyingFeeds", {n: allCands.length}));
+    const res = await probeRace(allCands);
+    if (isCancelled() || isExpired()) return [...found.values()];
+    res.forEach(add);
+  }
+  if (!found.size && !isExpired()){
+    const u = new URL(url), bases = new Set([u.origin]);
+    if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
+    const tries = [];
+    bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
+    onStep(t("tryingPaths"));
+    /* Probe all paths in parallel batches of 8 — fast fail, capped by remaining deadline */
+    for (let i = 0; i < tries.length && !found.size && !isExpired(); i += 8){
+      if (isCancelled()) return [...found.values()];
+      const batch = tries.slice(i, i + 8);
+      const remaining = Math.max(1000, deadline - Date.now());
+      const res = await probeRace(batch, r => add(r), remaining);
+      if (isCancelled()) return [...found.values()];
     }
   }
-
-  /* --- Step 3: add common well-known paths --- */
-  try {
-    const u = new URL(url);
-    const bases = new Set([u.origin]);
-    if (u.pathname.length > 1){
-      bases.add(u.origin + u.pathname.replace(/\/$/, ""));
-    }
-    for (const b of bases){
-      for (const p of COMMON_PATHS) candidates.add(b + p);
-    }
-  } catch {}
-
-  /* --- Step 4: probe every candidate in parallel --- */
-  const candList = [...candidates].slice(0, 24); /* cap so we don't hammer hosts */
-  if (!candList.length){
-    onStep && onStep(null, found.slice());
-    return found;
-  }
-  onStep && onStep(t("verifyingFeeds", {n: candList.length}));
-  const remaining = Math.max(3000, deadline - Date.now());
-  await probeAll(candList, r => {
-    if (isCancelled()) return;
-    if (push(r)) notify();
-  }, remaining);
-
-  if (isCancelled()) return found;
-
-  /* --- Step 5: sort — direct feed first, then by item count desc --- */
-  found.sort((a, b) => {
-    if (!!a.isDirect !== !!b.isDirect) return a.isDirect ? -1 : 1;
-    return (b.count || 0) - (a.count || 0);
-  });
-  return found;
-}let discoverToken = 0;
+  return [...found.values()];
+}
+let discoverToken = 0;
 
 /* ============ Images ============ */
 const cssUrl = u => "url('" + String(u).replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
@@ -2174,6 +2139,7 @@ async function showReader(link){
   };
 }
 function closeReader(){
+  stopTTS();
   const rd = $("#reader");
   rd.hidden = true;
   rd.setAttribute("aria-hidden", "true");
@@ -2182,6 +2148,119 @@ function closeReader(){
   if (location.hash.startsWith("#!r=")){
     history.replaceState(null, "", location.pathname + location.search);
   }
+}
+
+/* ============ Text-to-speech (Read Aloud) ============ */
+let ttsUtterance = null;
+let ttsPaused = false;
+let ttsState = "idle";  /* idle | playing | paused */
+function ttsAvailable(){
+  return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+}
+function ttsGetContent(){
+  const content = $("#rdContent");
+  if (!content) return "";
+  /* Prefer h1 + body text */
+  const h1 = content.querySelector(".rd-h1");
+  const body = content.querySelector(".rd-body");
+  const parts = [];
+  if (h1) parts.push(h1.textContent);
+  if (body){
+    /* Walk paragraphs in order */
+    body.querySelectorAll("p, h2, h3, h4, li, blockquote").forEach(el => {
+      const tx = el.textContent.trim();
+      if (tx) parts.push(tx);
+    });
+  }
+  return parts.filter(Boolean).join("\n\n");
+}
+function ttsUpdateButton(){
+  const btn = $("#rdTTS");
+  if (!btn) return;
+  if (ttsState === "playing"){
+    btn.textContent = "⏸";
+    btn.title = t("pauseReading");
+    btn.classList.add("active");
+  } else if (ttsState === "paused"){
+    btn.textContent = "▶";
+    btn.title = t("resumeReading");
+    btn.classList.add("active");
+  } else {
+    btn.textContent = "🔊";
+    btn.title = t("readAloud");
+    btn.classList.remove("active");
+  }
+}
+function ttsSpeak(){
+  if (!ttsAvailable()){
+    toast("Speech synthesis not supported", "err");
+    return;
+  }
+  const text = ttsGetContent();
+  if (!text){
+    toast(t("readerErr"), "err");
+    return;
+  }
+  /* Stop any in-progress speech */
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  /* Try to pick a voice matching the article language */
+  const lang = $("#rdContent").getAttribute("dir") === "rtl" ? "fa-IR" : "en-US";
+  u.lang = lang;
+  u.rate = store.get("ttsRate", 1) || 1;
+  const voices = window.speechSynthesis.getVoices();
+  const match = voices.find(v => v.lang === lang) || voices.find(v => v.lang.startsWith(lang.split("-")[0]));
+  if (match) u.voice = match;
+  u.onend = () => { ttsState = "idle"; ttsUtterance = null; ttsUpdateButton(); };
+  u.onerror = () => { ttsState = "idle"; ttsUtterance = null; ttsUpdateButton(); };
+  /* Highlight current paragraph by boundary events */
+  let lastBoundary = 0;
+  u.onboundary = (e) => {
+    /* Mark progress visually — simple approach: scroll to current char offset */
+    if (e.name === "word" || !e.name){
+      /* update progress bar as speech progresses */
+      const ratio = text.length > 0 ? Math.min(1, e.charIndex / text.length) : 0;
+      const prog = $("#rdProgress");
+      if (prog) prog.style.width = (ratio * 100) + "%";
+    }
+  };
+  ttsUtterance = u;
+  ttsPaused = false;
+  ttsState = "playing";
+  window.speechSynthesis.speak(u);
+  ttsUpdateButton();
+}
+function ttsToggle(){
+  if (!ttsAvailable()){
+    toast("Speech synthesis not supported", "err");
+    return;
+  }
+  if (ttsState === "playing"){
+    window.speechSynthesis.pause();
+    ttsState = "paused";
+    ttsUpdateButton();
+  } else if (ttsState === "paused"){
+    window.speechSynthesis.resume();
+    ttsState = "playing";
+    ttsUpdateButton();
+  } else {
+    ttsSpeak();
+  }
+}
+function stopTTS(){
+  if (!ttsAvailable()) return;
+  window.speechSynthesis.cancel();
+  ttsUtterance = null;
+  ttsState = "idle";
+  ttsPaused = false;
+  ttsUpdateButton();
+}
+/* Pre-warm voices list (Chrome populates async) */
+if (ttsAvailable()){
+  window.speechSynthesis.onvoiceschanged = () => {
+    /* Trigger population */
+    window.speechSynthesis.getVoices();
+  };
 }
 $("#rdBack").addEventListener("click", () => history.back());
 $("#rdFontInc").addEventListener("click", () => {
@@ -2203,6 +2282,17 @@ $("#rdScroll").addEventListener("scroll", () => {
 $("#rdFontBtn").addEventListener("click", e => {
   e.stopPropagation();
   $("#rdFontMenu").classList.toggle("open");
+});
+$("#rdTTS").addEventListener("click", e => {
+  e.stopPropagation();
+  ttsToggle();
+});
+$("#rdShare").addEventListener("click", e => {
+  e.stopPropagation();
+  const link = readerCurrentLink;
+  if (!link) return;
+  const item = findItem(link) || {};
+  openShareMenu(link, item.title || link, e.currentTarget);
 });
 document.addEventListener("click", e => {
   if (!e.target.closest(".rd-font-wrap")) $("#rdFontMenu").classList.remove("open");
@@ -2240,6 +2330,20 @@ function unreadCount(srcUrl){
 }
 function totalUnread(){
   return sources.reduce((n, s) => n + unreadCount(s.url), 0);
+}
+/* Favicon: use Google's S2 service to fetch a small favicon for any URL.
+   Returns a fallback dot if hostname can't be parsed. */
+function faviconFor(url){
+  try {
+    const u = new URL(url);
+    if (u.hostname) return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(u.hostname)}&sz=32`;
+  } catch {}
+  return "";
+}
+function faviconHtml(url, fallback){
+  const src = faviconFor(url);
+  if (!src) return `<span class="src-favicon placeholder">${fallback || "•"}</span>`;
+  return `<img class="src-favicon" src="${esc(src)}" alt="" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'"><span class="src-favicon placeholder" style="display:none">${fallback || "•"}</span>`;
 }
 function renderSide(){
   const allUnread = totalUnread();
@@ -2282,7 +2386,7 @@ function renderSide(){
       : "";
     return `<div class="src-row">
       <a class="nav-link ${state.src===s.url?"on":""}" data-src="${esc(s.url)}" title="${esc(s.title)}">
-        <span class="ico">•</span>
+        <span class="ico src-fav">${faviconHtml(s.url, "•")}</span>
         <span class="lbl" dir="auto">${esc(s.title)}</span>
         ${u ? `<span class="badge">${formatNum(u)}</span>` : ""}
       </a>
@@ -2346,6 +2450,7 @@ function cardHtml(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
+  const sharePayload = escAttr(JSON.stringify({link:a.link, title:a.title}));
   return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${appLang}:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
     <div class="bd">
@@ -2358,6 +2463,7 @@ function cardHtml(a){
       <div class="t" dir="auto">${esc(a.title)}</div>
       <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div>
     </div>
+    <span class="card-action share-btn" role="button" tabindex="0" title="${esc(t("share"))}" data-share='${sharePayload}'>↗</span>
     <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
   </a>`;
 }
@@ -2775,6 +2881,7 @@ function fillSettings(){
       <select id="setTheme">
         <option value="dark" ${theme==="dark"?"selected":""}>${esc(t("themeDark"))}</option>
         <option value="light" ${theme==="light"?"selected":""}>${esc(t("themeLight"))}</option>
+        <option value="auto" ${theme==="auto"?"selected":""}>${esc(t("themeAuto"))}</option>
       </select>
 
       <label>${esc(t("font"))}</label>
@@ -2817,7 +2924,7 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", () => {
     if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags"].forEach(store.del);
+    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate"].forEach(store.del);
     location.reload();
   });
   $("#opmlExport").addEventListener("click", () => {
@@ -2858,6 +2965,80 @@ function fillSettings(){
       if (n){ refreshAll(); } else { render(); }
     } catch { toast(t("opmlError"), "err"); }
   });
+}
+/* ============ Share menu ============ */
+let shareMenuState = {link: "", title: ""};
+function openShareMenu(link, title, anchorEl){
+  shareMenuState = {link, title: title || link};
+  let menu = $("#shareMenu");
+  if (!menu){
+    menu = document.createElement("div");
+    menu.id = "shareMenu";
+    menu.className = "share-menu";
+    document.body.appendChild(menu);
+    /* close on outside click */
+    document.addEventListener("click", e => {
+      if (!menu.contains(e.target) && !e.target.closest("[data-share]")) closeShareMenu();
+    }, {capture: false});
+  }
+  const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(title || "")}`;
+  const twUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}&text=${encodeURIComponent(title || "")}`;
+  menu.innerHTML = `
+    <button data-share-action="telegram" title="${esc(t("shareTelegram"))}">
+      <span class="ico">✈</span><span>${esc(t("shareTelegram"))}</span>
+    </button>
+    <button data-share-action="twitter" title="${esc(t("shareTwitter"))}">
+      <span class="ico">𝕏</span><span>${esc(t("shareTwitter"))}</span>
+    </button>
+    <button data-share-action="copy" title="${esc(t("copyLink"))}">
+      <span class="ico">⧉</span><span>${esc(t("copyLink"))}</span>
+    </button>`;
+  /* position menu near the anchor */
+  if (anchorEl){
+    const r = anchorEl.getBoundingClientRect();
+    const menuW = 180, menuH = 140;
+    let left = r.right - menuW;
+    let top = r.bottom + 6;
+    if (top + menuH > window.innerHeight) top = r.top - menuH - 6;
+    if (left < 8) left = 8;
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+    menu.style.right = "auto";
+    menu.classList.add("open");
+  } else {
+    menu.style.left = "50%";
+    menu.style.top = "50%";
+    menu.style.right = "auto";
+    menu.classList.add("open");
+  }
+}
+function closeShareMenu(){
+  const menu = $("#shareMenu");
+  if (menu) menu.classList.remove("open");
+}
+function handleShareAction(action, link, title){
+  if (!link) return;
+  if (action === "telegram"){
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(title || "")}`, "_blank", "noopener");
+  } else if (action === "twitter"){
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}&text=${encodeURIComponent(title || "")}`, "_blank", "noopener");
+  } else if (action === "copy"){
+    navigator.clipboard.writeText(link).then(
+      () => toast(t("linkCopied"), "ok"),
+      () => {
+        /* fallback: temporary textarea */
+        const ta = document.createElement("textarea");
+        ta.value = link;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); toast(t("linkCopied"), "ok"); }
+        catch { toast("Copy failed", "err"); }
+        ta.remove();
+      }
+    );
+  }
 }
 function openSettings(){
   fillSettings();
@@ -2915,7 +3096,7 @@ function openTagsEditor(s){
 
 /* ============ Render: main ============ */
 function render(){
-  document.documentElement.dataset.theme = theme;
+  applyTheme();
   document.documentElement.dataset.density = density;
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
   document.body.classList.toggle("grid", viewMode === "grid");
@@ -3001,6 +3182,7 @@ document.addEventListener("click", e => {
   const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (!c) return;
   if (e.target.closest("[data-save]")) return;
+  if (e.target.closest("[data-share]")) return;
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   if (e.button && e.button !== 0) return;
   if (!openInReader) return;
@@ -3014,10 +3196,26 @@ document.addEventListener("click", async e => {
     try { toggleSave(JSON.parse(saveEl.dataset.save)); } catch {}
     return;
   }
-  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-read-all],[data-close]");
+  const shareEl = e.target.closest("[data-share]");
+  if (shareEl){
+    e.preventDefault(); e.stopPropagation();
+    try {
+      const data = JSON.parse(shareEl.dataset.share);
+      openShareMenu(data.link, data.title, shareEl);
+    } catch {}
+    return;
+  }
+  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-share-action],[data-read-all],[data-close]");
   if (!t2) return;
   const d = t2.dataset;
   if ("close" in d){ t2.closest("dialog")?.close(); return; }
+  /* Share menu actions (Telegram/Twitter/Copy) */
+  if (d.shareAction){
+    e.preventDefault();
+    handleShareAction(d.shareAction, shareMenuState.link, shareMenuState.title);
+    closeShareMenu();
+    return;
+  }
   /* On mobile, close drawer after making a choice */
   const closeDrawerIfMobile = () => { if (drawer.isMobile()) drawer.close(); };
   if (d.v){ viewMode = d.v; store.set("view", viewMode); return render(); }
@@ -3097,7 +3295,7 @@ document.addEventListener("click", async e => {
 });
 document.addEventListener("click", e => {
   const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
-  if (c && !e.target.closest("[data-save]")){
+  if (c && !e.target.closest("[data-save]") && !e.target.closest("[data-share]")){
     markRead(c.dataset.link);
     c.classList.add("read");
     renderSide();
@@ -3122,14 +3320,12 @@ document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
   if (e.target.id === "addTags"){ addTagsInputValue = e.target.value; return; }
   if (e.target.id !== "q") return;
-
   clearTimeout(discoverTimer);
-  discoverToken++; /* cancel any in-flight discovery */
+  /* Cancel any in-flight discovery */
+  discoverToken++;
   const v = e.target.value, my = ++discoverSeq, box = $("#found");
   if (!v.trim()){ box.innerHTML = ""; return; }
-
   discoverTimer = setTimeout(async () => {
-    /* Not a URL → fall back to catalog search */
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
       box.innerHTML = hits.length
@@ -3137,100 +3333,31 @@ document.addEventListener("input", e => {
         : `<span class="err">${esc(t("noMatchCatalog"))}</span>`;
       return;
     }
-
-    box.innerHTML = `<div class="found-head"><span class="stat">${esc(t("lookingForFeeds"))}</span></div>`;
-
+    box.innerHTML = `<span class="meta">${esc(t("lookingForFeeds"))}</span>`;
     let res;
     try {
-      res = await discover(v, (msg, list) => {
-        if (my !== discoverSeq) return;
-        if (list){
-          renderFoundFeeds(box, list, null);
-        } else if (msg){
-          box.innerHTML = `<div class="found-head"><span class="stat">${esc(msg)}</span></div>`;
-        }
+      res = await discover(v, m => {
+        if (my === discoverSeq) box.innerHTML = `<span class="meta">${esc(m)}</span>`;
       });
-    } catch (err){
+    } catch (err) {
       if (my === discoverSeq){
         box.innerHTML = `<span class="err">${esc(t("feedNotFound"))}</span>`;
       }
       return;
     }
     if (my !== discoverSeq) return;
-
     if (!res.length){
       box.innerHTML = `<div class="err">${esc(t("feedNotFound"))}</div>
         <div class="row"><span class="meta" style="font-size:11px;line-height:1.6;display:block">${esc(t("proxyHelp"))}</span></div>`;
       return;
     }
-    renderFoundFeeds(box, res, null);
+    box.innerHTML = res.map(r => {
+      const has = sources.some(s => s.url === r.url);
+      return `<div class="row"><span class="ok">✓</span><span class="grow" dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} · ${esc(new URL(r.url).hostname)}</span>
+        ${has ? `<span class="meta" style="color:var(--green)">${esc(t("added"))}</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>${esc(t("add"))}</button>`}</div>`;
+    }).join("");
   }, 450);
 });
-
-/* Renders the list of feeds found for a site — Opera-style. */
-function renderFoundFeeds(box, list, statusMsg){
-  const addedCount = list.filter(r => sources.some(s => s.url === r.url)).length;
-  const canAddAll = (list.length - addedCount) > 1;
-  const headerText = statusMsg
-    ? statusMsg
-    : (appLang === "fa"
-        ? `${formatNum(list.length)} فید پیدا شد${addedCount ? ` — ${formatNum(addedCount)} افزوده‌شده` : ""}`
-        : `${formatNum(list.length)} feed(s) found${addedCount ? ` — ${formatNum(addedCount)} added` : ""}`);
-
-  const head = `<div class="found-head">
-    <span class="stat">${esc(headerText)}</span>
-    ${canAddAll ? `<button class="btn small" id="addAllFound">${esc(appLang === "fa" ? "افزودن همه" : "Add all")}</button>` : ""}
-  </div>`;
-
-  const items = list.map(r => {
-    const has = sources.some(s => s.url === r.url);
-    let host = "";
-    try { host = new URL(r.url).hostname.replace(/^www\./, "") } catch {}
-    const kind = r.kind || "RSS";
-    const count = r.count || 0;
-    const title = r.title || host || r.url;
-    return `<div class="feed-row ${has ? "added" : ""}">
-      <div class="feed-info">
-        <div class="feed-title" dir="auto">${esc(title)}</div>
-        <div class="feed-meta">
-          <span class="feed-kind">${esc(kind)}</span>
-          <span class="feed-url" dir="ltr" title="${escAttr(r.url)}">${esc(r.url)}</span>
-          ${count ? `<span class="feed-count">· ${formatNum(count)} ${appLang === "fa" ? "خبر" : "items"}</span>` : ""}
-        </div>
-      </div>
-      ${has
-        ? `<span class="feed-added">✓ ${esc(t("added"))}</span>`
-        : `<button class="btn small" data-found='${escAttr(JSON.stringify({url: r.url, title: r.title}))}'>${esc(t("add"))}</button>`}
-    </div>`;
-  }).join("");
-
-  box.innerHTML = head + `<div class="feed-list">${items}</div>`;
-
-  const addAllBtn = document.getElementById("addAllFound");
-  if (addAllBtn){
-    addAllBtn.addEventListener("click", () => {
-      const tagsInput = $("#addTags");
-      const tags = (tagsInput && tagsInput.value.trim())
-        ? tagsInput.value.split(",").map(x => x.trim()).filter(Boolean)
-        : [];
-      if (tags.length) addTagsInputValue = "";
-      let added = 0;
-      for (const r of list){
-        if (sources.some(s => s.url === r.url)) continue;
-        const s = { url: r.url, title: r.title, tags };
-        addSource(s);
-        loadSource(s);
-        added++;
-      }
-      if (added){
-        toast(t("sourceAdded"), "ok");
-        renderSide();
-      }
-      /* Re-render list to show all as "Added" */
-      setTimeout(() => renderFoundFeeds(box, list, null), 0);
-    });
-  }
-}
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-found]"); if (!b) return;
   const s = JSON.parse(b.dataset.found);
@@ -3247,8 +3374,10 @@ document.addEventListener("click", e => {
 /* ============ Header actions ============ */
 $("#refreshBtn").addEventListener("click", refreshAll);
 $("#themeBtn").addEventListener("click", () => {
-  theme = theme === "dark" ? "light" : "dark";
+  /* Cycle: dark → light → auto → dark */
+  theme = theme === "dark" ? "light" : (theme === "light" ? "auto" : "dark");
   store.set("theme", theme);
+  toast(theme === "auto" ? t("themeAuto") : (theme === "dark" ? t("themeDark") : t("themeLight")));
   render();
 });
 $("#settingsBtn").addEventListener("click", openSettings);
@@ -3331,6 +3460,13 @@ document.addEventListener("keydown", e => {
     return;
   }
   if (typing) return;
+
+  /* Reader-mode navigation: J/K to go to next/prev article */
+  if (!$("#reader").hidden){
+    if (e.key === "j" || e.key === "J"){ e.preventDefault(); navigateReader(1); return; }
+    if (e.key === "k" || e.key === "K"){ e.preventDefault(); navigateReader(-1); return; }
+  }
+
   if (e.key === "/"){ e.preventDefault(); searchInput.focus(); searchInput.select(); return; }
   if (e.key === "r" || e.key === "R"){ e.preventDefault(); refreshAll(); return; }
   if (e.key === "t" || e.key === "T"){ e.preventDefault(); $("#themeBtn").click(); return; }
@@ -3340,6 +3476,23 @@ document.addEventListener("keydown", e => {
   if (e.key === "c" || e.key === "C"){ viewMode = "channel"; store.set("view", viewMode); render(); return; }
   if (e.key === "n" || e.key === "N"){ viewMode = "newspaper"; store.set("view", viewMode); render(); return; }
 });
+
+/* Navigate to next/prev article while in reader mode */
+function navigateReader(direction){
+  const items = filteredItems();
+  if (!items.length) return;
+  const currentIdx = items.findIndex(a => a.link === readerCurrentLink);
+  if (currentIdx === -1){
+    /* Not found in current list — open the first one */
+    if (items[0]) openReader(items[0].link);
+    return;
+  }
+  const newIdx = currentIdx + direction;
+  if (newIdx < 0 || newIdx >= items.length) return;
+  const next = items[newIdx];
+  if (!next) return;
+  openReader(next.link);
+}
 
 /* ============ Swipe-to-close drawer (mobile) ============ */
 (function setupSwipeClose(){
@@ -3392,6 +3545,7 @@ document.addEventListener("keydown", e => {
 
 /* ============ Init ============ */
 applyLang();
+applyTheme();
 setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
 render();
