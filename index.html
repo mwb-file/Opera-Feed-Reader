@@ -210,6 +210,67 @@ main{flex:1;padding-block:22px 80px;padding-inline:26px;min-width:0}
 [data-density="compact"] .card .im{width:200px}
 [data-density="compact"] .row .card .bd{height:130px}
 
+/* ============ CHANNEL VIEW ============ */
+.channel-list{
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--panel);
+  overflow:hidden;
+  margin-bottom:14px;
+}
+.ch-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;
+  border-bottom:1px solid var(--line);
+  text-decoration:none;color:inherit;cursor:pointer;
+  transition:background var(--t);
+  font-size:14px;
+}
+.ch-row:last-child{border-bottom:0}
+.ch-row:hover{background:var(--panel-2)}
+.ch-row.read .ch-title{color:var(--text-dim)}
+.ch-row.read .ch-dot{background:var(--mute);opacity:.4}
+.ch-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--blue);flex:none;
+}
+.ch-src{
+  font-size:11.5px;font-weight:600;color:var(--blue);
+  flex:none;max-width:150px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ch-title{
+  flex:1;min-width:0;
+  font-size:14px;font-weight:500;line-height:1.4;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text);
+}
+.ch-time{
+  font-size:11px;color:var(--mute);
+  flex:none;white-space:nowrap;
+}
+.ch-star{
+  width:26px;height:26px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--mute);font-size:14px;line-height:1;
+  background:transparent;border:0;cursor:pointer;
+  opacity:0;transition:opacity var(--t),color var(--t),background var(--t);
+  flex:none;
+}
+.ch-row:hover .ch-star{opacity:1}
+.ch-star:hover{background:var(--panel-hover);color:var(--text)}
+.ch-star.on{opacity:1;color:var(--star)}
+
+.channel .feed h3{margin-top:26px}
+.channel .feed h3:first-child{margin-top:4px}
+
+@media(max-width:640px){
+  .ch-src{display:none}
+  .ch-time{font-size:10px}
+  .ch-row{padding:10px 12px;gap:8px}
+  .ch-title{font-size:13px}
+}
+
 .end{text-align:center;color:var(--mute);font-size:11px;letter-spacing:.14em;margin:56px 0 30px;text-transform:uppercase}
 .end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
 
@@ -404,6 +465,7 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
         </div>
         <div class="seg" id="tg">
           <button data-v="list" id="tgList">☰</button>
+          <button data-v="channel" id="tgChannel">≡</button>
           <button data-v="grid" id="tgGrid">▩</button>
         </div>
       </div>
@@ -460,9 +522,7 @@ const store = {
 };
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
-/* ============================================================
-   i18n
-   ============================================================ */
+/* ============ i18n ============ */
 const LANGS = {
   fa: {
     dir: "rtl", name: "Persian", nativeName: "فارسی",
@@ -483,6 +543,7 @@ const LANGS = {
     sortOldest: "قدیمی‌ترین",
     viewList: "نمای لیستی",
     viewGrid: "نمای شبکه‌ای",
+    viewChannel: "نمای کانال خبری (فقط تیترها)",
     densCozy: "راحت",
     densCompact: "فشرده",
     saveLater: "ذخیره برای بعد",
@@ -523,8 +584,6 @@ const LANGS = {
     proxyPlaceholder: "http://localhost:8787/?url={url}",
     settingsTitle: "تنظیمات",
     language: "زبان",
-    languageFa: "فارسی",
-    languageEn: "English",
     theme: "تم",
     themeDark: "تاریک",
     themeLight: "روشن",
@@ -589,6 +648,7 @@ const LANGS = {
     sortOldest: "Oldest first",
     viewList: "List view",
     viewGrid: "Grid view",
+    viewChannel: "Channel view (headlines only)",
     densCozy: "Cozy",
     densCompact: "Compact",
     saveLater: "Save for later",
@@ -629,8 +689,6 @@ const LANGS = {
     proxyPlaceholder: "http://localhost:8787/?url={url}",
     settingsTitle: "Settings",
     language: "Language",
-    languageFa: "فارسی",
-    languageEn: "English",
     theme: "Theme",
     themeDark: "Dark",
     themeLight: "Light",
@@ -681,9 +739,7 @@ const LANGS = {
 let appLang = store.get("lang", "fa");
 if (!LANGS[appLang]) appLang = "en";
 
-/* ============================================================
-   Number formatting
-   ============================================================ */
+/* ============ Number formatting ============ */
 const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
 function toFaNum(v){
   return String(v).replace(/\d/g, d => FA_DIGITS[+d]);
@@ -698,9 +754,7 @@ function t(key, vars){
   if (vars && typeof s === "string"){
     for (const k in vars){
       const raw = vars[k];
-      const val = (appLang === "fa" && typeof raw === "number")
-        ? toFaNum(raw)
-        : String(raw);
+      const val = (appLang === "fa" && typeof raw === "number") ? toFaNum(raw) : String(raw);
       s = s.replace("{" + k + "}", val);
     }
   }
@@ -724,6 +778,7 @@ function applyLang(){
   const dK = $("#densCompact"); if (dK) dK.title = t("densCompact");
   const tL = $("#tgList"); if (tL) tL.title = t("viewList");
   const tG = $("#tgGrid"); if (tG) tG.title = t("viewGrid");
+  const tC = $("#tgChannel"); if (tC) tC.title = t("viewChannel");
   const bk = $("#rdBack"); if (bk){ bk.title = t("back"); bk.setAttribute("aria-label", t("back")); }
   const fD = $("#rdFontDec"); if (fD){ fD.title = t("smaller"); fD.setAttribute("aria-label", t("smaller")); }
   const fI = $("#rdFontInc"); if (fI){ fI.title = t("larger"); fI.setAttribute("aria-label", t("larger")); }
@@ -745,9 +800,7 @@ function setLang(id){
   if ($("#settingsDlg").open) fillSettings();
 }
 
-/* ============================================================
-   Fonts
-   ============================================================ */
+/* ============ Fonts ============ */
 const FONTS = [
   { id:"sahel",   label:"Sahel",      labelFa:"ساحل",     family:'"Sahel", "Tahoma", system-ui, sans-serif' },
   { id:"iransans",label:"IranSans",   labelFa:"ایران‌سنس", family:'"IRANSans", "Tahoma", system-ui, sans-serif' },
@@ -776,13 +829,12 @@ const CATALOG = [
 ];
 const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
 
-/* ============================================================
-   State
-   ============================================================ */
+/* ============ State ============ */
 let sources = store.get("sources", []);
 let articles = {};
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
+if (!["list","grid","channel"].includes(viewMode)) viewMode = "list";
 let density = store.get("density", "cozy");
 let sortMode = store.get("sort", "newest");
 let theme = store.get("theme", "dark");
@@ -797,9 +849,7 @@ let openInReader = store.get("openInReader", true);
 let prefetchOn = store.get("prefetchOn", true);
 let readerFontSize = store.get("readerFont", 17);
 
-/* ============================================================
-   Networking
-   ============================================================ */
+/* ============ Networking ============ */
 const customProxy = () => store.get("proxy", "");
 function proxies(){
   const list = [u => u,
@@ -831,9 +881,7 @@ function proxyImageUrls(url){
   return out;
 }
 
-/* ============================================================
-   URL / direction
-   ============================================================ */
+/* ============ URL / direction ============ */
 function resolveImgUrl(src, base){
   if (!src) return "";
   src = String(src).trim();
@@ -868,9 +916,7 @@ function detectDirection(text){
   return rtl >= ltr * 0.6 ? "rtl" : "ltr";
 }
 
-/* ============================================================
-   Parsing
-   ============================================================ */
+/* ============ Parsing ============ */
 function parseFeed(text){
   const doc = new DOMParser().parseFromString(text.trim(), "text/xml");
   if (doc.querySelector("parsererror")) return null;
@@ -922,10 +968,15 @@ function plain(html){
   const d = new DOMParser().parseFromString(html || "", "text/html");
   return (d.body.textContent || "").replace(/\s+/g, " ").trim();
 }
+/* جهت هر خبر را از محتوای خودش تشخیص میدهد (نه از زبان محیط) */
+function itemDir(a){
+  if (a.dir) return a.dir;
+  const sample = (a.title || "") + " " + plain(a.html || "").slice(0, 300);
+  a.dir = detectDirection(sample);
+  return a.dir;
+}
 
-/* ============================================================
-   Discovery
-   ============================================================ */
+/* ============ Discovery ============ */
 const looksFeed = t => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000));
 function normalizeUrl(s){
   s = s.trim();
@@ -980,9 +1031,7 @@ async function discover(input, onStep){
   return [...found.values()];
 }
 
-/* ============================================================
-   Images
-   ============================================================ */
+/* ============ Images ============ */
 const cssUrl = u => "url('" + String(u).replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
 const ic = store.get("ic", {}); let icT;
 function icSave(){
@@ -1085,9 +1134,7 @@ async function resolveItem(a){
   })();
 }
 
-/* ============================================================
-   Data
-   ============================================================ */
+/* ============ Data ============ */
 async function loadSource(s){
   try {
     const f = parseFeed(await fetchText(s.url));
@@ -1121,9 +1168,7 @@ function removeSource(url){
   render();
 }
 
-/* ============================================================
-   Saved / Read
-   ============================================================ */
+/* ============ Saved / Read ============ */
 const isRead = l => read.has(l);
 function markRead(l){ if (!read.has(l)){ read.add(l); store.set("read", [...read]); } }
 function markAllRead(){
@@ -1141,9 +1186,7 @@ function toggleSave(item){
   render();
 }
 
-/* ============================================================
-   Helpers
-   ============================================================ */
+/* ============ Helpers ============ */
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const escAttr = esc;
 function ago(ts){
@@ -1177,9 +1220,7 @@ function toast(msg, kind = ""){
   setTimeout(() => { el.classList.remove("show"); setTimeout(() => el.remove(), 300); }, 2600);
 }
 
-/* ============================================================
-   Font switching
-   ============================================================ */
+/* ============ Font switching ============ */
 function setFont(id){
   fontId = fontById(id).id;
   store.set("font", fontId);
@@ -1219,9 +1260,7 @@ function buildReaderFontMenu(){
   if (lbl) lbl.textContent = appLang === "fa" ? f.labelFa : f.label;
 }
 
-/* ============================================================
-   Article extraction
-   ============================================================ */
+/* ============ Article extraction ============ */
 const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL"]);
 const ALLOWED_ATTRS = new Set(["href","src","alt","title","colspan","rowspan","width","height","loading"]);
 function sanitizeTree(node, baseUrl){
@@ -1315,9 +1354,7 @@ function extractArticle(html, url){
   return {title: meta.title, image: meta.image, description: meta.description, siteName: meta.siteName, contentHTML: clone.innerHTML, contentText, direction};
 }
 
-/* ============================================================
-   Prefetch
-   ============================================================ */
+/* ============ Prefetch ============ */
 const prefetchCache = new Map();
 const PREFETCH_MAX = 40;
 function prefetch(link){
@@ -1349,21 +1386,19 @@ function schedulePrefetch(link){
 }
 function cancelPrefetch(){ clearTimeout(hoverTimer); hoverLink = null; }
 document.addEventListener("mouseover", e => {
-  const c = e.target.closest(".card[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
   if (c) schedulePrefetch(c.dataset.link);
 }, true);
 document.addEventListener("mouseout", e => {
-  const c = e.target.closest(".card[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
   if (c) cancelPrefetch();
 }, true);
 document.addEventListener("touchstart", e => {
-  const c = e.target.closest(".card[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
   if (c && prefetchOn) prefetch(c.dataset.link).catch(() => {});
 }, {passive: true});
 
-/* ============================================================
-   Reader mode
-   ============================================================ */
+/* ============ Reader mode ============ */
 const b64urlEncode = s => {
   const bytes = new TextEncoder().encode(s);
   let bin = ""; for (const b of bytes) bin += String.fromCharCode(b);
@@ -1511,9 +1546,7 @@ window.addEventListener("popstate", () => {
   }
 });
 
-/* ============================================================
-   Render: Sidebar
-   ============================================================ */
+/* ============ Render: Sidebar ============ */
 function unreadCount(srcUrl){
   const list = articles[srcUrl] || [];
   return list.filter(a => !isRead(a.link)).length;
@@ -1555,14 +1588,12 @@ function renderSide(){
     </a>`;
 }
 
-/* ============================================================
-   Render: Cards
-   ============================================================ */
+/* ============ Render: Cards ============ */
 function cardHtml(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
-  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${appLang}:${esc(a.link)}">
+  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${appLang}:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
     <div class="bd">
       <div class="meta">
@@ -1578,9 +1609,20 @@ function cardHtml(a){
   </a>`;
 }
 
-/* ============================================================
-   Render: Mosaic
-   ============================================================ */
+/* ============ Render: Channel row (headline only) ============ */
+function channelRowHtml(a){
+  const r = isRead(a.link), sv = isSaved(a.link);
+  const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
+  return `<a class="ch-row ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="ch:${appLang}:${esc(a.link)}">
+    <span class="ch-dot"></span>
+    <span class="ch-src" dir="auto">${esc(a.source)}</span>
+    <span class="ch-title" dir="auto">${esc(a.title)}</span>
+    <span class="ch-time">${esc(ago(a.date))}</span>
+    <span class="ch-star ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
+  </a>`;
+}
+
+/* ============ Render: Mosaic ============ */
 function mosaic(items){
   const h = l => l.map(cardHtml).join("");
   const takeB = i => {
@@ -1615,9 +1657,7 @@ function mosaic(items){
   return out;
 }
 
-/* ============================================================
-   Render: News
-   ============================================================ */
+/* ============ Render: News ============ */
 function filteredItems(){
   const scope = state.page === "saved"
     ? saved.slice()
@@ -1638,10 +1678,11 @@ function filteredItems(){
 }
 function renderNewsHTML(){
   const list0 = filteredItems();
-  const list = list0.filter(a => a.done !== false);
+  /* channel mode doesn't need images resolved → show items immediately */
+  const list = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
   const loading = state.page !== "saved" && (
     sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
-    list.length < list0.length
+    (viewMode !== "channel" && list.length < list0.length)
   );
   const cnt = $("#cnt");
   if (cnt) cnt.textContent = list.length ? t("articleCount", {n: list.length}) : "";
@@ -1661,8 +1702,16 @@ function renderNewsHTML(){
     if (last && last.g === g) last.items.push(a); else groups.push({g, items: [a]});
   }
   let out = `<div class="feed">`;
-  for (const G of groups)
-    out += `<h3>${esc(G.g)}</h3>` + (viewMode === "grid" ? mosaic(G.items) : G.items.map(cardHtml).join(""));
+  for (const G of groups){
+    out += `<h3>${esc(G.g)}</h3>`;
+    if (viewMode === "channel"){
+      out += `<div class="channel-list">` + G.items.map(channelRowHtml).join("") + `</div>`;
+    } else if (viewMode === "grid"){
+      out += mosaic(G.items);
+    } else {
+      out += G.items.map(cardHtml).join("");
+    }
+  }
   if (state.page === "news" && !state.src && !loading){
     const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
     if (recs.length){
@@ -1674,6 +1723,7 @@ function renderNewsHTML(){
 }
 const recImg = {};
 function hydrateRec(){
+  if (viewMode === "channel") return;   /* no tiles in channel mode */
   $$(".rtile").forEach(async el => {
     const u = el.dataset.u;
     if (!(u in recImg)) recImg[u] = (async () => {
@@ -1687,9 +1737,7 @@ function hydrateRec(){
   });
 }
 
-/* ============================================================
-   Render: Add sources
-   ============================================================ */
+/* ============ Render: Add sources ============ */
 function renderAddHTML(){
   const rec = CATALOG.map(c => {
     const has = sources.some(s => s.url === c.url);
@@ -1716,9 +1764,7 @@ function renderAddHTML(){
   </div>`;
 }
 
-/* ============================================================
-   Settings dialog
-   ============================================================ */
+/* ============ Settings dialog ============ */
 function fillSettings(){
   $("#setTitle").textContent = t("settingsTitle");
   $("#setDone").textContent = t("done");
@@ -1829,21 +1875,21 @@ function openSettings(){
   if (!$("#settingsDlg").open) $("#settingsDlg").showModal();
 }
 
-/* ============================================================
-   Render: main
-   ============================================================ */
+/* ============ Render: main ============ */
 function render(){
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.density = density;
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
   document.body.classList.toggle("grid", viewMode === "grid");
+  document.body.classList.toggle("channel", viewMode === "channel");
   document.documentElement.dataset.view = viewMode;
   renderSide();
   $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
   $$("#densSeg button").forEach(b => b.classList.toggle("on", b.dataset.dens === density));
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
   $("#tg").classList.toggle("hide", state.page === "add");
-  $("#densSeg").classList.toggle("hide", state.page === "add");
+  /* density does nothing in channel mode → hide it */
+  $("#densSeg").classList.toggle("hide", state.page === "add" || viewMode === "channel");
   $("#sortSeg").classList.toggle("hide", state.page === "add");
   const view = $("#view");
   const oldEls = new Map();
@@ -1874,8 +1920,8 @@ function render(){
     const oldEl = oldEls.get(key);
     if (!oldEl) return;
     if (oldEl.className !== newEl.className) return;
-    const os = oldEl.querySelector(".save-btn");
-    const ns = newEl.querySelector(".save-btn");
+    const os = oldEl.querySelector("[data-save]");
+    const ns = newEl.querySelector("[data-save]");
     if (os && ns){
       if (os.className !== ns.className) os.className = ns.className;
       const nsData = ns.getAttribute("data-save");
@@ -1883,6 +1929,9 @@ function render(){
       const nsTitle = ns.getAttribute("title");
       if (nsTitle) os.setAttribute("title", nsTitle);
     }
+    const newDir = newEl.getAttribute("dir");
+    if (newDir) oldEl.setAttribute("dir", newDir);
+    else oldEl.removeAttribute("dir");
     newEl.replaceWith(oldEl);
   });
   tmp.querySelectorAll(".card").forEach(el => {
@@ -1897,11 +1946,9 @@ function render(){
   after && after();
 }
 
-/* ============================================================
-   Events: clicks
-   ============================================================ */
+/* ============ Events: clicks ============ */
 document.addEventListener("click", e => {
-  const c = e.target.closest(".card[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
   if (!c) return;
   if (e.target.closest("[data-save]")) return;
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1951,7 +1998,7 @@ document.addEventListener("click", async e => {
   }
 });
 document.addEventListener("click", e => {
-  const c = e.target.closest(".card[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
   if (c && !e.target.closest("[data-save]")){
     markRead(c.dataset.link);
     c.classList.add("read");
@@ -1959,9 +2006,7 @@ document.addEventListener("click", e => {
   }
 }, true);
 
-/* ============================================================
-   Events: input / search
-   ============================================================ */
+/* ============ Events: input / search ============ */
 let searchTimer, seq = 0;
 const searchInput = $("#search");
 searchInput.addEventListener("input", () => {
@@ -2006,9 +2051,7 @@ document.addEventListener("click", e => {
   renderSide();
 });
 
-/* ============================================================
-   Header actions
-   ============================================================ */
+/* ============ Header actions ============ */
 $("#refreshBtn").addEventListener("click", refreshAll);
 $("#themeBtn").addEventListener("click", () => {
   theme = theme === "dark" ? "light" : "dark";
@@ -2017,17 +2060,13 @@ $("#themeBtn").addEventListener("click", () => {
 });
 $("#settingsBtn").addEventListener("click", openSettings);
 
-/* ============================================================
-   Auto refresh
-   ============================================================ */
+/* ============ Auto refresh ============ */
 function setupAuto(){
   clearInterval(autoTimer);
   if (autoMin > 0) autoTimer = setInterval(refreshAll, autoMin * 60000);
 }
 
-/* ============================================================
-   Keyboard shortcuts
-   ============================================================ */
+/* ============ Keyboard shortcuts ============ */
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#reader").hidden){
     e.preventDefault();
@@ -2046,11 +2085,10 @@ document.addEventListener("keydown", e => {
   if (e.key === "t" || e.key === "T"){ e.preventDefault(); $("#themeBtn").click(); return; }
   if (e.key === "g" || e.key === "G"){ viewMode = "grid"; store.set("view", viewMode); render(); return; }
   if (e.key === "l" || e.key === "L"){ viewMode = "list"; store.set("view", viewMode); render(); return; }
+  if (e.key === "c" || e.key === "C"){ viewMode = "channel"; store.set("view", viewMode); render(); return; }
 });
 
-/* ============================================================
-   PWA
-   ============================================================ */
+/* ============ PWA ============ */
 (function setupPWA(){
   const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#070b12"/><circle cx="256" cy="256" r="150" fill="none" stroke="#ff1b2d" stroke-width="72"/><circle cx="256" cy="256" r="52" fill="#ff1b2d" opacity=".22"/></svg>`;
   const iconUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgIcon);
@@ -2074,9 +2112,7 @@ document.addEventListener("keydown", e => {
   }
 })();
 
-/* ============================================================
-   Init
-   ============================================================ */
+/* ============ Init ============ */
 applyLang();
 setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
