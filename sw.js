@@ -25,10 +25,8 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
 
   const url = new URL(req.url);
-  // only touch same-origin requests
   if (url.origin !== location.origin) return;
 
-  // navigation + shell → network-first, offline fallback
   if (req.mode === "navigate" || SHELL.some(p => url.pathname.endsWith(p.replace("./", "")))) {
     e.respondWith(
       fetch(req)
