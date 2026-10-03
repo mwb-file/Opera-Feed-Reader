@@ -171,6 +171,41 @@ aside .grp button:hover{color:var(--blue)}
 .src-row:hover .mini{opacity:1}
 .src-row .mini:hover{background:var(--panel-hover);color:var(--text)}
 .src-row .mini.rm:hover{color:var(--red)}
+.src-row .mini.tag-edit{font-size:11px}
+.src-row .mini.tag-edit:hover{color:var(--blue)}
+
+/* Filter segment (all / unread) */
+#filterSeg button{font-size:13px;line-height:1}
+#filterSeg button[data-filter="unread"].on{background:var(--amber);color:#1a1a1a}
+#filterSeg button[data-filter="all"].on{background:var(--blue);color:#fff}
+
+/* Tag pills next to a source (shown in flat mode) */
+.tag-pills{display:flex;flex-wrap:wrap;gap:4px;padding-inline:6px;align-items:center;flex:none;max-width:140px;overflow:hidden}
+.tag-pill{font-size:10px;padding:1px 6px;border-radius:8px;background:var(--panel-2);color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Tag-link nav items (in sidebar Tags section) */
+.tag-link .ico{font-weight:700;opacity:.8}
+.tag-link.on .ico{opacity:1}
+
+/* Tag rename mini button inside a tag-link */
+.tag-link{position:relative}
+.tag-link .tag-ren{position:absolute;inset-inline-end:34px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:11px;border-radius:4px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--t),color var(--t)}
+.tag-link:hover .tag-ren{opacity:.7}
+.tag-link .tag-ren:hover{opacity:1;color:var(--blue);background:var(--panel-hover)}
+
+/* Source group (when grouped by tag in sidebar) */
+.src-grp{margin-block:4px}
+.src-grp > .src-grp-h{display:flex;align-items:center;gap:8px;padding:4px 10px 2px;color:var(--blue);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t)}
+.src-grp > .src-grp-h:hover{background:var(--panel-2)}
+.src-grp > .src-grp-h.muted{color:var(--mute);text-transform:none;font-weight:500;font-size:11px}
+.src-grp > .src-grp-h .ico{opacity:.7}
+
+/* Tags editor dialog */
+.tag-ed-source{font-weight:600;font-size:15px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line);direction:ltr}
+.tag-suggestions{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag-suggest{font-size:11px;padding:3px 9px;border-radius:10px;background:var(--blue-soft);color:var(--blue);border:1px solid transparent;cursor:pointer;transition:background var(--t),border-color var(--t)}
+.tag-suggest:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tag-help{color:var(--mute);font-size:11px;margin-top:10px;line-height:1.5}
 
 main{flex:1;padding-block:22px 80px;padding-inline:26px;min-width:0}
 
@@ -640,6 +675,10 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
         <span class="count" id="cnt"></span>
       </div>
       <div class="tact">
+        <div class="seg" id="filterSeg">
+          <button data-filter="all" id="filterAll">●</button>
+          <button data-filter="unread" id="filterUnread">○</button>
+        </div>
         <div class="seg" id="sortSeg">
           <button data-sort="newest" id="sortNewest">↓</button>
           <button data-sort="oldest" id="sortOldest">↑</button>
@@ -695,6 +734,12 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
   <div class="dlg-head"><h3 id="setTitle"></h3><button class="close" data-close>✕</button></div>
   <div class="dlg-body" id="setBody"></div>
   <div class="dlg-foot"><button class="btn" data-close id="setDone"></button></div>
+</dialog>
+
+<dialog id="tagsDlg">
+  <div class="dlg-head"><h3 id="tagsDlgTitle">Tags</h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-body" id="tagsBody"></div>
+  <div class="dlg-foot"><button class="btn" data-close id="tagsDone"></button></div>
 </dialog>
 
 <script>
@@ -813,7 +858,23 @@ const LANGS = {
     feedsRefreshed: "فیدها به‌روز شد",
     articleCount: "{n} خبر",
     sourceWord: "منبع",
-    mySourcesTitle: "منابع من"
+    mySourcesTitle: "منابع من",
+    filterUnread: "خوانده‌نشده",
+    filterAll: "همه",
+    filterUnreadToggle: "فیلتر خوانده‌نشده (U)",
+    tagsTitle: "برچسب‌ها",
+    untagged: "بدون برچسب",
+    allSources: "همه‌ی منابع",
+    editTags: "ویرایش برچسب‌ها",
+    tagsLabel: "برچسب‌ها (با کاما جدا کنید)",
+    tagsPlaceholder: "tech, news, persian",
+    tagsSaved: "برچسب‌ها ذخیره شد",
+    tagRename: "تغییر نام برچسب",
+    renameTagPrompt: "نام جدید برای «{name}»:",
+    addSourceTagsLabel: "برچسب‌ها (اختیاری)",
+    addSourceTagsHelp: "هر منبع می‌تواند چند برچسب داشته باشد. با کاما جدا کنید: tech, news",
+    groupByTags: "گروه‌بندی بر اساس برچسب",
+    groupByFlat: "نمای ساده"
   },
   en: {
     dir: "ltr", name: "English", nativeName: "English",
@@ -919,7 +980,23 @@ const LANGS = {
     feedsRefreshed: "Feeds refreshed",
     articleCount: "{n} article(s)",
     sourceWord: "Source",
-    mySourcesTitle: "My sources"
+    mySourcesTitle: "My sources",
+    filterUnread: "Unread",
+    filterAll: "All",
+    filterUnreadToggle: "Filter unread (U)",
+    tagsTitle: "Tags",
+    untagged: "Untagged",
+    allSources: "All sources",
+    editTags: "Edit tags",
+    tagsLabel: "Tags (comma separated)",
+    tagsPlaceholder: "tech, news, persian",
+    tagsSaved: "Tags saved",
+    tagRename: "Rename tag",
+    renameTagPrompt: "New name for \"{name}\":",
+    addSourceTagsLabel: "Tags (optional)",
+    addSourceTagsHelp: "A source can have multiple tags. Separate with commas: tech, news",
+    groupByTags: "Group by tag",
+    groupByFlat: "Flat list"
   }
 };
 
@@ -962,6 +1039,8 @@ function applyLang(){
   const sb = $("#settingsBtn"); if (sb){ sb.title = t("settings"); sb.setAttribute("aria-label", t("settings")); }
   const sN = $("#sortNewest"); if (sN) sN.title = t("sortNewest");
   const sO = $("#sortOldest"); if (sO) sO.title = t("sortOldest");
+  const fA = $("#filterAll"); if (fA){ fA.title = t("filterAll"); fA.setAttribute("aria-label", t("filterAll")); }
+  const fU = $("#filterUnread"); if (fU){ fU.title = t("filterUnreadToggle"); fU.setAttribute("aria-label", t("filterUnread")); }
   const dC = $("#densCozy"); if (dC) dC.title = t("densCozy");
   const dK = $("#densCompact"); if (dK) dK.title = t("densCompact");
   const tL = $("#tgList"); if (tL) tL.title = t("viewList");
@@ -1030,6 +1109,9 @@ let fontId = store.get("font", "sahel");
 let saved = store.get("saved", []);
 let read = new Set(store.get("read", []));
 let searchQuery = "";
+let filterUnread = store.get("filterUnread", false);
+let activeTag = store.get("activeTag", null);  // null = all sources
+let groupByTags = store.get("groupByTags", true);
 let autoMin = store.get("autoRefresh", 0);
 let autoTimer = null;
 let refreshing = false;
@@ -1338,8 +1420,44 @@ async function refreshAll(){
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
-  sources.push({url: s.url, title: s.title});
+  const tags = Array.isArray(s.tags)
+    ? s.tags.filter(Boolean).map(x => String(x).trim()).filter(Boolean)
+    : [];
+  sources.push({url: s.url, title: s.title, tags});
   store.set("sources", sources);
+}
+function setSourceTags(url, tags){
+  const s = sources.find(x => x.url === url);
+  if (!s) return;
+  const clean = (Array.isArray(tags) ? tags : String(tags).split(","))
+    .map(x => String(x).trim())
+    .filter(Boolean);
+  s.tags = [...new Set(clean)];
+  store.set("sources", sources);
+}
+function allTags(){
+  const set = new Set();
+  for (const s of sources) for (const tag of (s.tags || [])) set.add(tag);
+  return [...set].sort((a, b) => a.localeCompare(b, appLang === "fa" ? "fa" : "en"));
+}
+function sourcesForActiveTag(){
+  if (!groupByTags || activeTag == null) return sources;
+  return sources.filter(s => (s.tags || []).includes(activeTag));
+}
+function renameTag(oldName, newName){
+  newName = String(newName || "").trim();
+  if (!newName || newName === oldName) return;
+  if (sources.some(s => (s.tags || []).includes(newName))){
+    toast(t("renameTagPrompt", {name: newName}), "err");
+    return;
+  }
+  for (const s of sources){
+    if (!s.tags) continue;
+    const i = s.tags.indexOf(oldName);
+    if (i >= 0) s.tags[i] = newName;
+  }
+  store.set("sources", sources);
+  if (activeTag === oldName){ activeTag = newName; store.set("activeTag", activeTag); }
 }
 function removeSource(url){
   sources = sources.filter(s => s.url !== url); delete articles[url];
@@ -1755,9 +1873,82 @@ function totalUnread(){
 function renderSide(){
   const allUnread = totalUnread();
   const savedCount = saved.length;
+  const tags = allTags();
   const el = $("#side");
+
+  /* Tags section: only show if groupByTags enabled and at least one tag exists */
+  const tagsHTML = (groupByTags && tags.length) ? `
+    <div class="grp">
+      <span>${esc(t("tagsTitle"))}</span>
+      ${tags.length ? `<button data-rmtag-toggle title="${esc(t("groupByFlat"))}">⊟</button>` : ""}
+    </div>
+    <a class="nav-link tag-link ${activeTag==null&&state.page==="news"&&!state.src?"on":""}" data-tag="" title="${esc(t("allSources"))}">
+      <span class="ico">◇</span><span class="lbl">${esc(t("allSources"))}</span>
+      ${allUnread ? `<span class="badge">${formatNum(allUnread)}</span>` : ""}
+    </a>
+    ${tags.map(tag => {
+      const tagUnread = sources
+        .filter(s => (s.tags || []).includes(tag))
+        .reduce((n, s) => n + unreadCount(s.url), 0);
+      return `<a class="nav-link tag-link ${activeTag===tag?"on":""}" data-tag="${esc(tag)}" title="${esc(tag)}">
+        <span class="ico">#</span>
+        <span class="lbl" dir="auto">${esc(tag)}</span>
+        <button class="mini tag-ren" data-renametag="${esc(tag)}" title="${esc(t("tagRename"))}" aria-label="${esc(t("tagRename"))}">✎</button>
+        ${tagUnread ? `<span class="badge">${formatNum(tagUnread)}</span>` : ""}
+      </a>`;
+    }).join("")}
+  ` : (sources.length ? `
+    <div class="grp">
+      <span>${esc(t("tagsTitle"))}</span>
+      <button data-rmtag-toggle title="${esc(t("groupByTags"))}">⊞</button>
+    </div>
+  ` : "");
+
+  const srcRow = s => {
+    const u = unreadCount(s.url);
+    const tagPills = (s.tags || []).length && !groupByTags
+      ? `<span class="tag-pills">${s.tags.map(tg => `<span class="tag-pill">#${esc(tg)}</span>`).join("")}</span>`
+      : "";
+    return `<div class="src-row">
+      <a class="nav-link ${state.src===s.url?"on":""}" data-src="${esc(s.url)}" title="${esc(s.title)}">
+        <span class="ico">•</span>
+        <span class="lbl" dir="auto">${esc(s.title)}</span>
+        ${u ? `<span class="badge">${formatNum(u)}</span>` : ""}
+      </a>
+      ${tagPills}
+      <button class="mini tag-edit" data-edittags="${esc(s.url)}" title="${esc(t("editTags"))}" aria-label="${esc(t("editTags"))}">🏷</button>
+      <button class="mini" data-rsrc="${esc(s.url)}" title="${esc(t("refreshSource"))}">⟳</button>
+      <button class="mini rm" data-rm="${esc(s.url)}" title="${esc(t("removeSource"))}">✕</button>
+    </div>`;
+  };
+
+  /* When grouping by tags, sources list is shown grouped under each tag */
+  let sourcesHTML;
+  if (groupByTags && tags.length){
+    sourcesHTML = tags.map(tag => {
+      const tagSrcs = sources.filter(s => (s.tags || []).includes(tag));
+      const untagged = false;
+      return `<div class="src-grp">
+        <div class="src-grp-h" data-tag="${esc(tag)}">
+          <span class="ico">#</span><span class="lbl" dir="auto">${esc(tag)}</span>
+        </div>
+        ${tagSrcs.map(srcRow).join("")}
+      </div>`;
+    }).join("");
+    /* Also append untagged sources if any */
+    const untaggedSrcs = sources.filter(s => !s.tags || !s.tags.length);
+    if (untaggedSrcs.length){
+      sourcesHTML += `<div class="src-grp">
+        <div class="src-grp-h muted"><span class="ico">∅</span><span class="lbl">${esc(t("untagged"))}</span></div>
+        ${untaggedSrcs.map(srcRow).join("")}
+      </div>`;
+    }
+  } else {
+    sourcesHTML = sources.map(srcRow).join("");
+  }
+
   el.innerHTML =
-    `<a class="nav-link ${state.page==="news"&&!state.src?"on":""}" data-go="all">
+    `<a class="nav-link ${state.page==="news"&&!state.src&&!filterUnread&&activeTag==null?"on":""}" data-go="all">
       <span class="ico">◆</span><span class="lbl">${esc(t("top50"))}</span>
       ${allUnread ? `<span class="badge">${formatNum(allUnread)}</span>` : ""}
     </a>
@@ -1765,22 +1956,12 @@ function renderSide(){
       <span class="ico">★</span><span class="lbl">${esc(t("savedItems"))}</span>
       ${savedCount ? `<span class="badge">${formatNum(savedCount)}</span>` : ""}
     </a>
+    ${tagsHTML}
     <div class="grp">
       <span>${esc(t("mySources"))}</span>
       ${sources.length ? `<button data-read-all>${esc(t("markAllRead"))}</button>` : ""}
     </div>` +
-    sources.map(s => {
-      const u = unreadCount(s.url);
-      return `<div class="src-row">
-        <a class="nav-link ${state.src===s.url?"on":""}" data-src="${esc(s.url)}" title="${esc(s.title)}">
-          <span class="ico">•</span>
-          <span class="lbl" dir="auto">${esc(s.title)}</span>
-          ${u ? `<span class="badge">${formatNum(u)}</span>` : ""}
-        </a>
-        <button class="mini" data-rsrc="${esc(s.url)}" title="${esc(t("refreshSource"))}">⟳</button>
-        <button class="mini rm" data-rm="${esc(s.url)}" title="${esc(t("removeSource"))}">✕</button>
-      </div>`;
-    }).join("") +
+    sourcesHTML +
     `<a class="nav-link ${state.page==="add"?"on":""}" data-go="add" style="margin-top:6px">
       <span class="ico">＋</span><span class="lbl">${esc(t("addSources"))}</span>
     </a>`;
@@ -1857,10 +2038,24 @@ function mosaic(items){
 
 /* ============ Render: News ============ */
 function filteredItems(){
+  let srcList;
+  if (state.page === "saved"){
+    srcList = sources;  // not used directly; saved items have their own list
+  } else if (state.src){
+    srcList = sources.filter(s => s.url === state.src);
+  } else {
+    // Apply tag filter
+    srcList = (groupByTags && activeTag != null)
+      ? sources.filter(s => (s.tags || []).includes(activeTag))
+      : sources;
+  }
   const scope = state.page === "saved"
     ? saved.slice()
-    : sources.filter(s => !state.src || s.url === state.src).flatMap(s => articles[s.url] || []);
+    : srcList.flatMap(s => articles[s.url] || []);
   let items = scope.filter(a => a.title);
+  if (filterUnread){
+    items = items.filter(a => !isRead(a.link));
+  }
   const q = searchQuery.trim().toLowerCase();
   if (q){
     items = items.filter(a =>
@@ -1950,6 +2145,11 @@ function renderAddHTML(){
     <p class="sub">${esc(t("addSourceSubtitle"))}</p>
     <input id="q" class="search" style="padding-inline:16px" placeholder="${esc(t("addSourcePlaceholder"))}" autocomplete="off" spellcheck="false">
     <div class="found" id="found"></div>
+    <div class="set add-tags-block">
+      <label>${esc(t("addSourceTagsLabel"))}</label>
+      <p class="sub">${esc(t("addSourceTagsHelp"))}</p>
+      <input id="addTags" class="search" style="padding-inline:16px" placeholder="${esc(t("tagsPlaceholder"))}" autocomplete="off" spellcheck="false" value="${escAttr(addTagsInputValue || "")}">
+    </div>
     <div class="box rec"><h4>${esc(t("recommended"))}</h4>${rec}
       <div class="actions"><button class="btn" data-go="news">${esc(t("startReading"))}</button></div>
     </div>
@@ -1960,6 +2160,7 @@ function renderAddHTML(){
     </div>
   </div>`;
 }
+let addTagsInputValue = "";
 
 /* ============ Settings dialog ============ */
 function fillSettings(){
@@ -2031,7 +2232,7 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", () => {
     if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW"].forEach(store.del);
+    ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags"].forEach(store.del);
     location.reload();
   });
   $("#opmlExport").addEventListener("click", () => {
@@ -2039,7 +2240,11 @@ function fillSettings(){
 <opml version="1.0">
   <head><title>Personal news subscriptions</title></head>
   <body>
-    ${sources.map(s => `<outline type="rss" text="${escAttr(s.title)}" title="${escAttr(s.title)}" xmlUrl="${escAttr(s.url)}"/>`).join("\n    ")}
+    ${sources.map(s => {
+      const tags = (s.tags || []).filter(Boolean);
+      const catAttr = tags.length ? ` category="${escAttr(tags.join(","))}"` : "";
+      return `<outline type="rss" text="${escAttr(s.title)}" title="${escAttr(s.title)}" xmlUrl="${escAttr(s.url)}"${catAttr}/>`;
+    }).join("\n    ")}
   </body>
 </opml>`;
     const a = document.createElement("a");
@@ -2059,7 +2264,9 @@ function fillSettings(){
         const url = o.getAttribute("xmlUrl");
         if (!url || sources.some(s => s.url === url)) continue;
         const title = o.getAttribute("text") || o.getAttribute("title") || new URL(url).hostname;
-        addSource({url, title}); n++;
+        const cat = o.getAttribute("category") || "";
+        const tags = cat.split(",").map(x => x.trim()).filter(Boolean);
+        addSource({url, title, tags}); n++;
       }
       $("#settingsDlg").close();
       toast(n ? t("importedSources", {n}) : t("noNewSources"), n ? "ok" : "");
@@ -2070,6 +2277,55 @@ function fillSettings(){
 function openSettings(){
   fillSettings();
   if (!$("#settingsDlg").open) $("#settingsDlg").showModal();
+}
+
+/* ============ Tags editor dialog ============ */
+function openTagsEditor(s){
+  const dlg = $("#tagsDlg");
+  $("#tagsDlgTitle").textContent = t("editTags");
+  $("#tagsDone").textContent = t("done");
+  const existing = (s.tags || []).join(", ");
+  const allExisting = allTags();
+  const suggestions = allExisting.filter(tg => !(s.tags || []).includes(tg));
+  $("#tagsBody").innerHTML = `
+    <div class="set" style="margin-top:0">
+      <div class="tag-ed-source" dir="auto">${esc(s.title)}</div>
+      <label>${esc(t("tagsLabel"))}</label>
+      <input id="tagsInput" class="search" style="padding-inline:14px" placeholder="${esc(t("tagsPlaceholder"))}" value="${escAttr(existing)}" autocomplete="off" spellcheck="false">
+      ${suggestions.length ? `<div class="tag-suggestions">
+        <span class="meta">${esc(t("tagsTitle"))}:</span>
+        ${suggestions.map(tg => `<button class="tag-suggest" data-tag-add="${esc(tg)}">#${esc(tg)}</button>`).join(" ")}
+      </div>` : ""}
+      <p class="tag-help">${esc(t("addSourceTagsHelp"))}</p>
+    </div>`;
+  if (!dlg.open) dlg.showModal();
+  const input = $("#tagsInput");
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+  $("#tagsBody").querySelectorAll("[data-tag-add]").forEach(b => {
+    b.addEventListener("click", () => {
+      const tag = b.dataset.tagAdd;
+      const cur = input.value.split(",").map(x => x.trim()).filter(Boolean);
+      if (!cur.includes(tag)){
+        cur.push(tag);
+        input.value = cur.join(", ");
+      }
+      b.remove();
+    });
+  });
+  // Save on close (when user clicks Done)
+  const saveHandler = () => {
+    setSourceTags(s.url, input.value);
+    toast(t("tagsSaved"), "ok");
+    renderSide();
+  };
+  // Save handler attached to Done button
+  const doneBtn = $("#tagsDone");
+  const onDone = () => {
+    saveHandler();
+    doneBtn.removeEventListener("click", onDone);
+  };
+  doneBtn.addEventListener("click", onDone);
 }
 
 /* ============ Render: main ============ */
@@ -2084,9 +2340,12 @@ function render(){
   $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
   $$("#densSeg button").forEach(b => b.classList.toggle("on", b.dataset.dens === density));
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
+  $$("#filterSeg button").forEach(b => b.classList.toggle("on",
+    b.dataset.filter === "unread" ? filterUnread : !filterUnread));
   $("#tg").classList.toggle("hide", state.page === "add");
   $("#densSeg").classList.toggle("hide", state.page === "add" || viewMode === "channel");
   $("#sortSeg").classList.toggle("hide", state.page === "add");
+  $("#filterSeg").classList.toggle("hide", state.page === "add");
   const view = $("#view");
   const oldEls = new Map();
   view.querySelectorAll("[data-recycle]").forEach(el => {
@@ -2096,8 +2355,13 @@ function render(){
   if (state.page === "add"){
     $("#ttl").textContent = t("addSourceTitle");
     const keep = $("#q") && $("#q").value;
+    const keepTags = $("#addTags") && $("#addTags").value;
+    if (keepTags != null) addTagsInputValue = keepTags;
     html = renderAddHTML();
-    after = () => { if (keep){ const q = $("#q"); if (q) q.value = keep; } };
+    after = () => {
+      if (keep){ const q = $("#q"); if (q) q.value = keep; }
+      if (addTagsInputValue){ const at = $("#addTags"); if (at) at.value = addTagsInputValue; }
+    };
   } else if (state.page === "saved"){
     $("#ttl").textContent = t("savedItems");
     html = renderNewsHTML();
@@ -2160,7 +2424,7 @@ document.addEventListener("click", async e => {
     try { toggleSave(JSON.parse(saveEl.dataset.save)); } catch {}
     return;
   }
-  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-found],[data-read-all],[data-close]");
+  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-read-all],[data-close]");
   if (!t2) return;
   const d = t2.dataset;
   if ("close" in d){ t2.closest("dialog")?.close(); return; }
@@ -2169,6 +2433,7 @@ document.addEventListener("click", async e => {
   if (d.v){ viewMode = d.v; store.set("view", viewMode); return render(); }
   if (d.dens){ density = d.dens; store.set("density", density); return render(); }
   if (d.sort){ sortMode = d.sort; store.set("sort", sortMode); return render(); }
+  if (d.filter){ filterUnread = (d.filter === "unread"); store.set("filterUnread", filterUnread); return render(); }
   if (d.go){
     state.page = d.go === "add" ? "add" : (d.go === "saved" ? "saved" : "news");
     state.src = null;
@@ -2179,8 +2444,46 @@ document.addEventListener("click", async e => {
   if (d.src){ state.page = "news"; state.src = d.src; closeDrawerIfMobile(); return render(); }
   if (d.rm){ removeSource(d.rm); closeDrawerIfMobile(); return; }
   if (d.rsrc){ const s = sources.find(x => x.url === d.rsrc); if (s){ delete articles[s.url]; loadSource(s).then(render); toast(t("refreshing")); } return; }
+  if (d.tag != null){
+    activeTag = (activeTag === d.tag) ? null : d.tag;
+    store.set("activeTag", activeTag);
+    state.src = null;
+    if (state.page === "add" || state.page === "saved") state.page = "news";
+    closeDrawerIfMobile();
+    return render();
+  }
+  if (d.edittags){
+    const s = sources.find(x => x.url === d.edittags);
+    if (s) openTagsEditor(s);
+    return;
+  }
+  if (d.renametag){
+    const oldName = d.renametag;
+    const newName = prompt(t("renameTagPrompt", {name: oldName}), oldName);
+    if (newName != null){
+      renameTag(oldName, newName);
+      renderSide();
+      if (state.src) render();
+    }
+    return;
+  }
+  if ("rmtagToggle" in d){
+    groupByTags = !groupByTags;
+    store.set("groupByTags", groupByTags);
+    if (!groupByTags) activeTag = null;
+    store.set("activeTag", activeTag);
+    return render();
+  }
   if ("readAll" in d){ markAllRead(); closeDrawerIfMobile(); return; }
-  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); if (c){ addSource(c); loadSource(c).then(render); toast(t("sourceAdded"), "ok"); renderSide(); } return; }
+  if (d.addrec){ const c0 = CATALOG.find(x => x.url === d.addrec); if (c0){
+    const tagsInput = $("#addTags");
+    const tags = (tagsInput && tagsInput.value.trim())
+      ? tagsInput.value.split(",").map(x => x.trim()).filter(Boolean)
+      : [];
+    if (tags.length){ addTagsInputValue = ""; }
+    const c = tags.length ? {...c0, tags} : c0;
+    addSource(c); loadSource(c).then(render); toast(t("sourceAdded"), "ok"); renderSide();
+  } return; }
   if (d.prev){
     const c = CATALOG.find(x => x.url === d.prev);
     if (!c) return;
@@ -2219,6 +2522,7 @@ $("#searchClear").addEventListener("click", () => {
 });
 document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
+  if (e.target.id === "addTags"){ addTagsInputValue = e.target.value; return; }
   if (e.target.id !== "q") return;
   clearTimeout(timer);
   const v = e.target.value, my = ++seq, box = $("#found");
@@ -2245,6 +2549,11 @@ document.addEventListener("input", e => {
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-found]"); if (!b) return;
   const s = JSON.parse(b.dataset.found);
+  const tagsInput = $("#addTags");
+  if (tagsInput && tagsInput.value.trim()){
+    s.tags = tagsInput.value.split(",").map(x => x.trim()).filter(Boolean);
+    addTagsInputValue = "";
+  }
   addSource(s); loadSource(s).then(render);
   b.outerHTML = `<span class="meta" style="color:var(--green)">${esc(t("added"))}</span>`;
   renderSide();
@@ -2340,6 +2649,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "/"){ e.preventDefault(); searchInput.focus(); searchInput.select(); return; }
   if (e.key === "r" || e.key === "R"){ e.preventDefault(); refreshAll(); return; }
   if (e.key === "t" || e.key === "T"){ e.preventDefault(); $("#themeBtn").click(); return; }
+  if (e.key === "u" || e.key === "U"){ e.preventDefault(); filterUnread = !filterUnread; store.set("filterUnread", filterUnread); render(); return; }
   if (e.key === "g" || e.key === "G"){ viewMode = "grid"; store.set("view", viewMode); render(); return; }
   if (e.key === "l" || e.key === "L"){ viewMode = "list"; store.set("view", viewMode); render(); return; }
   if (e.key === "c" || e.key === "C"){ viewMode = "channel"; store.set("view", viewMode); render(); return; }
