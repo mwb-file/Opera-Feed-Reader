@@ -207,6 +207,99 @@ aside .grp button:hover{color:var(--blue)}
 .tag-suggest:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
 .tag-help{color:var(--mute);font-size:11px;margin-top:10px;line-height:1.5}
 
+/* ============ Newspaper view ============ */
+.newspaper{max-width:1100px;margin:0 auto}
+.np-row-main{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-bottom:24px}
+@media(max-width:760px){.np-row-main{grid-template-columns:1fr}}
+.np-hero{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;color:inherit;text-decoration:none;position:relative;transition:transform var(--t),border-color var(--t),box-shadow var(--t);min-height:300px}
+.np-hero:hover{border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-2px)}
+.np-hero.read{opacity:.6}
+.np-hero-img{height:200px;background:var(--panel-2) center/cover no-repeat;border-bottom:1px solid var(--line)}
+.np-hero-body{padding:18px 22px 22px;position:relative}
+.np-hero-title{font-size:24px;font-weight:700;line-height:1.35;margin:6px 0 10px;letter-spacing:-.2px}
+.np-hero-summary{color:var(--text-dim);font-size:14px;line-height:1.7;margin:0;max-height:80px;overflow:hidden}
+.np-meta{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute);flex-wrap:wrap}
+.np-meta b{color:var(--blue);font-weight:500}
+.np-meta .tm{color:var(--mute)}
+
+.np-sec-col{display:flex;flex-direction:column;gap:14px}
+.np-sec{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;color:inherit;text-decoration:none;padding:0;transition:transform var(--t),border-color var(--t),box-shadow var(--t);min-height:120px;position:relative}
+.np-sec:hover{border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-1px)}
+.np-sec.read{opacity:.6}
+.np-sec.no-img{padding:14px}
+.np-sec-img{width:110px;flex:none;background:var(--panel-2) center/cover no-repeat}
+.np-sec-body{padding:12px 14px;flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;position:relative}
+.np-sec-title{font-size:15px;font-weight:600;line-height:1.4;margin:2px 0 0;color:var(--text)}
+.np-hero .save-btn,.np-sec .save-btn{position:absolute;inset-inline-end:10px;top:10px;width:28px;height:28px;border-radius:50%;background:var(--panel-2);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:14px;opacity:0;transition:opacity var(--t),background var(--t),color var(--t)}
+.np-hero:hover .save-btn,.np-sec:hover .save-btn{opacity:1}
+.np-hero .save-btn:hover,.np-sec .save-btn:hover{background:var(--panel-hover);color:var(--star)}
+.np-hero .save-btn.on,.np-sec .save-btn.on{opacity:1;color:var(--star)}
+
+.np-headlines{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:24px}
+.np-headlines h4{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 10px}
+.np-head{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;font-size:13px;transition:background var(--t);border-radius:4px;position:relative}
+.np-head:last-child{border-bottom:0}
+.np-head:hover{background:var(--panel-2)}
+.np-head.read{opacity:.55}
+.np-head-src{font-size:11px;color:var(--blue);font-weight:500;flex:none;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.np-head-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.np-head-time{font-size:11px;color:var(--mute);flex:none}
+.np-head .save-btn{width:24px;height:24px;font-size:12px;color:var(--text-dim);background:transparent;display:flex;align-items:center;justify-content:center;flex:none;opacity:0;transition:opacity var(--t)}
+.np-head:hover .save-btn{opacity:.8}
+.np-head .save-btn:hover{color:var(--star);opacity:1}
+.np-head .save-btn.on{opacity:1;color:var(--star)}
+@media(max-width:760px){
+  .np-hero{min-height:auto}
+  .np-hero-img{height:160px}
+  .np-hero-title{font-size:19px}
+  .np-sec-img{width:90px}
+  .np-head-title{white-space:normal}
+}
+
+/* ============ Stats panel ============ */
+.stats-page{max-width:920px;margin:0 auto}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;border-inline-start:3px solid var(--accent);transition:transform var(--t),box-shadow var(--t)}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-card.hero{padding:22px;background:linear-gradient(135deg,var(--panel) 0%,var(--panel-2) 100%)}
+.stat-val{font-size:30px;font-weight:700;color:var(--accent);letter-spacing:-.5px;line-height:1.1}
+.stat-card.hero .stat-val{font-size:36px}
+.stat-lbl{font-size:11px;color:var(--mute);margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.stat-sub{font-size:11px;color:var(--text-dim);margin-top:4px}
+.stats-section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;margin-bottom:18px}
+.stats-section h3{font-size:14px;font-weight:600;margin:0 0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stat-streak-pill{font-size:12px;padding:2px 10px;border-radius:11px;background:var(--amber);color:#1a1a1a;font-weight:600}
+
+.streak-bar{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;height:120px;align-items:end;margin-bottom:8px}
+.streak-day{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;position:relative;cursor:default}
+.streak-bar-fill{width:100%;max-width:24px;border-radius:4px 4px 0 0;background:var(--panel-2);transition:height var(--t)}
+.streak-day.low .streak-bar-fill{background:var(--blue-2)}
+.streak-day.mid .streak-bar-fill{background:var(--blue)}
+.streak-day.high .streak-bar-fill{background:var(--green)}
+.streak-day.empty .streak-bar-fill{background:var(--line-2)}
+.streak-day-num{font-size:9px;color:var(--text-dim);margin-top:3px;line-height:1}
+.streak-day-lbl{font-size:9px;color:var(--mute);margin-top:2px;line-height:1}
+.stats-foot{font-size:11px;color:var(--mute);margin:8px 0 0;line-height:1.5}
+
+.top-sources{display:flex;flex-direction:column;gap:8px}
+.ts-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:6px;transition:background var(--t)}
+.ts-row:hover{background:var(--panel-2)}
+.ts-rank{width:22px;height:22px;border-radius:50%;background:var(--panel-2);color:var(--text-dim);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex:none}
+.ts-row:first-child .ts-rank{background:var(--amber);color:#1a1a1a}
+.ts-row:nth-child(2) .ts-rank{background:var(--text-dim);color:var(--bg)}
+.ts-row:nth-child(3) .ts-rank{background:var(--blue-2);color:#fff}
+.ts-name{flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ts-bar{flex:none;width:120px;height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.ts-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue-2),var(--blue));border-radius:3px;transition:width var(--t)}
+.ts-count{flex:none;font-size:12px;color:var(--text-dim);font-weight:500;min-width:30px;text-align:end}
+.empty-row{padding:20px;text-align:center;color:var(--mute);font-size:13px}
+@media(max-width:560px){
+  .stat-val{font-size:24px}
+  .stat-card.hero .stat-val{font-size:28px}
+  .ts-bar{width:80px}
+  .streak-bar{height:100px}
+}
+
 main{flex:1;padding-block:22px 80px;padding-inline:26px;min-width:0}
 
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap}
@@ -691,6 +784,7 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
           <button data-v="list" id="tgList">☰</button>
           <button data-v="channel" id="tgChannel">≡</button>
           <button data-v="grid" id="tgGrid">▩</button>
+          <button data-v="newspaper" id="tgNews">📰</button>
         </div>
       </div>
     </div>
@@ -874,7 +968,25 @@ const LANGS = {
     addSourceTagsLabel: "برچسب‌ها (اختیاری)",
     addSourceTagsHelp: "هر منبع می‌تواند چند برچسب داشته باشد. با کاما جدا کنید: tech, news",
     groupByTags: "گروه‌بندی بر اساس برچسب",
-    groupByFlat: "نمای ساده"
+    groupByFlat: "نمای ساده",
+    viewNewspaper: "نمای روزنامه (فقط تیترهای بزرگ)",
+    statsTitle: "آمار خواندن",
+    statsTotalRead: "کل خوانده‌شده‌ها",
+    statsToday: "امروز",
+    statsThisWeek: "این هفته",
+    statsSaved: "ذخیره‌شده‌ها",
+    statsSources: "منابع",
+    statsUnread: "خوانده‌نشده",
+    statsStreak: "دنباله‌ی روزانه",
+    days: "روز",
+    statsDays14: "۱۴ روز گذشته",
+    statsTopSources: "برترین منابع",
+    statsReadCount: "{n} خوانده‌شده",
+    statsNoReadHistory: "هنوز چیزی نخوانده‌اید",
+    statsNoStreak: "بی‌دنباله",
+    statsBestStreak: "بهترین دنباله: {n} روز",
+    statsArticle: "{n} خبر",
+    statsAvgPerDay: "میانگین: {n} خبر در روز"
   },
   en: {
     dir: "ltr", name: "English", nativeName: "English",
@@ -996,7 +1108,25 @@ const LANGS = {
     addSourceTagsLabel: "Tags (optional)",
     addSourceTagsHelp: "A source can have multiple tags. Separate with commas: tech, news",
     groupByTags: "Group by tag",
-    groupByFlat: "Flat list"
+    groupByFlat: "Flat list",
+    viewNewspaper: "Newspaper view (large headlines)",
+    statsTitle: "Reading stats",
+    statsTotalRead: "Total read",
+    statsToday: "Today",
+    statsThisWeek: "This week",
+    statsSaved: "Saved",
+    statsSources: "Sources",
+    statsUnread: "Unread",
+    statsStreak: "Daily streak",
+    days: "days",
+    statsDays14: "Last 14 days",
+    statsTopSources: "Top sources",
+    statsReadCount: "{n} read",
+    statsNoReadHistory: "You haven't read anything yet",
+    statsNoStreak: "No streak",
+    statsBestStreak: "Best streak: {n} days",
+    statsArticle: "{n} article(s)",
+    statsAvgPerDay: "Average: {n} per day"
   }
 };
 
@@ -1046,6 +1176,7 @@ function applyLang(){
   const tL = $("#tgList"); if (tL) tL.title = t("viewList");
   const tG = $("#tgGrid"); if (tG) tG.title = t("viewGrid");
   const tC = $("#tgChannel"); if (tC) tC.title = t("viewChannel");
+  const tN = $("#tgNews"); if (tN) tN.title = t("viewNewspaper");
   const bk = $("#rdBack"); if (bk){ bk.title = t("back"); bk.setAttribute("aria-label", t("back")); }
   const fD = $("#rdFontDec"); if (fD){ fD.title = t("smaller"); fD.setAttribute("aria-label", t("smaller")); }
   const fI = $("#rdFontInc"); if (fI){ fI.title = t("larger"); fI.setAttribute("aria-label", t("larger")); }
@@ -1101,7 +1232,7 @@ let sources = store.get("sources", []);
 let articles = {};
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
-if (!["list","grid","channel"].includes(viewMode)) viewMode = "list";
+if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
 let density = store.get("density", "cozy");
 let sortMode = store.get("sort", "newest");
 let theme = store.get("theme", "dark");
@@ -1112,6 +1243,26 @@ let searchQuery = "";
 let filterUnread = store.get("filterUnread", false);
 let activeTag = store.get("activeTag", null);  // null = all sources
 let groupByTags = store.get("groupByTags", true);
+/* readLog: { link: {ts, source, title} } — kept in sync with `read` Set for backward-compat */
+let readLog = store.get("readLog", {});
+/* migrate: ensure every entry in `read` has a readLog entry */
+{
+  let dirty = false;
+  for (const link of read){
+    if (!readLog[link]){
+      readLog[link] = {ts: 0, source: "", title: ""};
+      dirty = true;
+    }
+  }
+  /* prune: keep most recent 1000 */
+  const keys = Object.keys(readLog);
+  if (keys.length > 1000){
+    keys.sort((a, b) => (readLog[b].ts || 0) - (readLog[a].ts || 0));
+    for (const k of keys.slice(1000)) delete readLog[k];
+    dirty = true;
+  }
+  if (dirty) store.set("readLog", readLog);
+}
 let autoMin = store.get("autoRefresh", 0);
 let autoTimer = null;
 let refreshing = false;
@@ -1469,11 +1620,42 @@ function removeSource(url){
 
 /* ============ Saved / Read ============ */
 const isRead = l => read.has(l);
-function markRead(l){ if (!read.has(l)){ read.add(l); store.set("read", [...read]); } }
+function findItemForLink(link){
+  for (const url in articles){
+    const it = articles[url].find(a => a.link === link);
+    if (it) return it;
+  }
+  return saved.find(s => s.link === link) || null;
+}
+function markRead(l, item){
+  if (read.has(l)){
+    /* still update timestamp if entry exists with ts=0 (migrated) */
+    if (readLog[l] && !readLog[l].ts){
+      readLog[l].ts = Date.now();
+      store.set("readLog", readLog);
+    }
+    return;
+  }
+  read.add(l);
+  store.set("read", [...read]);
+  const meta = item || findItemForLink(l) || {};
+  readLog[l] = {
+    ts: Date.now(),
+    source: meta.source || readLog[l]?.source || "",
+    title: meta.title || readLog[l]?.title || ""
+  };
+  store.set("readLog", readLog);
+}
 function markAllRead(){
   sources.filter(s => !state.src || s.url === state.src)
-    .forEach(s => (articles[s.url] || []).forEach(a => { read.add(a.link); }));
+    .forEach(s => (articles[s.url] || []).forEach(a => {
+      if (!read.has(a.link)){
+        read.add(a.link);
+        readLog[a.link] = {ts: Date.now(), source: a.source || "", title: a.title || ""};
+      }
+    }));
   store.set("read", [...read]);
+  store.set("readLog", readLog);
   render();
 }
 const isSaved = l => saved.some(s => s.link === l);
@@ -1691,15 +1873,15 @@ function schedulePrefetch(link){
 }
 function cancelPrefetch(){ clearTimeout(hoverTimer); hoverLink = null; }
 document.addEventListener("mouseover", e => {
-  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (c) schedulePrefetch(c.dataset.link);
 }, true);
 document.addEventListener("mouseout", e => {
-  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (c) cancelPrefetch();
 }, true);
 document.addEventListener("touchstart", e => {
-  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (c && prefetchOn) prefetch(c.dataset.link).catch(() => {});
 }, {passive: true});
 
@@ -1956,6 +2138,9 @@ function renderSide(){
       <span class="ico">★</span><span class="lbl">${esc(t("savedItems"))}</span>
       ${savedCount ? `<span class="badge">${formatNum(savedCount)}</span>` : ""}
     </a>
+    <a class="nav-link ${state.page==="stats"?"on":""}" data-go="stats">
+      <span class="ico">📊</span><span class="lbl">${esc(t("statsTitle"))}</span>
+    </a>
     ${tagsHTML}
     <div class="grp">
       <span>${esc(t("mySources"))}</span>
@@ -2069,6 +2254,76 @@ function filteredItems(){
   if (sortMode === "oldest") items.reverse();
   return items;
 }
+
+/* ============ Render: Newspaper layout ============ */
+function newspaperHero(a){
+  if (!a) return "";
+  const r = isRead(a.link), sv = isSaved(a.link);
+  const rtm = readingTime(a.html);
+  const heroImg = (a.ok && a.img) ? `<div class="np-hero-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
+  return `<a class="np-hero ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-hero:${appLang}:${esc(a.link)}">
+    ${heroImg}
+    <div class="np-hero-body">
+      <div class="np-meta">
+        <b dir="auto">${esc(a.source)}</b>
+        <span class="tm">· ${esc(ago(a.date))}</span>
+        ${rtm ? `<span class="tm">· ${esc(t("minRead",{n:rtm}))}</span>` : ""}
+      </div>
+      <h2 class="np-hero-title" dir="auto">${esc(a.title)}</h2>
+      <p class="np-hero-summary" dir="auto">${esc(plain(a.html).slice(0, 320))}</p>
+      <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
+    </div>
+  </a>`;
+}
+function newspaperSecondary(a){
+  if (!a) return "";
+  const r = isRead(a.link), sv = isSaved(a.link);
+  const rtm = readingTime(a.html);
+  const img = (a.ok && a.img) ? `<div class="np-sec-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
+  return `<a class="np-sec ${r?"read":""} ${a.ok?"has-img":"no-img"}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-sec:${appLang}:${esc(a.link)}">
+    ${img}
+    <div class="np-sec-body">
+      <div class="np-meta">
+        <b dir="auto">${esc(a.source)}</b>
+        <span class="tm">· ${esc(ago(a.date))}</span>
+      </div>
+      <h3 class="np-sec-title" dir="auto">${esc(a.title)}</h3>
+      ${rtm ? `<span class="tm">${esc(t("minRead",{n:rtm}))}</span>` : ""}
+      <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
+    </div>
+  </a>`;
+}
+function newspaperHeadline(a){
+  if (!a) return "";
+  const r = isRead(a.link), sv = isSaved(a.link);
+  return `<a class="np-head ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-head:${appLang}:${esc(a.link)}">
+    <span class="np-head-src" dir="auto">${esc(a.source)}</span>
+    <span class="np-head-title" dir="auto">${esc(a.title)}</span>
+    <span class="np-head-time">${esc(ago(a.date))}</span>
+    <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
+  </a>`;
+}
+function newspaperHTML(items){
+  if (!items.length) return "";
+  /* split: 1 hero, up to 3 secondary, rest as headlines */
+  const withImg = items.filter(a => a.ok);
+  const noImg = items.filter(a => !a.ok);
+  /* prefer hero with image */
+  const hero = items[0];
+  const rest = items.slice(1);
+  const secondaries = rest.slice(0, 3);
+  const headlines = rest.slice(3);
+  return `<div class="newspaper">
+    <div class="np-row-main">
+      ${newspaperHero(hero)}
+      ${secondaries.length ? `<div class="np-sec-col">${secondaries.map(newspaperSecondary).join("")}</div>` : ""}
+    </div>
+    ${headlines.length ? `<div class="np-headlines">
+      <h4>${esc(t("groupRecent"))}</h4>
+      ${headlines.map(newspaperHeadline).join("")}
+    </div>` : ""}
+  </div>`;
+}
 function renderNewsHTML(){
   const list0 = filteredItems();
   const list = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
@@ -2098,6 +2353,8 @@ function renderNewsHTML(){
     out += `<h3>${esc(G.g)}</h3>`;
     if (viewMode === "channel"){
       out += `<div class="channel-list">` + G.items.map(channelRowHtml).join("") + `</div>`;
+    } else if (viewMode === "newspaper"){
+      out += newspaperHTML(G.items);
     } else if (viewMode === "grid"){
       out += mosaic(G.items);
     } else {
@@ -2127,6 +2384,145 @@ function hydrateRec(){
     const bg = "linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.75))," + cssUrl(img);
     if (el.style.backgroundImage !== bg) el.style.backgroundImage = bg;
   });
+}
+
+/* ============ Render: Stats panel ============ */
+function startOfDay(ts){
+  const d = new Date(ts || Date.now());
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+function computeStats(){
+  const today0 = startOfDay(Date.now());
+  const week0 = today0 - 6 * 864e5;  /* last 7 days including today */
+  const days14 = today0 - 13 * 864e5; /* last 14 days including today */
+  let today = 0, thisWeek = 0, last14 = [];
+  for (let i = 0; i < 14; i++){
+    last14.push({date: today0 - i * 864e5, count: 0});
+  }
+  const sourceCounts = {};
+  let total = 0, totalTsSum = 0, totalWithTs = 0;
+  for (const link in readLog){
+    const e = readLog[link];
+    total++;
+    if (e.ts){
+      totalTsSum += e.ts;
+      totalWithTs++;
+      if (e.ts >= today0) today++;
+      if (e.ts >= week0) thisWeek++;
+      for (const d of last14){
+        if (e.ts >= d.date && e.ts < d.date + 864e5){ d.count++; break; }
+      }
+      if (e.source){
+        sourceCounts[e.source] = (sourceCounts[e.source] || 0) + 1;
+      }
+    }
+  }
+  /* streak: consecutive days up to today with count >= 1 */
+  let streak = 0, bestStreak = 0, curStreak = 0;
+  for (let i = 0; i < 14; i++){
+    if (last14[i].count > 0){
+      curStreak++;
+      if (i === 0) streak = curStreak;  /* keep updating streak while consecutive from today */
+      else if (i > 0 && last14[i - 1].count > 0) {
+        if (streak === 0) streak = 1;
+        /* keep going */
+      }
+    } else {
+      if (i === 0) streak = 0;
+      if (curStreak > bestStreak) bestStreak = curStreak;
+      curStreak = 0;
+    }
+  }
+  if (curStreak > bestStreak) bestStreak = curStreak;
+  /* Recompute streak properly: count from today backwards */
+  streak = 0;
+  for (let i = 0; i < 14; i++){
+    if (last14[i].count > 0) streak++;
+    else break;
+  }
+  const topSources = Object.entries(sourceCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([source, n]) => ({source, n}));
+  return {
+    total, today, thisWeek,
+    last14: last14.slice().reverse(), /* oldest first for chart */
+    topSources,
+    streak, bestStreak,
+    avgPerDay: totalWithTs ? Math.round(totalWithTs / 14 * 10) / 10 : 0,
+    savedCount: saved.length,
+    sourcesCount: sources.length,
+    unreadCount: totalUnread()
+  };
+}
+function renderStatsHTML(){
+  const s = computeStats();
+  const max14 = Math.max(1, ...s.last14.map(d => d.count));
+  const fmtDay = ts => {
+    const d = new Date(ts);
+    const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+    const faDays = ["ی", "د", "س", "چ", "پ", "ج", "ش"];
+    const idx = d.getDay();
+    return appLang === "fa" ? faDays[idx] : dayNames[idx];
+  };
+  const fmtDate = ts => {
+    const d = new Date(ts);
+    return appLang === "fa"
+      ? toFaNum(d.getDate()) + "/" + toFaNum(d.getMonth() + 1)
+      : d.getDate() + "/" + (d.getMonth() + 1);
+  };
+  const statCard = (label, value, color = "var(--blue)") => `
+    <div class="stat-card" style="--accent:${color}">
+      <div class="stat-val">${formatNum(value)}</div>
+      <div class="stat-lbl">${esc(label)}</div>
+    </div>`;
+  const heroStatCard = (label, value, color = "var(--blue)", sub = "") => `
+    <div class="stat-card hero" style="--accent:${color}">
+      <div class="stat-val">${formatNum(value)}</div>
+      <div class="stat-lbl">${esc(label)}</div>
+      ${sub ? `<div class="stat-sub">${esc(sub)}</div>` : ""}
+    </div>`;
+  const topHTML = s.topSources.length
+    ? s.topSources.map((ts, i) => {
+        const pct = Math.round(ts.n / s.total * 100);
+        return `<div class="ts-row">
+          <span class="ts-rank">${formatNum(i + 1)}</span>
+          <span class="ts-name" dir="auto">${esc(ts.source)}</span>
+          <div class="ts-bar"><div class="ts-bar-fill" style="width:${pct}%"></div></div>
+          <span class="ts-count">${formatNum(ts.n)}</span>
+        </div>`;
+      }).join("")
+    : `<div class="empty-row">${esc(t("statsNoReadHistory"))}</div>`;
+  return `<div class="stats-page">
+    <div class="stats-row">
+      ${heroStatCard(t("statsTotalRead"), s.total, "var(--blue)")}
+      ${statCard(t("statsToday"), s.today, "var(--green)")}
+      ${statCard(t("statsThisWeek"), s.thisWeek, "var(--amber)")}
+      ${statCard(t("statsSaved"), s.savedCount, "var(--star)")}
+      ${statCard(t("statsSources"), s.sourcesCount, "var(--blue-2)")}
+      ${statCard(t("statsUnread"), s.unreadCount, "var(--red)")}
+    </div>
+    <div class="stats-section">
+      <h3>${esc(t("statsStreak"))} <span class="stat-streak-pill">${formatNum(s.streak)} ${esc(t("days"))}</span></h3>
+      <div class="streak-bar">
+        ${s.last14.map(d => {
+          const h = Math.round(d.count / max14 * 100);
+          const cls = d.count === 0 ? "empty" : (h < 30 ? "low" : (h < 70 ? "mid" : "high"));
+          return `<div class="streak-day ${cls}" title="${esc(fmtDate(d.date))}: ${formatNum(d.count)}">
+            <div class="streak-bar-fill" style="height:${Math.max(4, h)}%"></div>
+            <div class="streak-day-num">${formatNum(d.count) || "·"}</div>
+            <div class="streak-day-lbl">${esc(fmtDay(d.date))}</div>
+          </div>`;
+        }).join("")}
+      </div>
+      <p class="stats-foot">${esc(t("statsDays14"))} · ${esc(t("statsAvgPerDay", {n: s.avgPerDay}))} · ${esc(t("statsBestStreak", {n: s.bestStreak}))}</p>
+    </div>
+    <div class="stats-section">
+      <h3>${esc(t("statsTopSources"))}</h3>
+      <div class="top-sources">${topHTML}</div>
+    </div>
+  </div>`;
 }
 
 /* ============ Render: Add sources ============ */
@@ -2232,7 +2628,7 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", () => {
     if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags"].forEach(store.del);
+    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags"].forEach(store.del);
     location.reload();
   });
   $("#opmlExport").addEventListener("click", () => {
@@ -2335,6 +2731,7 @@ function render(){
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
   document.body.classList.toggle("grid", viewMode === "grid");
   document.body.classList.toggle("channel", viewMode === "channel");
+  document.body.classList.toggle("newspaper", viewMode === "newspaper");
   document.documentElement.dataset.view = viewMode;
   renderSide();
   $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
@@ -2342,10 +2739,10 @@ function render(){
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
   $$("#filterSeg button").forEach(b => b.classList.toggle("on",
     b.dataset.filter === "unread" ? filterUnread : !filterUnread));
-  $("#tg").classList.toggle("hide", state.page === "add");
-  $("#densSeg").classList.toggle("hide", state.page === "add" || viewMode === "channel");
-  $("#sortSeg").classList.toggle("hide", state.page === "add");
-  $("#filterSeg").classList.toggle("hide", state.page === "add");
+  $("#tg").classList.toggle("hide", state.page === "add" || state.page === "stats");
+  $("#densSeg").classList.toggle("hide", state.page === "add" || state.page === "stats" || viewMode === "channel" || viewMode === "newspaper");
+  $("#sortSeg").classList.toggle("hide", state.page === "add" || state.page === "stats");
+  $("#filterSeg").classList.toggle("hide", state.page === "add" || state.page === "stats");
   const view = $("#view");
   const oldEls = new Map();
   view.querySelectorAll("[data-recycle]").forEach(el => {
@@ -2366,6 +2763,10 @@ function render(){
     $("#ttl").textContent = t("savedItems");
     html = renderNewsHTML();
     after = hydrateRec;
+  } else if (state.page === "stats"){
+    $("#ttl").textContent = t("statsTitle");
+    html = renderStatsHTML();
+    after = null;
   } else {
     $("#ttl").textContent = state.src
       ? (sources.find(s => s.url === state.src) || {}).title || t("sourceWord")
@@ -2408,7 +2809,7 @@ function render(){
 
 /* ============ Events: clicks ============ */
 document.addEventListener("click", e => {
-  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (!c) return;
   if (e.target.closest("[data-save]")) return;
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -2435,6 +2836,12 @@ document.addEventListener("click", async e => {
   if (d.sort){ sortMode = d.sort; store.set("sort", sortMode); return render(); }
   if (d.filter){ filterUnread = (d.filter === "unread"); store.set("filterUnread", filterUnread); return render(); }
   if (d.go){
+    if (d.go === "stats"){
+      state.page = "stats";
+      state.src = null;
+      closeDrawerIfMobile();
+      return render();
+    }
     state.page = d.go === "add" ? "add" : (d.go === "saved" ? "saved" : "news");
     state.src = null;
     closeDrawerIfMobile();
@@ -2500,7 +2907,7 @@ document.addEventListener("click", async e => {
   }
 });
 document.addEventListener("click", e => {
-  const c = e.target.closest(".card[data-link], .ch-row[data-link]");
+  const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link]");
   if (c && !e.target.closest("[data-save]")){
     markRead(c.dataset.link);
     c.classList.add("read");
@@ -2653,6 +3060,7 @@ document.addEventListener("keydown", e => {
   if (e.key === "g" || e.key === "G"){ viewMode = "grid"; store.set("view", viewMode); render(); return; }
   if (e.key === "l" || e.key === "L"){ viewMode = "list"; store.set("view", viewMode); render(); return; }
   if (e.key === "c" || e.key === "C"){ viewMode = "channel"; store.set("view", viewMode); render(); return; }
+  if (e.key === "n" || e.key === "N"){ viewMode = "newspaper"; store.set("view", viewMode); render(); return; }
 });
 
 /* ============ Swipe-to-close drawer (mobile) ============ */
