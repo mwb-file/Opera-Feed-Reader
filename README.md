@@ -1,5 +1,7 @@
 # Personal news — Feed Reader
 
+python3 -m http.server 8000
+
 یک وب‌اپ تک‌فایلی برای خواندن فیدهای RSS و Atom، با ظاهری مدرن و الهام‌گرفته از صفحه‌ی **Personal news** مرورگر اپرا.
 کل برنامه داخل یک فایل `index.html` است (HTML + CSS + JavaScript خالص، بدون وابستگی و بدون build).
 
