@@ -1,47 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-density="cozy">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Personal news</title>
 <style>
-:root{--bg:#02050b;--panel:#2b323b;--panel2:#343c47;--line:#1c222b;--text:#e9edf2;--mute:#8c97a5;--blue:#3c9bff;--red:#ff1b2d}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",system-ui,sans-serif;min-height:100vh}
-header{height:69px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 20px}
-.logo{width:30px;height:30px;border:5px solid var(--red);border-radius:50%;position:relative}
-.logo:after{content:"";position:absolute;inset:-1px 6px;border:3px solid #fff0;background:none}
-header h1{font-size:17px;font-weight:400;margin:0}
-.layout{display:flex;min-height:calc(100vh - 70px)}
-aside{width:230px;border-right:1px solid var(--line);padding:26px 18px;flex:none}
-aside a{display:block;color:var(--text);text-decoration:none;padding:6px 0;cursor:pointer;font-size:13px}
-aside a:hover{color:var(--blue)}aside a.on{color:var(--blue)}
-aside .grp{margin:26px 0 4px;color:var(--blue);font-size:13px;cursor:default}
-aside .src{padding-left:12px;display:flex;justify-content:space-between;gap:6px;align-items:center}
-aside .src span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-aside .src button{opacity:0;background:none;border:0;color:var(--mute);cursor:pointer;font-size:15px}
-aside .src:hover button{opacity:1}
-main{flex:1;padding:26px 20px 60px;min-width:0}
-.top{display:flex;justify-content:space-between;align-items:center}
-.top h2{font-size:16px;font-weight:400;margin:0}
-.toggle{display:flex;border-radius:16px;overflow:hidden;border:0;background:#2b323b}
-.toggle button{width:40px;height:32px;border:0;background:none;color:#fff;cursor:pointer}
-.toggle button.on{background:var(--blue)}
-.feed{max-width:860px;margin:40px auto 0}
-.feed h3{font-size:15px;font-weight:400;margin:38px 0 14px}
-.card{display:flex;background:var(--panel);border:1px solid #39424e;margin-bottom:16px;color:inherit;text-decoration:none;height:auto;min-height:156px;overflow:hidden}
-.card .bd>*{flex-shrink:0}
-.card:hover{background:var(--panel2)}
-.card .im{width:248px;flex:none;background:#1a1f27 center/cover}
-.card .bd{padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:6px}
-.meta{font-size:12px;color:var(--mute)}.meta b{color:var(--blue);font-weight:400}
-.card .t{font-size:16px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card .s{color:var(--mute);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:auto}
-.grid .feed{max-width:1220px}
+:root{
+  --bg:#070b12;--bg-soft:#0b1119;
+  --panel:#121a26;--panel-2:#18222f;--panel-hover:#1e2a3a;
+  --line:#1f2a3a;--line-2:#2a3648;
+  --text:#e9eef7;--text-dim:#b0bccd;--mute:#6c7a90;
+  --blue:#4da3ff;--blue-2:#2f88e0;--blue-soft:rgba(77,163,255,.14);
+  --red:#ff4d6a;--green:#3ddc97;--amber:#ffbe4d;--star:#ffce4d;
+  --shadow:0 4px 24px rgba(0,0,0,.35);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.4);
+  --radius:12px;--radius-sm:8px;
+  --t:.2s cubic-bezier(.4,0,.2,1);
+  --header-h:60px;
+  --header-bg:rgba(7,11,18,.82);
+  --skeleton:linear-gradient(90deg,#141c28 0%,#1c2836 50%,#141c28 100%);
+}
+[data-theme="light"]{
+  --bg:#f4f7fb;--bg-soft:#eaeff7;
+  --panel:#ffffff;--panel-2:#f2f5fa;--panel-hover:#e8eef8;
+  --line:#e2e8f0;--line-2:#d0d8e4;
+  --text:#0f1826;--text-dim:#45526a;--mute:#7b8a9e;
+  --blue:#1573e6;--blue-2:#0a5dc0;--blue-soft:rgba(21,115,230,.1);
+  --shadow:0 4px 20px rgba(30,50,90,.08);
+  --shadow-sm:0 1px 2px rgba(30,50,90,.06);
+  --header-bg:rgba(244,247,251,.88);
+  --skeleton:linear-gradient(90deg,#eef2f8 0%,#e0e7f1 50%,#eef2f8 100%);
+}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font:14px/1.5 "Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--t),color var(--t);
+  min-height:100vh;
+}
+button{font-family:inherit}
+input,select{font-family:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:50;
+  height:var(--header-h);
+  display:flex;align-items:center;gap:16px;
+  padding:0 18px;
+  background:var(--header-bg);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--line);
+  transition:background var(--t),border-color var(--t);
+}
+.brand{display:flex;align-items:center;gap:10px;flex:none}
+.logo{
+  width:26px;height:26px;border-radius:50%;
+  border:4px solid var(--red);position:relative;
+  box-shadow:0 0 0 2px rgba(255,27,45,.12);
+}
+.logo::after{
+  content:"";position:absolute;inset:3px;
+  border-radius:50%;background:var(--red);opacity:.15;
+}
+header h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.2px;white-space:nowrap}
+@media(max-width:640px){header h1{display:none}}
+
+.search-wrap{
+  flex:1;max-width:520px;position:relative;margin:0 auto;
+  display:flex;align-items:center;
+}
+.search{
+  width:100%;height:36px;
+  border-radius:18px;border:1px solid var(--line-2);
+  background:var(--bg-soft);color:var(--text);
+  padding:0 38px 0 36px;font-size:13px;outline:none;
+  transition:border-color var(--t),background var(--t),box-shadow var(--t);
+}
+.search::placeholder{color:var(--mute)}
+.search:focus{
+  border-color:var(--blue);
+  background:var(--panel);
+  box-shadow:0 0 0 3px var(--blue-soft);
+}
+.search-icon{
+  position:absolute;left:12px;color:var(--mute);
+  font-size:15px;pointer-events:none;line-height:1;
+}
+.search-clear{
+  position:absolute;right:8px;width:22px;height:22px;border-radius:50%;
+  border:0;background:var(--panel-2);color:var(--text-dim);cursor:pointer;
+  font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;
+}
+.search-clear:hover{background:var(--panel-hover);color:var(--text)}
+
+.head-actions{display:flex;gap:4px;flex:none}
+.icon-btn{
+  width:36px;height:36px;border-radius:10px;border:0;
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:background var(--t),color var(--t),transform var(--t);
+}
+.icon-btn:hover{background:var(--panel-2);color:var(--text)}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn.on{color:var(--blue);background:var(--blue-soft)}
+.icon-btn.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ LAYOUT ============ */
+.layout{display:flex;min-height:calc(100vh - var(--header-h))}
+aside{
+  width:250px;flex:none;
+  border-right:1px solid var(--line);
+  padding:20px 12px 30px;
+  position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+aside::-webkit-scrollbar{width:6px}
+aside::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
+
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:var(--radius-sm);
+  color:var(--text-dim);text-decoration:none;cursor:pointer;
+  font-size:13px;transition:background var(--t),color var(--t);
+  user-select:none;
+}
+.nav-link:hover{background:var(--panel-2);color:var(--text)}
+.nav-link.on{background:var(--blue-soft);color:var(--blue);font-weight:500}
+.nav-link .ico{width:16px;text-align:center;font-size:13px;opacity:.9}
+.nav-link .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-link .badge{
+  font-size:11px;padding:1px 7px;border-radius:9px;
+  background:var(--panel-2);color:var(--text-dim);font-weight:500;
+}
+.nav-link.on .badge{background:rgba(77,163,255,.2);color:var(--blue)}
+
+aside .grp{
+  margin:20px 10px 6px;color:var(--mute);
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;justify-content:space-between;align-items:center;
+}
+aside .grp button{
+  background:none;border:0;color:var(--mute);cursor:pointer;
+  font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:0;
+}
+aside .grp button:hover{color:var(--blue)}
+
+.src-row{
+  display:flex;align-items:center;gap:4px;
+  border-radius:var(--radius-sm);
+  transition:background var(--t);
+}
+.src-row:hover{background:var(--panel-2)}
+.src-row .nav-link{flex:1;background:transparent!important}
+.src-row .nav-link:hover{background:transparent}
+.src-row .mini{
+  width:24px;height:24px;border-radius:6px;border:0;
+  background:transparent;color:var(--mute);cursor:pointer;
+  font-size:13px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity var(--t),background var(--t),color var(--t);
+}
+.src-row:hover .mini{opacity:1}
+.src-row .mini:hover{background:var(--panel-hover);color:var(--text)}
+.src-row .mini.rm:hover{color:var(--red)}
+
+main{flex:1;padding:22px 26px 80px;min-width:0}
+
+/* ============ TOP BAR ============ */
+.top{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:16px;margin-bottom:8px;flex-wrap:wrap;
+}
+.title-wrap{display:flex;align-items:baseline;gap:10px;min-width:0}
+.top h2{font-size:19px;font-weight:600;margin:0;letter-spacing:-.2px}
+.count{font-size:12px;color:var(--mute)}
+.tact{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.seg{
+  display:flex;padding:3px;border-radius:10px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.seg button{
+  min-width:32px;height:28px;padding:0 8px;border:0;border-radius:7px;
+  background:transparent;color:var(--text-dim);cursor:pointer;
+  font-size:13px;transition:background var(--t),color var(--t);
+}
+.seg button:hover{color:var(--text)}
+.seg button.on{background:var(--blue);color:#fff}
+.seg.hide{display:none}
+
+/* ============ FEED ============ */
+.feed{max-width:920px;margin:28px auto 0}
+.feed h3{
+  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mute);margin:34px 0 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.feed h3::after{
+  content:"";flex:1;height:1px;background:var(--line);
+}
+.feed h3:first-child{margin-top:6px}
+
+.card{
+  display:flex;background:var(--panel);
+  border:1px solid var(--line);
+  margin-bottom:14px;color:inherit;text-decoration:none;
+  height:160px;overflow:hidden;position:relative;
+  border-radius:var(--radius);
+  opacity:1;
+  /* NOTE: opacity added so entrance transition works */
+  transition:
+    transform var(--t),
+    border-color var(--t),
+    background var(--t),
+    box-shadow var(--t),
+    opacity .28s ease;
+  /* no keyframe animation — avoids re-firing on recycled nodes */
+}
+/* cards that are being inserted fresh get this class for one frame */
+.card.enter{opacity:0;transform:translateY(6px)}
+.card:hover{
+  background:var(--panel-2);
+  border-color:var(--line-2);
+  box-shadow:var(--shadow);
+  transform:translateY(-2px);
+}
+.card.read{opacity:.62}
+.card.read .t{color:var(--text-dim)}
+.card .im{
+  width:250px;flex:none;
+  background:var(--panel-2) center/cover no-repeat;
+  position:relative;
+}
+.card .bd{
+  padding:14px 18px;min-width:0;flex:1;
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;
+}
+.meta{font-size:11.5px;color:var(--mute);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.meta b{color:var(--blue);font-weight:600}
+.meta .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--blue);
+  display:inline-block;flex:none;
+}
+.card.read .meta .dot{background:var(--mute);opacity:.5}
+.card .t{
+  font-size:15.5px;font-weight:600;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  letter-spacing:-.1px;
+}
+.card .s{
+  color:var(--mute);font-size:13px;line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  margin-top:auto;
+}
+.save-btn{
+  position:absolute;top:10px;right:10px;
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--mute);cursor:pointer;font-size:16px;line-height:1;
+  background:transparent;border:0;
+  opacity:0;transition:opacity var(--t),color var(--t),background var(--t),transform var(--t);
+}
+.card:hover .save-btn{opacity:1}
+.save-btn:hover{background:var(--panel-hover);color:var(--text);transform:scale(1.08)}
+.save-btn.on{opacity:1;color:var(--star)}
+.save-btn.on::after{content:"";position:absolute;inset:0}
+
+/* grid / mosaic */
+.grid .feed{max-width:1320px}
 .feed{container-type:inline-size}
-.row{display:flex;flex-wrap:wrap;margin:0 -8px 8px;--ih:calc(100cqw * .285)}
+.row{display:flex;flex-wrap:wrap;margin:0 -8px 6px;--ih:calc(100cqw * .27)}
 .row>.card,.row>.stack{flex:1 1 0;min-width:0;margin:8px}
-.row .card{flex-direction:column;height:auto;min-height:0}
+.row .card{flex-direction:column;height:auto}
 .row .card .im{width:100%;height:var(--ih);flex:none}
 .row .card .bd{height:150px;flex:none;overflow:hidden}
 .row .card .t{-webkit-line-clamp:2}
@@ -49,18 +285,19 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .row .card.tx .bd{height:auto;flex:1}
 .row .card.tx .t{-webkit-line-clamp:4}
 .row.b>:nth-child(1),.row.b>:nth-child(2){flex-grow:2}
-.row.c{--ih:calc(100cqw * .2)}
+.row.c{--ih:calc(100cqw * .19)}
 .row.c.tt .card{height:130px}
-.card.tx .meta{text-transform:uppercase;font-size:10px}
+.card.tx .meta{font-size:10px;text-transform:uppercase;letter-spacing:.06em}
 .card.tx .tm{display:none}
 .row.c.tt .bd{padding:10px 12px}
 .row.c.tt .t{font-size:13px;-webkit-line-clamp:3}
 .row.c.tt .s{-webkit-line-clamp:1;font-size:11px}
 .stack{display:flex;flex-direction:column}
-.stack .card{flex:1 1 0;min-height:0;margin:0 0 16px}
+.stack .card{flex:1 1 0;min-height:0;margin:0 0 14px}
 .stack .card:last-child{margin-bottom:0}
 .stack .s{display:none}
 .stack .card.tx .t{-webkit-line-clamp:3}
+
 @container (max-width:600px){
   .row{--ih:calc(100cqw * .42)}
   .row>.card{flex:1 1 calc(50% - 16px)}
@@ -70,69 +307,259 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
   .row.b .stack .card{flex:1 1 40%;height:150px;margin:0 8px 8px}
   .row.c.tt .card{height:150px}
 }
-.end{text-align:center;color:var(--mute);font-size:12px;letter-spacing:.04em;margin:50px 0 34px}
-.rec3{display:flex;margin:0 -8px}
-.rtile{flex:1 1 0;min-width:0;margin:0 8px;height:110px;background:#232a33 center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;text-align:center;padding:0 10px}
-.tact{display:flex;gap:10px;align-items:center}
-.empty{text-align:center;color:var(--mute);margin-top:90px}
-.add{max-width:780px;margin:50px auto}
-.search{width:100%;height:34px;border-radius:17px;border:1px solid var(--blue);background:#0a0f17;color:var(--text);padding:0 16px;font-size:13px;outline:none}
-.found{margin:10px 6px;font-size:13px}
-.found .item{display:flex;align-items:center;gap:10px;padding:4px 0}
-.found .ok{color:var(--blue)}.found .err{color:#ff7b7b}
-.box{background:var(--panel);border:1px solid #39424e;margin-top:28px;padding:14px 18px}
-.box h4{margin:0 0 10px;font-size:15px;font-weight:400}
-.rec .item{display:flex;justify-content:space-between;align-items:center;padding:5px 6px}
-.rec .item:hover{background:#3d4652}
-.rec .item small{color:var(--mute)}
-.rec .item.added{opacity:.55}
-.lnk{background:none;border:0;color:var(--blue);cursor:pointer;font-size:12px;text-decoration:underline}
-.btn{background:#454d58;color:#fff;border:0;padding:8px 20px;cursor:pointer;font-size:13px}
-.btn:hover{background:#56606c}
-.actions{display:flex;justify-content:flex-end;margin-top:12px}
-dialog{background:var(--panel);color:var(--text);border:1px solid #4a5460;width:min(560px,92vw);padding:18px}
-dialog::backdrop{background:#000a}
-dialog li{margin:8px 0}dialog a{color:var(--text)}
-.set{margin-top:30px;font-size:12px;color:var(--mute)}
-.set input{width:100%;background:#0a0f17;border:1px solid #39424e;color:var(--text);padding:6px 10px;margin-top:6px}
-:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-#mnav{display:none;gap:8px;overflow-x:auto;padding-bottom:14px;margin-bottom:8px}
-#mnav a{flex:none;padding:7px 14px;border:1px solid #39424e;border-radius:16px;background:#1a2029;color:var(--text);font-size:13px;white-space:nowrap;cursor:pointer;text-decoration:none}
-#mnav a.on{background:var(--blue);border-color:var(--blue);color:#fff}
-@media(max-width:760px){
+
+/* compact density */
+[data-density="compact"] .card{height:126px;margin-bottom:10px}
+[data-density="compact"] .card .bd{padding:10px 14px;gap:4px}
+[data-density="compact"] .card .t{font-size:14px}
+[data-density="compact"] .card .s{font-size:12px;-webkit-line-clamp:2}
+[data-density="compact"] .card .im{width:200px}
+[data-density="compact"] .row .card .bd{height:130px}
+
+.end{
+  text-align:center;color:var(--mute);font-size:11px;
+  letter-spacing:.14em;margin:56px 0 30px;text-transform:uppercase;
+}
+.end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
+
+.rec3{display:flex;margin:0 -8px;gap:0}
+.rtile{
+  flex:1 1 0;min-width:0;margin:0 8px;height:120px;
+  background:var(--panel) center/cover;border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  text-align:center;padding:0 12px;color:#fff;
+  border:1px solid var(--line);
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+  transition:transform var(--t),box-shadow var(--t);
+}
+.rtile:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.rtile .btn{text-shadow:none;font-size:11px;padding:5px 12px}
+
+.empty{text-align:center;color:var(--mute);margin-top:100px;padding:0 20px}
+.empty .big{font-size:34px;margin-bottom:12px;opacity:.5}
+.empty h3{margin:0 0 6px;color:var(--text);font-size:17px;font-weight:600}
+.empty p{margin:0;font-size:13px;line-height:1.6}
+
+/* skeletons */
+.skel{
+  height:160px;margin-bottom:14px;border-radius:var(--radius);
+  background:var(--skeleton);background-size:200% 100%;
+  animation:shimmer 1.4s infinite linear;
+}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* ============ ADD PAGE ============ */
+.add{max-width:780px;margin:30px auto}
+.add h3{font-size:20px;font-weight:600;margin:0 0 6px}
+.add .sub{color:var(--mute);font-size:13px;margin:0 0 22px}
+
+.found{margin:14px 4px;font-size:13px}
+.found .row{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;
+  border-radius:var(--radius-sm);background:var(--panel);border:1px solid var(--line);
+  margin-bottom:6px;
+}
+.found .row .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.found .ok{color:var(--green)}
+.found .err{color:var(--red)}
+.found .meta{color:var(--mute);font-size:11.5px}
+
+.box{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--radius);margin-top:22px;padding:16px 20px;
+}
+.box h4{
+  margin:0 0 12px;font-size:12px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
+  display:flex;align-items:center;gap:8px;
+}
+.rec .row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 10px;border-radius:var(--radius-sm);gap:12px;
+  transition:background var(--t);
+}
+.rec .row:hover{background:var(--panel-2)}
+.rec .row small{color:var(--mute);font-size:11.5px}
+.rec .row.added{opacity:.55}
+.rec .row .name{font-weight:500}
+
+.lnk{
+  background:none;border:0;color:var(--blue);cursor:pointer;
+  font-size:12px;padding:2px 4px;border-radius:4px;
+}
+.lnk:hover{background:var(--blue-soft)}
+
+.btn{
+  background:var(--blue);color:#fff;border:0;
+  padding:8px 18px;cursor:pointer;font-size:13px;font-weight:500;
+  border-radius:8px;transition:background var(--t),transform var(--t),box-shadow var(--t);
+}
+.btn:hover{background:var(--blue-2);box-shadow:0 4px 14px rgba(77,163,255,.3)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--panel-2);color:var(--text)}
+.btn.ghost:hover{background:var(--panel-hover);box-shadow:none}
+.btn.danger{background:var(--red)}
+.btn.danger:hover{background:#e6394f}
+
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+
+.set{
+  margin-top:26px;font-size:12px;color:var(--mute);line-height:1.6;
+}
+.set label{display:block;margin-top:14px;color:var(--text-dim);font-weight:500;margin-bottom:5px}
+.set input,.set select{
+  width:100%;background:var(--bg-soft);border:1px solid var(--line-2);
+  color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;outline:none;
+  transition:border-color var(--t),box-shadow var(--t);
+}
+.set input:focus,.set select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+
+/* ============ DIALOG ============ */
+dialog{
+  background:var(--panel);color:var(--text);
+  border:1px solid var(--line-2);border-radius:var(--radius);
+  width:min(580px,92vw);padding:0;box-shadow:var(--shadow);
+  animation:dlgIn .22s ease both;
+}
+dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.dlg-head{
+  padding:16px 22px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.dlg-head h3{margin:0;font-size:16px;font-weight:600}
+.dlg-head .close{
+  width:30px;height:30px;border-radius:8px;border:0;background:transparent;
+  color:var(--mute);cursor:pointer;font-size:16px;line-height:1;
+}
+.dlg-head .close:hover{background:var(--panel-2);color:var(--text)}
+.dlg-body{padding:18px 22px;max-height:60vh;overflow:auto}
+.dlg-body ul{padding-inline-start:18px;margin:0}
+.dlg-body li{margin:8px 0;line-height:1.5}
+.dlg-body a{color:var(--text);text-decoration:none;border-bottom:1px solid transparent}
+.dlg-body a:hover{color:var(--blue);border-color:var(--blue)}
+.dlg-foot{
+  padding:12px 22px;border-top:1px solid var(--line);
+  display:flex;justify-content:flex-end;gap:8px;
+}
+
+/* ============ TOAST ============ */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--panel);border:1px solid var(--line-2);
+  color:var(--text);padding:10px 18px;border-radius:10px;
+  font-size:13px;box-shadow:var(--shadow);
+  opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;
+  z-index:100;max-width:80vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--green)}
+.toast.err{border-color:var(--red)}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:820px){
   aside{display:none}
-  #mnav{display:flex}
-  main{padding:18px 14px 50px}
-  .top{flex-wrap:wrap;gap:10px}
-  .feed{margin-top:18px}
-  .card .im{width:120px}
-  .card .bd{padding:12px}
-  .card .t{font-size:15px;-webkit-line-clamp:3}
+  main{padding:18px 16px 60px}
+  .card .im{width:130px}
+  .card{height:140px}
   .card .s{-webkit-line-clamp:2}
+  .search-wrap{max-width:none}
 }
 [dir=auto]{unicode-bidi:plaintext}
 </style>
 </head>
 <body>
-<header><div class="logo"></div><h1>Personal news</h1></header>
+<header>
+  <div class="brand">
+    <div class="logo"></div>
+    <h1>Personal news</h1>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input id="search" class="search" placeholder="Search articles…  (press /)" autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="searchClear" hidden aria-label="Clear search">✕</button>
+  </div>
+  <div class="head-actions">
+    <button class="icon-btn" id="refreshBtn" title="Refresh all (R)" aria-label="Refresh">⟳</button>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme (T)" aria-label="Theme">◐</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
+  </div>
+</header>
+
 <div class="layout">
   <aside id="side"></aside>
   <main>
-    <nav id="mnav" aria-label="Sources"></nav>
-    <div class="top"><h2 id="ttl"></h2>
-      <div class="tact"><button class="btn" id="rmcur" data-rmcur style="display:none">Remove from my sources</button><div class="toggle" id="tg"><button data-v="list" title="List">&#9776;</button><button data-v="grid" title="Grid">&#9638;</button></div></div>
+    <div class="top">
+      <div class="title-wrap">
+        <h2 id="ttl"></h2>
+        <span class="count" id="cnt"></span>
+      </div>
+      <div class="tact">
+        <div class="seg" id="sortSeg" title="Sort">
+          <button data-sort="newest" title="Newest first">↓</button>
+          <button data-sort="oldest" title="Oldest first">↑</button>
+        </div>
+        <div class="seg" id="densSeg" title="Density">
+          <button data-dens="cozy" title="Cozy">▦</button>
+          <button data-dens="compact" title="Compact">▤</button>
+        </div>
+        <div class="seg" id="tg" title="View">
+          <button data-v="list" title="List view">☰</button>
+          <button data-v="grid" title="Grid view">▩</button>
+        </div>
+      </div>
     </div>
     <div id="view"></div>
   </main>
 </div>
-<dialog id="dlg"><div id="dlgBody"></div><div class="actions"><button class="btn" onclick="dlg.close()">Close</button></div></dialog>
+
+<dialog id="previewDlg">
+  <div class="dlg-head"><h3 id="pvTitle">Preview</h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-body" id="pvBody"></div>
+  <div class="dlg-foot"><button class="btn ghost" data-close>Close</button></div>
+</dialog>
+
+<dialog id="settingsDlg">
+  <div class="dlg-head"><h3>Settings</h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-body">
+    <div class="set" style="margin-top:0">
+      <label for="setTheme">Theme</label>
+      <select id="setTheme">
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+
+      <label for="setAuto">Auto-refresh interval (minutes, 0 = off)</label>
+      <input id="setAuto" type="number" min="0" max="180" step="5">
+
+      <label for="setProxy">CORS proxy (prefix or template with <code>{url}</code>)</label>
+      <input id="setProxy" placeholder="https://my-proxy.workers.dev/?url={url}">
+
+      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn ghost" id="opmlExport">Export OPML</button>
+        <button class="btn ghost" id="opmlImport">Import OPML</button>
+        <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
+        <button class="btn danger" id="resetAll" style="margin-left:auto">Reset everything</button>
+      </div>
+    </div>
+  </div>
+  <div class="dlg-foot"><button class="btn" data-close>Done</button></div>
+</dialog>
 
 <script>
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 const store = {
   get(k, d){ try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } },
-  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} },
+  del(k){ try { localStorage.removeItem(k) } catch {} }
 };
+const cssEsc = s => (window.CSS && CSS.escape)
+  ? CSS.escape(String(s))
+  : String(s).replace(/[^\w-]/g, c => "\\" + c);
+
+/* ============ CATALOG & CONSTANTS ============ */
 const CATALOG = [
   {title:"BBC News", url:"https://feeds.bbci.co.uk/news/rss.xml"},
   {title:"Spiegel Online", url:"https://www.spiegel.de/schlagzeilen/index.rss"},
@@ -140,16 +567,26 @@ const CATALOG = [
   {title:"The Verge", url:"https://www.theverge.com/rss/index.xml"},
   {title:"The New York Times", url:"https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"},
   {title:"Digiato", url:"https://digiato.com/feed"},
-  {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits/dev.atom"}
+  {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits.atom"}
 ];
 const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
 
-let sources = store.get("sources", []);   // {url,title}
-let articles = {};                        // url -> [items]
+/* ============ STATE ============ */
+let sources = store.get("sources", []);
+let articles = {};
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
+let density = store.get("density", "cozy");
+let sortMode = store.get("sort", "newest");
+let theme = store.get("theme", "dark");
+let saved = store.get("saved", []);
+let read = new Set(store.get("read", []));
+let searchQuery = "";
+let autoMin = store.get("autoRefresh", 0);
+let autoTimer = null;
+let refreshing = false;
 
-/* ---------- networking ---------- */
+/* ============ NETWORKING ============ */
 const customProxy = () => store.get("proxy", "");
 function proxies(){
   const list = [u => u,
@@ -173,7 +610,7 @@ async function fetchText(url, ms = 9000){
   throw lastErr || new Error("Network error");
 }
 
-/* ---------- parsing ---------- */
+/* ============ PARSING ============ */
 function parseFeed(text){
   const doc = new DOMParser().parseFromString(text.trim(), "text/xml");
   if (doc.querySelector("parsererror")) return null;
@@ -214,7 +651,7 @@ function plain(html){
   return (d.body.textContent || "").replace(/\s+/g, " ").trim();
 }
 
-/* ---------- RSS/Atom discovery ---------- */
+/* ============ DISCOVERY ============ */
 const looksFeed = t => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000));
 function normalizeUrl(s){
   s = s.trim();
@@ -239,11 +676,10 @@ async function discover(input, onStep){
   onStep("Checking page…");
   let html = "";
   try { html = await fetchText(url); } catch {}
-  if (html && looksFeed(html)) {                       // the URL itself is a feed
+  if (html && looksFeed(html)) {
     const f = parseFeed(html);
     if (f) return [{url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length}];
   }
-  // 1) <link rel="alternate" type="application/rss+xml|atom+xml">
   if (html){
     const d = new DOMParser().parseFromString(html, "text/html");
     const base = d.querySelector("base[href]") ? new URL(d.querySelector("base").getAttribute("href"), url).href : url;
@@ -251,22 +687,19 @@ async function discover(input, onStep){
       .filter(l => /(rss|atom)\+xml|application\/(xml|feed)|text\/xml/i.test(l.type || ""))
       .map(l => { try { return new URL(l.getAttribute("href"), base).href } catch { return null } })
       .filter(Boolean);
-    // 2) anchors that look like feeds
     const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
       .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
       .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
-    onStep("Found " + cands.length + " declared feed link(s), verifying…");
+    onStep("Verifying " + cands.length + " feed link(s)…");
     const res = await Promise.all([...new Set([...cands, ...anchors])].slice(0, 8).map(probe));
     res.forEach(add);
   }
-  // 3) well-known paths on origin and on the given path
   if (!found.size){
     const u = new URL(url), bases = new Set([u.origin]);
     if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
     const tries = [];
     bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
     onStep("Trying common feed paths…");
-    // in small batches to avoid flooding
     for (let i = 0; i < tries.length && !found.size; i += 6){
       (await Promise.all(tries.slice(i, i + 6).map(probe))).forEach(add);
     }
@@ -274,7 +707,7 @@ async function discover(input, onStep){
   return [...found.values()];
 }
 
-/* ---------- data ---------- */
+/* ============ IMAGES ============ */
 const cssUrl = u => "url('" + u.replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
 const ic = store.get("ic", {}); let icT;
 function icSave(){ clearTimeout(icT); icT = setTimeout(() => { const k = Object.keys(ic); if (k.length > 600) k.slice(0, k.length - 600).forEach(x => delete ic[x]); store.set("ic", ic); }, 1000); }
@@ -284,7 +717,7 @@ const probeImg = u => new Promise(res => {
   if (!u) return res(false);
   const i = new Image(); i.referrerPolicy = "no-referrer";
   const t = setTimeout(() => res(false), 8000);
-  i.onload = () => { clearTimeout(t); res(i.naturalWidth >= 300 && i.naturalHeight >= 160); };   // small images count as "no image"
+  i.onload = () => { clearTimeout(t); res(i.naturalWidth >= 300 && i.naturalHeight >= 160); };
   i.onerror = () => { clearTimeout(t); res(false); };
   i.src = u;
 });
@@ -293,19 +726,49 @@ async function ogImage(link){
     const d = new DOMParser().parseFromString(await fetchText(link, 7000), "text/html");
     const m = d.querySelector('meta[property="og:image"],meta[name="og:image"],meta[name="twitter:image"],meta[property="twitter:image"]');
     return m && m.content ? new URL(m.content, link).href : "";
-  } catch { return ""; }
+  } catch { return "" }
 }
-let rt; const soon = () => { clearTimeout(rt); rt = setTimeout(() => state.page === "news" ? render() : renderSide(), 350); };
+let rt; const soon = () => { clearTimeout(rt); rt = setTimeout(() => state.page === "news" || state.page === "saved" ? render() : renderSide(), 350); };
+
+/* try to patch a single card in place, return true if succeeded */
+function patchCard(a){
+  const el = document.querySelector('.card[data-link="' + cssEsc(a.link) + '"]');
+  if (!el) return false;
+  const isM = el.classList.contains("m");
+  const wantM = !!a.ok;
+  if (isM !== wantM){
+    // structural change: needs a re-render (in grid mode also layout changes)
+    return false;
+  }
+  if (wantM){
+    const im = el.querySelector(".im");
+    if (im){
+      const bg = cssUrl(a.img);
+      if (im.style.backgroundImage !== bg) im.style.backgroundImage = bg;
+    }
+  }
+  return true;
+}
 async function resolveItem(a){
   const c = ic[a.link];
-  if (c){ a.img = c.img; a.ok = c.ok; a.done = true; return soon(); }
+  if (c){
+    a.img = c.img; a.ok = c.ok; a.done = true;
+    if (!patchCard(a)) soon();
+    return;
+  }
   a.ok = await limit(() => probeImg(a.img));
-  if (!a.ok){                                   // no/small/broken image in the feed: read og:image from the article page
+  if (!a.ok){
     const o = await limit(() => ogImage(a.link));
     if (o && o !== a.img){ a.img = o; a.ok = await limit(() => probeImg(o)); }
   }
-  a.done = true; ic[a.link] = {img: a.img, ok: a.ok}; icSave(); soon();
+  a.done = true;
+  ic[a.link] = {img: a.img, ok: a.ok};
+  icSave();
+  // apply to the specific card without a full re-render if possible
+  if (!patchCard(a)) soon();
 }
+
+/* ============ DATA ============ */
 async function loadSource(s){
   try {
     const f = parseFeed(await fetchText(s.url));
@@ -316,8 +779,15 @@ async function loadSource(s){
   soon();
 }
 async function refreshAll(){
-  await Promise.all(sources.filter(s => !articles[s.url]).map(loadSource));
+  if (refreshing) return;
+  refreshing = true;
+  const btn = $("#refreshBtn"); btn.classList.add("spin");
+  Object.keys(articles).forEach(k => delete articles[k]);
+  await Promise.all(sources.map(loadSource));
+  refreshing = false;
+  btn.classList.remove("spin");
   render();
+  toast("Feeds refreshed", "ok");
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
@@ -332,14 +802,34 @@ function removeSource(url){
   render();
 }
 
-/* ---------- UI ---------- */
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* ============ SAVED / READ ============ */
+const isRead = l => read.has(l);
+function markRead(l){ if (!read.has(l)){ read.add(l); store.set("read", [...read]); } }
+function markAllRead(){
+  sources.filter(s => !state.src || s.url === state.src)
+    .forEach(s => (articles[s.url] || []).forEach(a => { read.add(a.link); }));
+  store.set("read", [...read]);
+  render();
+}
+const isSaved = l => saved.some(s => s.link === l);
+function toggleSave(item){
+  const i = saved.findIndex(s => s.link === item.link);
+  if (i >= 0){ saved.splice(i, 1); toast("Removed from saved"); }
+  else { saved.unshift({...item, savedAt: Date.now()}); toast("Saved for later", "ok"); }
+  store.set("saved", saved);
+  render();
+}
+
+/* ============ HELPERS ============ */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const escAttr = esc;
 function ago(ts){
   if (!ts) return "";
   const m = Math.max(1, Math.round((Date.now() - ts) / 60000));
-  if (m < 60) return m + " m ago";
-  const h = Math.round(m / 60); if (h < 24) return h + " h ago";
-  const d = Math.round(h / 24); return d + " d ago";
+  if (m < 60) return m + "m ago";
+  const h = Math.round(m / 60); if (h < 24) return h + "h ago";
+  const d = Math.round(h / 24); if (d < 30) return d + "d ago";
+  return Math.round(d / 30) + "mo ago";
 }
 function group(ts){
   const age = Date.now() - ts, day = new Date(); day.setHours(0,0,0,0);
@@ -350,32 +840,87 @@ function group(ts){
   if (ts >= day.getTime() - 14 * 864e5) return "Last week";
   return "Earlier";
 }
-function renderSideBar(){
-  $("#side").innerHTML =
-    `<a data-go="all" class="${state.page==="news"&&!state.src?"on":""}">Top 50</a>
-     <div class="grp">&#9662; My sources</div>` +
-    sources.map(s => `<div class="src"><a data-src="${esc(s.url)}" class="${state.src===s.url?"on":""}" style="flex:1;min-width:0"><span dir="auto">${esc(s.title)}</span></a><button data-rm="${esc(s.url)}" title="Remove source" aria-label="Remove ${esc(s.title)}">&times;</button></div>`).join("") +
-    `<a data-go="add" class="${state.page==="add"?"on":""}" style="margin-top:6px">Add sources</a>`;
+function readingTime(html){
+  const words = plain(html).split(/\s+/).length;
+  const min = Math.max(1, Math.round(words / 220));
+  return words > 40 ? min : 0;
+}
+function toast(msg, kind = ""){
+  const el = document.createElement("div");
+  el.className = "toast " + kind;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("show"));
+  setTimeout(() => { el.classList.remove("show"); setTimeout(() => el.remove(), 300); }, 2600);
+}
+
+/* ============ RENDER: SIDEBAR ============ */
+function unreadCount(srcUrl){
+  const list = articles[srcUrl] || [];
+  return list.filter(a => !isRead(a.link)).length;
+}
+function totalUnread(){
+  return sources.reduce((n, s) => n + unreadCount(s.url), 0);
 }
 function renderSide(){
-  renderSideBar();
-  $("#mnav").innerHTML =
-    `<a data-go="all" class="${state.page==="news"&&!state.src?"on":""}">Top 50</a>` +
-    sources.map(x => `<a data-src="${esc(x.url)}" dir="auto" class="${state.page==="news"&&state.src===x.url?"on":""}">${esc(x.title)}</a>`).join("") +
-    `<a data-go="add" class="${state.page==="add"?"on":""}">Add sources</a>`;
+  const allUnread = totalUnread();
+  const savedCount = saved.length;
+  const el = $("#side");
+  el.innerHTML =
+    `<a class="nav-link ${state.page==="news"&&!state.src?"on":""}" data-go="all">
+      <span class="ico">◆</span><span class="lbl">Top 50</span>
+      ${allUnread ? `<span class="badge">${allUnread}</span>` : ""}
+    </a>
+    <a class="nav-link ${state.page==="saved"?"on":""}" data-go="saved">
+      <span class="ico">★</span><span class="lbl">Saved</span>
+      ${savedCount ? `<span class="badge">${savedCount}</span>` : ""}
+    </a>
+    <div class="grp">
+      <span>My sources</span>
+      ${sources.length ? `<button data-read-all title="Mark all as read">Mark all read</button>` : ""}
+    </div>` +
+    sources.map(s => {
+      const u = unreadCount(s.url);
+      return `<div class="src-row">
+        <a class="nav-link ${state.src===s.url?"on":""}" data-src="${esc(s.url)}" title="${esc(s.title)}">
+          <span class="ico">•</span>
+          <span class="lbl" dir="auto">${esc(s.title)}</span>
+          ${u ? `<span class="badge">${u}</span>` : ""}
+        </a>
+        <button class="mini" data-rsrc="${esc(s.url)}" title="Refresh this source" aria-label="Refresh">⟳</button>
+        <button class="mini rm" data-rm="${esc(s.url)}" title="Remove" aria-label="Remove">✕</button>
+      </div>`;
+    }).join("") +
+    `<a class="nav-link ${state.page==="add"?"on":""}" data-go="add" style="margin-top:6px">
+      <span class="ico">＋</span><span class="lbl">Add sources</span>
+    </a>`;
 }
+
+/* ============ RENDER: CARDS ============ */
 function cardHtml(a){
-  return `<a class="card ${a.ok ? "m" : "tx"}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer">
+  const r = isRead(a.link), sv = isSaved(a.link);
+  const rt = readingTime(a.html);
+  const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
+  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
-    <div class="bd"><div class="meta"><b dir="auto">${esc(a.source)}</b> <span class="tm">&nbsp;${ago(a.date)}</span></div>
-    <div class="t" dir="auto">${esc(a.title)}</div>
-    <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div></div></a>`;
+    <div class="bd">
+      <div class="meta">
+        <span class="dot"></span>
+        <b dir="auto">${esc(a.source)}</b>
+        <span class="tm">· ${ago(a.date)}</span>
+        ${rt ? `<span class="tm">· ${rt} min</span>` : ""}
+      </div>
+      <div class="t" dir="auto">${esc(a.title)}</div>
+      <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div>
+    </div>
+    <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${sv?"Remove from saved":"Save for later"}" data-save='${payload}' aria-label="Save">★</span>
+  </a>`;
 }
-/* grid mode: arrange cards by what each item has. Good image -> big tile; no/small image -> compact text tile */
+
+/* ============ MOSAIC ============ */
 function mosaic(items){
   const h = l => l.map(cardHtml).join("");
-  // Rows are built from consecutive items only, so newest-to-oldest order is never broken across rows.
-  const takeB = i => {                       // 2 image cards + a stack of 1-3 text cards
+  const takeB = i => {
     const M = [], T = []; let j = i;
     while (j < items.length){
       const a = items[j];
@@ -396,7 +941,7 @@ function mosaic(items){
       out += `<div class="row b">${h(B.M)}<div class="stack">${h(B.T)}</div></div>`; i += B.n; useB = false;
     } else if (items[i].ok && items[i + 1] && items[i + 1].ok && !(items[i + 2] && !items[i + 2].ok)){
       out += `<div class="row d">${h(items.slice(i, i + 2))}</div>`; i += 2;
-    } else if (!items[i].ok){                // run of text-only items: compact tiles, up to 6 per row
+    } else if (!items[i].ok){
       let j = i; while (j < items.length && !items[j].ok && j - i < 6) j++;
       out += `<div class="row c tt">${h(items.slice(i, j))}</div>`; i = j;
     } else {
@@ -406,13 +951,49 @@ function mosaic(items){
   }
   return out;
 }
-function renderNews(){
-  const all = sources.filter(s => !state.src || s.url === state.src)
-    .flatMap(s => articles[s.url] || []).filter(a => a.title)
-    .sort((a, b) => b.date - a.date).slice(0, 50);
-  const list = all.filter(a => a.done);
-  const loading = sources.some(s => !articles[s.url]) || list.length < all.length;
-  if (!list.length) return `<div class="empty">${loading ? "Loading your sources…" : "No articles yet. Check your connection or add another source."}</div>`;
+
+/* ============ RENDER: NEWS ============ */
+function filteredItems(){
+  const scope = state.page === "saved"
+    ? saved.slice()
+    : sources.filter(s => !state.src || s.url === state.src).flatMap(s => articles[s.url] || []);
+  let items = scope.filter(a => a.title);
+  const q = searchQuery.trim().toLowerCase();
+  if (q){
+    items = items.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      (a.source || "").toLowerCase().includes(q) ||
+      plain(a.html).toLowerCase().includes(q)
+    );
+  }
+  items.sort((a, b) => (b.date || 0) - (a.date || 0));
+  if (state.page !== "saved") items = items.slice(0, 50);
+  if (sortMode === "oldest") items.reverse();
+  return items;
+}
+function renderNewsHTML(){
+  const list0 = filteredItems();
+  const list = list0.filter(a => a.done !== false);
+  const loading = state.page !== "saved" && (
+    sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
+    list.length < list0.length
+  );
+
+  const cnt = $("#cnt");
+  if (cnt) cnt.textContent = list.length ? `${list.length} article${list.length === 1 ? "" : "s"}` : "";
+
+  if (!list.length){
+    if (loading){
+      return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
+    }
+    const isSearch = !!searchQuery.trim();
+    return `<div class="feed"><div class="empty">
+      <div class="big">${isSearch ? "⌕" : "◇"}</div>
+      <h3>${isSearch ? "No matches" : "Nothing here yet"}</h3>
+      <p>${isSearch ? "Try a different search term." : "Add a source or check your connection."}</p>
+    </div></div>`;
+  }
+
   const groups = [];
   for (const a of list){
     const g = a.date ? group(a.date) : "Earlier";
@@ -422,73 +1003,211 @@ function renderNews(){
   let out = `<div class="feed">`;
   for (const G of groups)
     out += `<h3>${G.g}</h3>` + (viewMode === "grid" ? mosaic(G.items) : G.items.map(cardHtml).join(""));
-  const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
-  if (recs.length && !loading)
-    out += `<div class="end">END OF NEWS STREAM</div><h3>Recommended</h3><div class="rec3">` +
-      recs.map(c => `<div class="rtile" data-u="${esc(c.url)}"><span>${esc(c.title)}</span><button class="btn" data-addrec="${esc(c.url)}">Add to my sources</button></div>`).join("") + `</div>`;
+
+  if (state.page === "news" && !state.src && !loading){
+    const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
+    if (recs.length){
+      out += `<div class="end">End of news stream</div><h3>Recommended</h3><div class="rec3">` +
+        recs.map(c => `<div class="rtile" data-u="${esc(c.url)}" data-recycle="rtile:${esc(c.url)}"><span>${esc(c.title)}</span><button class="btn" data-addrec="${esc(c.url)}">Add</button></div>`).join("") + `</div>`;
+    }
+  }
   return out + `</div>`;
 }
 const recImg = {};
 function hydrateRec(){
-  document.querySelectorAll(".rtile").forEach(async el => {
+  $$(".rtile").forEach(async el => {
     const u = el.dataset.u;
-    if (!(u in recImg)) recImg[u] = (async () => { try { const f = parseFeed(await fetchText(u)); const it = f.items.find(i => i.img); return it ? it.img : ""; } catch { return ""; } })();
+    if (!(u in recImg)) recImg[u] = (async () => {
+      try { const f = parseFeed(await fetchText(u)); const it = f.items.find(i => i.img); return it ? it.img : ""; }
+      catch { return "" }
+    })();
     const img = await recImg[u];
-    if (img && el.isConnected) el.style.backgroundImage = "linear-gradient(#0007,#000b)," + cssUrl(img);
+    if (!img || !el.isConnected) return;
+    const bg = "linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.75))," + cssUrl(img);
+    if (el.style.backgroundImage !== bg) el.style.backgroundImage = bg;
   });
 }
-function renderAdd(){
+
+/* ============ RENDER: ADD ============ */
+function renderAddHTML(){
   const rec = CATALOG.map(c => {
     const has = sources.some(s => s.url === c.url);
-    return `<div class="item ${has?"added":""}"><span>${esc(c.title)} <small>- ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
-      <span>${has ? "&#10003; Added" : `<button class="lnk" data-prev="${esc(c.url)}">Preview</button> <button class="lnk" data-addrec="${esc(c.url)}">Add</button>`}</span></div>`;
+    return `<div class="row ${has?"added":""}">
+      <span><span class="name">${esc(c.title)}</span> <small>— ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
+      <span>${has ? `<span class="meta" style="color:var(--green)">✓ Added</span>` :
+        `<button class="lnk" data-prev="${esc(c.url)}">Preview</button>
+         <button class="lnk" data-addrec="${esc(c.url)}">Add</button>`}</span>
+    </div>`;
   }).join("");
   return `<div class="add">
-    <input id="q" class="search" placeholder="Enter a site or feed address, e.g. digiato.com" autocomplete="off" spellcheck="false">
+    <h3>Add sources</h3>
+    <p class="sub">Paste a site address (e.g. <code>digiato.com</code>) or a direct RSS / Atom feed URL.</p>
+    <input id="q" class="search" style="padding:0 16px" placeholder="example.com or https://example.com/feed.xml" autocomplete="off" spellcheck="false">
     <div class="found" id="found"></div>
-    <div class="box rec"><h4>&#9662; Recommended</h4>${rec}
-      <div class="actions"><button class="btn" data-go="news">Start reading</button></div></div>
-    <div class="set">CORS proxy (optional): feeds are fetched directly, then through public proxies. To use your own, enter a prefix or a template with {url}.
-      <input id="proxy" placeholder="http://localhost:8787/?url={url}" value="${esc(customProxy())}"></div>
+    <div class="box rec"><h4>Recommended</h4>${rec}
+      <div class="actions"><button class="btn" data-go="news">Start reading</button></div>
+    </div>
+    <div class="set">
+      <label>CORS proxy (optional)</label>
+      Feeds are fetched directly first, then through public proxies. To use your own, enter a prefix or a template with <code>{url}</code>.
+      <input id="proxy" placeholder="http://localhost:8787/?url={url}" value="${esc(customProxy())}" style="margin-top:6px">
+    </div>
   </div>`;
 }
+
+/* ============ RENDER: MAIN ============ */
 function render(){
-  renderSide();
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.dataset.density = density;
   document.body.classList.toggle("grid", viewMode === "grid");
-  document.querySelectorAll("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
-  $("#tg").style.visibility = state.page === "news" ? "visible" : "hidden";
-  $("#rmcur").style.display = state.page === "news" && state.src ? "" : "none";
+  document.documentElement.dataset.view = viewMode;
+
+  renderSide();
+
+  $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
+  $$("#densSeg button").forEach(b => b.classList.toggle("on", b.dataset.dens === density));
+  $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
+  $("#tg").classList.toggle("hide", state.page === "add");
+  $("#densSeg").classList.toggle("hide", state.page === "add");
+  $("#sortSeg").classList.toggle("hide", state.page === "add");
+
+  const view = $("#view");
+
+  /* ---- Snapshot existing recyclable nodes BEFORE we replace content ---- */
+  const oldEls = new Map();
+  view.querySelectorAll("[data-recycle]").forEach(el => {
+    oldEls.set(el.dataset.recycle, el);
+  });
+
+  /* ---- Build the new HTML ---- */
+  let html, after;
   if (state.page === "add"){
-    $("#ttl").textContent = "Add sources"; const keep = $("#q") && $("#q").value;
-    $("#view").innerHTML = renderAdd(); if (keep) $("#q").value = keep;
+    $("#ttl").textContent = "Add sources";
+    const keep = $("#q") && $("#q").value;
+    html = renderAddHTML();
+    after = () => { if (keep){ const q = $("#q"); if (q) q.value = keep; } };
+  } else if (state.page === "saved"){
+    $("#ttl").textContent = "Saved";
+    html = renderNewsHTML();
+    after = hydrateRec;
   } else {
-    $("#ttl").textContent = state.src ? (sources.find(s => s.url === state.src) || {}).title : "My sources";
-    $("#view").innerHTML = renderNews(); hydrateRec();
+    $("#ttl").textContent = state.src
+      ? (sources.find(s => s.url === state.src) || {}).title || "Source"
+      : "My sources";
+    html = renderNewsHTML();
+    after = hydrateRec;
   }
+
+  /* ---- Parse new HTML into an offscreen container ---- */
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+
+  /* ---- Recycle: if a node with the same data-recycle key AND same class exists,
+         move the OLD node into the new tree instead of the fresh one.
+         This preserves <img>/background loads, scroll position, focus, etc. ---- */
+  tmp.querySelectorAll("[data-recycle]").forEach(newEl => {
+    const key = newEl.dataset.recycle;
+    const oldEl = oldEls.get(key);
+    if (!oldEl) return;
+    if (oldEl.className !== newEl.className) return; // structural change → let new one render
+    // Sync save-button state (it's part of the card)
+    const os = oldEl.querySelector(".save-btn");
+    const ns = newEl.querySelector(".save-btn");
+    if (os && ns){
+      if (os.className !== ns.className) os.className = ns.className;
+      const nsData = ns.getAttribute("data-save");
+      if (nsData && os.getAttribute("data-save") !== nsData) os.setAttribute("data-save", nsData);
+      const nsTitle = ns.getAttribute("title");
+      if (nsTitle) os.setAttribute("title", nsTitle);
+    }
+    newEl.replaceWith(oldEl);
+  });
+
+  /* ---- Mark brand-new cards so we can give them an entrance transition ---- */
+  tmp.querySelectorAll(".card").forEach(el => {
+    if (!oldEls.has(el.dataset.recycle)) el.classList.add("enter");
+  });
+
+  /* ---- Commit ---- */
+  view.replaceChildren(...tmp.childNodes);
+
+  /* ---- Play entrance transition on genuinely new cards ---- */
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      view.querySelectorAll(".card.enter").forEach(el => el.classList.remove("enter"));
+    });
+  });
+
+  after && after();
 }
 
-/* ---------- events ---------- */
+/* ============ EVENTS: CLICKS ============ */
 document.addEventListener("click", async e => {
-  const t = e.target.closest("[data-go],[data-src],[data-rm],[data-rmcur],[data-prev],[data-addrec],[data-v]");
+  const saveEl = e.target.closest("[data-save]");
+  if (saveEl){
+    e.preventDefault(); e.stopPropagation();
+    try { toggleSave(JSON.parse(saveEl.dataset.save)); } catch {}
+    return;
+  }
+
+  const t = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-found],[data-read-all],[data-close]");
   if (!t) return;
   const d = t.dataset;
+
+  if ("close" in d){ t.closest("dialog")?.close(); return; }
   if (d.v){ viewMode = d.v; store.set("view", viewMode); return render(); }
-  if (d.go){ state.page = d.go === "add" ? "add" : "news"; state.src = null; if (state.page === "news") refreshAll(); return render(); }
+  if (d.dens){ density = d.dens; store.set("density", density); return render(); }
+  if (d.sort){ sortMode = d.sort; store.set("sort", sortMode); return render(); }
+  if (d.go){
+    state.page = d.go === "add" ? "add" : (d.go === "saved" ? "saved" : "news");
+    state.src = null;
+    if (state.page === "news") refreshAll();
+    return render();
+  }
   if (d.src){ state.page = "news"; state.src = d.src; return render(); }
   if (d.rm) return removeSource(d.rm);
-  if ("rmcur" in d) return state.src && removeSource(state.src);
-  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); addSource(c); loadSource(c); return render(); }
+  if (d.rsrc){ const s = sources.find(x => x.url === d.rsrc); if (s){ delete articles[s.url]; loadSource(s).then(render); toast("Refreshing…"); } return; }
+  if ("readAll" in d) return markAllRead();
+  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); if (c){ addSource(c); loadSource(c).then(render); toast("Source added", "ok"); renderSide(); } return; }
   if (d.prev){
     const c = CATALOG.find(x => x.url === d.prev);
-    $("#dlgBody").innerHTML = `<h4 style="margin:0 0 8px">${esc(c.title)}</h4><div class="meta">Loading preview…</div>`; dlg.showModal();
+    if (!c) return;
+    $("#pvTitle").textContent = c.title;
+    $("#pvBody").innerHTML = `<div class="meta">Loading preview…</div>`;
+    $("#previewDlg").showModal();
     try {
       const f = parseFeed(await fetchText(c.url));
-      $("#dlgBody").innerHTML = `<h4 style="margin:0 0 8px">${esc(c.title)}</h4><ul dir="auto" style="padding-inline-start:18px">` +
-        f.items.slice(0, 6).map(i => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${esc(i.title)}</a></li>`).join("") + `</ul>`;
-    } catch { $("#dlgBody").innerHTML = `<h4>${esc(c.title)}</h4><div class="meta">Couldn't load this preview.</div>`; }
+      $("#pvBody").innerHTML = `<ul dir="auto">` +
+        f.items.slice(0, 8).map(i => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${esc(i.title)}</a></li>`).join("") + `</ul>`;
+    } catch {
+      $("#pvBody").innerHTML = `<div class="meta" style="color:var(--red)">Couldn't load this preview.</div>`;
+    }
   }
 });
-let timer, seq = 0;
+
+document.addEventListener("click", e => {
+  const c = e.target.closest(".card[data-link]");
+  if (c && !e.target.closest("[data-save]")){
+    markRead(c.dataset.link);
+    c.classList.add("read");
+    renderSide();
+  }
+}, true);
+
+/* ============ EVENTS: input / search ============ */
+let searchTimer, seq = 0;
+
+const searchInput = $("#search");
+searchInput.addEventListener("input", () => {
+  searchQuery = searchInput.value;
+  $("#searchClear").hidden = !searchQuery;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { if (state.page === "news" || state.page === "saved") render(); }, 180);
+});
+$("#searchClear").addEventListener("click", () => {
+  searchInput.value = ""; searchQuery = ""; $("#searchClear").hidden = true; render(); searchInput.focus();
+});
+
 document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
   if (e.target.id !== "q") return;
@@ -498,7 +1217,8 @@ document.addEventListener("input", e => {
   timer = setTimeout(async () => {
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
-      box.innerHTML = hits.length ? hits.map(c => `<div class="item"><span>${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">Add</button></div>`).join("")
+      box.innerHTML = hits.length
+        ? hits.map(c => `<div class="row"><span class="grow">${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">Add</button></div>`).join("")
         : `<span class="err">No match. Enter a site address such as example.com.</span>`;
       return;
     }
@@ -508,19 +1228,101 @@ document.addEventListener("input", e => {
     if (!res.length){ box.innerHTML = `<span class="err">No RSS or Atom feed found at this address. Try the feed URL directly, or set a CORS proxy below.</span>`; return; }
     box.innerHTML = res.map(r => {
       const has = sources.some(s => s.url === r.url);
-      return `<div class="item"><span class="ok">&#10003;</span><span dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} &middot; ${esc(r.url)}</span>
-        ${has ? `<span class="meta">Added</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>Add</button>`}</div>`;
+      return `<div class="row"><span class="ok">✓</span><span class="grow" dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} · ${esc(new URL(r.url).hostname)}</span>
+        ${has ? `<span class="meta" style="color:var(--green)">Added</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>Add</button>`}</div>`;
     }).join("");
   }, 450);
 });
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-found]"); if (!b) return;
-  const s = JSON.parse(b.dataset.found); addSource(s); loadSource(s).then(render);
-  b.outerHTML = `<span class="meta">Added</span>`; renderSide();
+  const s = JSON.parse(b.dataset.found);
+  addSource(s); loadSource(s).then(render);
+  b.outerHTML = `<span class="meta" style="color:var(--green)">Added</span>`;
+  renderSide();
 });
 
+/* ============ HEADER ACTIONS ============ */
+$("#refreshBtn").addEventListener("click", refreshAll);
+$("#themeBtn").addEventListener("click", () => {
+  theme = theme === "dark" ? "light" : "dark";
+  store.set("theme", theme);
+  render();
+});
+$("#settingsBtn").addEventListener("click", () => {
+  $("#setTheme").value = theme;
+  $("#setAuto").value = autoMin;
+  $("#setProxy").value = customProxy();
+  $("#settingsDlg").showModal();
+});
+$("#setTheme").addEventListener("change", e => { theme = e.target.value; store.set("theme", theme); render(); });
+$("#setAuto").addEventListener("change", e => { autoMin = Math.max(0, +e.target.value || 0); store.set("autoRefresh", autoMin); setupAuto(); toast(autoMin ? `Auto-refresh every ${autoMin} min` : "Auto-refresh off"); });
+$("#setProxy").addEventListener("change", e => { store.set("proxy", e.target.value.trim()); toast("Proxy saved", "ok"); });
+$("#resetAll").addEventListener("click", () => {
+  if (!confirm("Reset all settings, sources, saved articles and read history?")) return;
+  ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic"].forEach(store.del);
+  location.reload();
+});
+
+/* OPML */
+$("#opmlExport").addEventListener("click", () => {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head><title>Personal news subscriptions</title></head>
+  <body>
+    ${sources.map(s => `<outline type="rss" text="${escAttr(s.title)}" title="${escAttr(s.title)}" xmlUrl="${escAttr(s.url)}"/>`).join("\n    ")}
+  </body>
+</opml>`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([xml], {type:"text/xml"}));
+  a.download = "personal-news.opml";
+  a.click(); URL.revokeObjectURL(a.href);
+  toast("OPML exported", "ok");
+});
+$("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
+$("#opmlFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const doc = new DOMParser().parseFromString(await f.text(), "text/xml");
+    const outlines = [...doc.querySelectorAll("outline[xmlUrl]")];
+    let n = 0;
+    for (const o of outlines){
+      const url = o.getAttribute("xmlUrl");
+      if (!url || sources.some(s => s.url === url)) continue;
+      const title = o.getAttribute("text") || o.getAttribute("title") || new URL(url).hostname;
+      addSource({url, title}); n++;
+    }
+    $("#settingsDlg").close();
+    toast(n ? `Imported ${n} source(s)` : "No new sources found", n ? "ok" : "");
+    if (n){ refreshAll(); } else { render(); }
+  } catch { toast("Couldn't parse OPML file", "err"); }
+});
+
+/* ============ AUTO REFRESH ============ */
+function setupAuto(){
+  clearInterval(autoTimer);
+  if (autoMin > 0) autoTimer = setInterval(refreshAll, autoMin * 60000);
+}
+
+/* ============ KEYBOARD SHORTCUTS ============ */
+document.addEventListener("keydown", e => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  const typing = tag === "input" || tag === "textarea" || tag === "select";
+  if (e.key === "Escape"){
+    if (searchQuery){ searchInput.value=""; searchQuery=""; $("#searchClear").hidden=true; render(); }
+    return;
+  }
+  if (typing) return;
+  if (e.key === "/"){ e.preventDefault(); searchInput.focus(); searchInput.select(); return; }
+  if (e.key === "r" || e.key === "R"){ e.preventDefault(); refreshAll(); return; }
+  if (e.key === "t" || e.key === "T"){ e.preventDefault(); $("#themeBtn").click(); return; }
+  if (e.key === "g" || e.key === "G"){ viewMode = "grid"; store.set("view", viewMode); render(); return; }
+  if (e.key === "l" || e.key === "L"){ viewMode = "list"; store.set("view", viewMode); render(); return; }
+});
+
+/* ============ INIT ============ */
 render();
-refreshAll();
+setupAuto();
+if (sources.length) refreshAll();
 </script>
 </body>
 </html>
