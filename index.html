@@ -29,7 +29,8 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .toggle button.on{background:var(--blue)}
 .feed{max-width:860px;margin:40px auto 0}
 .feed h3{font-size:15px;font-weight:400;margin:38px 0 14px}
-.card{display:flex;background:var(--panel);border:1px solid #39424e;margin-bottom:16px;color:inherit;text-decoration:none;height:156px;overflow:hidden}
+.card{display:flex;background:var(--panel);border:1px solid #39424e;margin-bottom:16px;color:inherit;text-decoration:none;height:auto;min-height:156px;overflow:hidden}
+.card .bd>*{flex-shrink:0}
 .card:hover{background:var(--panel2)}
 .card .im{width:248px;flex:none;background:#1a1f27 center/cover}
 .card .bd{padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -40,7 +41,7 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .feed{container-type:inline-size}
 .row{display:flex;flex-wrap:wrap;margin:0 -8px 8px;--ih:calc(100cqw * .285)}
 .row>.card,.row>.stack{flex:1 1 0;min-width:0;margin:8px}
-.row .card{flex-direction:column;height:auto}
+.row .card{flex-direction:column;height:auto;min-height:0}
 .row .card .im{width:100%;height:var(--ih);flex:none}
 .row .card .bd{height:150px;flex:none;overflow:hidden}
 .row .card .t{-webkit-line-clamp:2}
@@ -77,14 +78,14 @@ main{flex:1;padding:26px 20px 60px;min-width:0}
 .add{max-width:780px;margin:50px auto}
 .search{width:100%;height:34px;border-radius:17px;border:1px solid var(--blue);background:#0a0f17;color:var(--text);padding:0 16px;font-size:13px;outline:none}
 .found{margin:10px 6px;font-size:13px}
-.found .row{display:flex;align-items:center;gap:10px;padding:4px 0}
+.found .item{display:flex;align-items:center;gap:10px;padding:4px 0}
 .found .ok{color:var(--blue)}.found .err{color:#ff7b7b}
 .box{background:var(--panel);border:1px solid #39424e;margin-top:28px;padding:14px 18px}
 .box h4{margin:0 0 10px;font-size:15px;font-weight:400}
-.rec .row{display:flex;justify-content:space-between;align-items:center;padding:5px 6px}
-.rec .row:hover{background:#3d4652}
-.rec .row small{color:var(--mute)}
-.rec .row.added{opacity:.55}
+.rec .item{display:flex;justify-content:space-between;align-items:center;padding:5px 6px}
+.rec .item:hover{background:#3d4652}
+.rec .item small{color:var(--mute)}
+.rec .item.added{opacity:.55}
 .lnk{background:none;border:0;color:var(--blue);cursor:pointer;font-size:12px;text-decoration:underline}
 .btn{background:#454d58;color:#fff;border:0;padding:8px 20px;cursor:pointer;font-size:13px}
 .btn:hover{background:#56606c}
@@ -95,7 +96,20 @@ dialog li{margin:8px 0}dialog a{color:var(--text)}
 .set{margin-top:30px;font-size:12px;color:var(--mute)}
 .set input{width:100%;background:#0a0f17;border:1px solid #39424e;color:var(--text);padding:6px 10px;margin-top:6px}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-@media(max-width:760px){aside{display:none}.card .im{width:120px}.card{height:140px}}
+#mnav{display:none;gap:8px;overflow-x:auto;padding-bottom:14px;margin-bottom:8px}
+#mnav a{flex:none;padding:7px 14px;border:1px solid #39424e;border-radius:16px;background:#1a2029;color:var(--text);font-size:13px;white-space:nowrap;cursor:pointer;text-decoration:none}
+#mnav a.on{background:var(--blue);border-color:var(--blue);color:#fff}
+@media(max-width:760px){
+  aside{display:none}
+  #mnav{display:flex}
+  main{padding:18px 14px 50px}
+  .top{flex-wrap:wrap;gap:10px}
+  .feed{margin-top:18px}
+  .card .im{width:120px}
+  .card .bd{padding:12px}
+  .card .t{font-size:15px;-webkit-line-clamp:3}
+  .card .s{-webkit-line-clamp:2}
+}
 [dir=auto]{unicode-bidi:plaintext}
 </style>
 </head>
@@ -104,6 +118,7 @@ dialog li{margin:8px 0}dialog a{color:var(--text)}
 <div class="layout">
   <aside id="side"></aside>
   <main>
+    <nav id="mnav" aria-label="Sources"></nav>
     <div class="top"><h2 id="ttl"></h2>
       <div class="tact"><button class="btn" id="rmcur" data-rmcur style="display:none">Remove from my sources</button><div class="toggle" id="tg"><button data-v="list" title="List">&#9776;</button><button data-v="grid" title="Grid">&#9638;</button></div></div>
     </div>
@@ -125,7 +140,7 @@ const CATALOG = [
   {title:"The Verge", url:"https://www.theverge.com/rss/index.xml"},
   {title:"The New York Times", url:"https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"},
   {title:"Digiato", url:"https://digiato.com/feed"},
-  {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits.atom"}
+  {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits/dev.atom"}
 ];
 const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
 
@@ -335,12 +350,19 @@ function group(ts){
   if (ts >= day.getTime() - 14 * 864e5) return "Last week";
   return "Earlier";
 }
-function renderSide(){
+function renderSideBar(){
   $("#side").innerHTML =
     `<a data-go="all" class="${state.page==="news"&&!state.src?"on":""}">Top 50</a>
      <div class="grp">&#9662; My sources</div>` +
     sources.map(s => `<div class="src"><a data-src="${esc(s.url)}" class="${state.src===s.url?"on":""}" style="flex:1;min-width:0"><span dir="auto">${esc(s.title)}</span></a><button data-rm="${esc(s.url)}" title="Remove source" aria-label="Remove ${esc(s.title)}">&times;</button></div>`).join("") +
     `<a data-go="add" class="${state.page==="add"?"on":""}" style="margin-top:6px">Add sources</a>`;
+}
+function renderSide(){
+  renderSideBar();
+  $("#mnav").innerHTML =
+    `<a data-go="all" class="${state.page==="news"&&!state.src?"on":""}">Top 50</a>` +
+    sources.map(x => `<a data-src="${esc(x.url)}" dir="auto" class="${state.page==="news"&&state.src===x.url?"on":""}">${esc(x.title)}</a>`).join("") +
+    `<a data-go="add" class="${state.page==="add"?"on":""}">Add sources</a>`;
 }
 function cardHtml(a){
   return `<a class="card ${a.ok ? "m" : "tx"}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer">
@@ -418,7 +440,7 @@ function hydrateRec(){
 function renderAdd(){
   const rec = CATALOG.map(c => {
     const has = sources.some(s => s.url === c.url);
-    return `<div class="row ${has?"added":""}"><span>${esc(c.title)} <small>- ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
+    return `<div class="item ${has?"added":""}"><span>${esc(c.title)} <small>- ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
       <span>${has ? "&#10003; Added" : `<button class="lnk" data-prev="${esc(c.url)}">Preview</button> <button class="lnk" data-addrec="${esc(c.url)}">Add</button>`}</span></div>`;
   }).join("");
   return `<div class="add">
@@ -476,7 +498,7 @@ document.addEventListener("input", e => {
   timer = setTimeout(async () => {
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
-      box.innerHTML = hits.length ? hits.map(c => `<div class="row"><span>${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">Add</button></div>`).join("")
+      box.innerHTML = hits.length ? hits.map(c => `<div class="item"><span>${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">Add</button></div>`).join("")
         : `<span class="err">No match. Enter a site address such as example.com.</span>`;
       return;
     }
@@ -486,7 +508,7 @@ document.addEventListener("input", e => {
     if (!res.length){ box.innerHTML = `<span class="err">No RSS or Atom feed found at this address. Try the feed URL directly, or set a CORS proxy below.</span>`; return; }
     box.innerHTML = res.map(r => {
       const has = sources.some(s => s.url === r.url);
-      return `<div class="row"><span class="ok">&#10003;</span><span dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} &middot; ${esc(r.url)}</span>
+      return `<div class="item"><span class="ok">&#10003;</span><span dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} &middot; ${esc(r.url)}</span>
         ${has ? `<span class="meta">Added</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>Add</button>`}</div>`;
     }).join("");
   }, 450);
