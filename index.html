@@ -735,6 +735,55 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
   .src-row .mini{ opacity:1; width:34px; height:34px; font-size:15px }
   aside .grp{ font-size:12px; margin:18px 8px 8px }
 }
+/* ============ Add-source feed list ============ */
+.found-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin:14px 4px 8px;font-size:12px;color:var(--mute);
+  gap:10px;flex-wrap:wrap;
+}
+.found-head .stat{font-weight:500}
+.feed-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.feed-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  transition:border-color var(--t),box-shadow var(--t),transform var(--t);
+}
+.feed-row:hover{border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-1px)}
+.feed-row.added{opacity:.58}
+.feed-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.feed-title{
+  font-size:14px;font-weight:600;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--text);
+}
+.feed-meta{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  font-size:11px;color:var(--mute);
+}
+.feed-kind{
+  font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:1px 7px;border-radius:8px;
+  background:var(--blue-soft);color:var(--blue);flex:none;
+}
+.feed-url{
+  direction:ltr;unicode-bidi:embed;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+  font-size:10.5px;
+  max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--text-dim);opacity:.85;
+}
+.feed-count{color:var(--mute)}
+.feed-added{
+  font-size:12px;color:var(--green);font-weight:500;flex:none;
+  white-space:nowrap;
+}
+.btn.small{padding:6px 14px;font-size:12px}
+@media(max-width:560px){
+  .feed-url{max-width:160px}
+}
 [dir=auto]{unicode-bidi:plaintext}
 </style>
 </head>
@@ -849,6 +898,9 @@ const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(
 /* ============ i18n ============ */
 const LANGS = {
   fa: {
+    feedsFound: "{n} فید پیدا شد",
+    addAll: "افزودن همه",
+    itemsCount: "{n} خبر",
     dir: "rtl", name: "Persian", nativeName: "فارسی",
     appTitle: "اخبار شخصی",
     searchPlaceholder: "جستجو در خبرها…  (کلید /)",
@@ -989,6 +1041,9 @@ const LANGS = {
     statsAvgPerDay: "میانگین: {n} خبر در روز"
   },
   en: {
+    feedsFound: "{n} feed(s) found",
+    addAll: "Add all",
+    itemsCount: "{n} items",
     dir: "ltr", name: "English", nativeName: "English",
     appTitle: "Personal news",
     searchPlaceholder: "Search articles…  (press /)",
@@ -1441,88 +1496,143 @@ async function probe(url){
     return f ? {url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length} : null;
   } catch { return null }
 }
-/* Probe many URLs in parallel — returns as soon as any succeeds, or after all settle.
-   Uses Promise.any so a single success short-circuits the rest.
-   Optional deadlineMs caps the total time — we abort waiting and return what we have. */
-async function probeRace(urls, onFound, deadlineMs){
-  if (!urls.length) return [];
-  const promises = urls.map(async u => {
-    const r = await probe(u);
-    if (r){ onFound && onFound(r); return r; }
-    /* throw so Promise.any keeps waiting for others */
-    throw new Error("not-feed");
-  });
-  /* If deadline set, race against a timeout promise */
-  const racers = [...promises];
-  if (deadlineMs){
-    racers.push(new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("probeRace-deadline")), deadlineMs)
-    ));
+/* Probe ALL candidate URLs in parallel, collecting every successful feed.
+   Unlike probeRace, this does NOT stop at the first hit — it collects all
+   feeds found before the deadline expires. Calls onFound(feed, currentList)
+   as soon as each one resolves so the UI can update live. */
+async function probeAll(urls, onFound, deadlineMs = 8000){
+  const results = [];
+  const seen = new Set();
+  if (!urls.length) return results;
+
+  let finishAll;
+  const allDone = new Promise(r => { finishAll = r; });
+  let completed = 0;
+  const total = urls.length;
+
+  for (const u of urls){
+    (async () => {
+      try {
+        const r = await probe(u);
+        if (r && !seen.has(r.url)){
+          seen.add(r.url);
+          results.push(r);
+          if (onFound) onFound(r, results.slice());
+        }
+      } catch {}
+      completed++;
+      if (completed === total) finishAll();
+    })();
   }
-  try {
-    /* Promise.any resolves on first success; if all reject, returns AggregateError */
-    const first = await Promise.any(racers);
-    return [first];
-  } catch (e) {
-    /* All probes failed (or deadline expired) */
-    return [];
-  }
+
+  await Promise.race([
+    allDone,
+    new Promise(r => setTimeout(r, deadlineMs))
+  ]);
+  return results;
 }
+
 async function discover(input, onStep){
   const url = normalizeUrl(input);
   if (!url) return [];
-  const found = new Map();
-  const add = r => r && !found.has(r.url) && found.set(r.url, r);
 
-  /* Abort signal so caller can cancel if input changes */
   const myToken = ++discoverToken;
   const isCancelled = () => myToken !== discoverToken;
-  /* Overall deadline: 12s — fail fast if a site is unreachable / blocks all proxies */
-  const deadline = Date.now() + 12000;
+  const deadline = Date.now() + 16000;
   const isExpired = () => Date.now() > deadline;
 
-  onStep(t("checkingPage"));
+  const found = [];
+  const seen = new Set();
+  const push = r => {
+    if (r && !seen.has(r.url)){
+      seen.add(r.url);
+      found.push(r);
+      return true;
+    }
+    return false;
+  };
+  const notify = () => onStep && onStep(null, found.slice());
+
+  /* --- Step 1: fetch the given URL --- */
+  onStep && onStep(t("checkingPage"));
   let html = "";
   try { html = await fetchText(url, 6000); } catch {}
-  if (isCancelled() || isExpired()) return [...found.values()];
-  if (html && looksFeed(html)) {
+  if (isCancelled()) return found;
+
+  /* If the URL itself is a feed, that's the single answer */
+  if (html && looksFeed(html)){
     const f = parseFeed(html);
-    if (f) return [{url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length}];
+    if (f){
+      push({
+        url,
+        title: f.title || new URL(url).hostname,
+        kind: f.kind,
+        count: f.items.length,
+        isDirect: true
+      });
+      notify();
+    }
+    return found;
   }
+
+  /* --- Step 2: collect feed candidates from the HTML --- */
+  const candidates = new Set();
   if (html){
     const d = new DOMParser().parseFromString(html, "text/html");
-    const base = d.querySelector("base[href]") ? new URL(d.querySelector("base").getAttribute("href"), url).href : url;
-    const cands = [...d.querySelectorAll('link[rel~="alternate"][href]')]
-      .filter(l => /(rss|atom)\+xml|application\/(xml|feed)|text\/xml/i.test(l.type || ""))
-      .map(l => { try { return new URL(l.getAttribute("href"), base).href } catch { return null } })
-      .filter(Boolean);
-    const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
-      .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
-      .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
-    const allCands = [...new Set([...cands, ...anchors])].slice(0, 8);
-    onStep(t("verifyingFeeds", {n: allCands.length}));
-    const res = await probeRace(allCands);
-    if (isCancelled() || isExpired()) return [...found.values()];
-    res.forEach(add);
-  }
-  if (!found.size && !isExpired()){
-    const u = new URL(url), bases = new Set([u.origin]);
-    if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
-    const tries = [];
-    bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
-    onStep(t("tryingPaths"));
-    /* Probe all paths in parallel batches of 8 — fast fail, capped by remaining deadline */
-    for (let i = 0; i < tries.length && !found.size && !isExpired(); i += 8){
-      if (isCancelled()) return [...found.values()];
-      const batch = tries.slice(i, i + 8);
-      const remaining = Math.max(1000, deadline - Date.now());
-      const res = await probeRace(batch, r => add(r), remaining);
-      if (isCancelled()) return [...found.values()];
+    let base = url;
+    const baseEl = d.querySelector("base[href]");
+    if (baseEl){ try { base = new URL(baseEl.getAttribute("href"), url).href } catch {} }
+
+    /* <link rel="alternate" type="application/rss+xml" href="..."> */
+    for (const l of d.querySelectorAll('link[rel~="alternate"][href]')){
+      const type = (l.getAttribute("type") || "").toLowerCase();
+      if (/rss|atom|\bxml\b|feed/.test(type)){
+        try { candidates.add(new URL(l.getAttribute("href"), base).href) } catch {}
+      }
+    }
+    /* <a href="/feed"> or similar anchors */
+    for (const a of d.querySelectorAll("a[href]")){
+      const h = a.getAttribute("href") || "";
+      if (/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)(\?|$)|\?feed=/i.test(h)){
+        try { candidates.add(new URL(h, base).href) } catch {}
+      }
     }
   }
-  return [...found.values()];
-}
-let discoverToken = 0;
+
+  /* --- Step 3: add common well-known paths --- */
+  try {
+    const u = new URL(url);
+    const bases = new Set([u.origin]);
+    if (u.pathname.length > 1){
+      bases.add(u.origin + u.pathname.replace(/\/$/, ""));
+    }
+    for (const b of bases){
+      for (const p of COMMON_PATHS) candidates.add(b + p);
+    }
+  } catch {}
+
+  /* --- Step 4: probe every candidate in parallel --- */
+  const candList = [...candidates].slice(0, 24); /* cap so we don't hammer hosts */
+  if (!candList.length){
+    onStep && onStep(null, found.slice());
+    return found;
+  }
+  onStep && onStep(t("verifyingFeeds", {n: candList.length}));
+  const remaining = Math.max(3000, deadline - Date.now());
+  await probeAll(candList, r => {
+    if (isCancelled()) return;
+    if (push(r)) notify();
+  }, remaining);
+
+  if (isCancelled()) return found;
+
+  /* --- Step 5: sort — direct feed first, then by item count desc --- */
+  found.sort((a, b) => {
+    if (!!a.isDirect !== !!b.isDirect) return a.isDirect ? -1 : 1;
+    return (b.count || 0) - (a.count || 0);
+  });
+  return found;
+}let discoverToken = 0;
 
 /* ============ Images ============ */
 const cssUrl = u => "url('" + String(u).replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
@@ -3012,12 +3122,14 @@ document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
   if (e.target.id === "addTags"){ addTagsInputValue = e.target.value; return; }
   if (e.target.id !== "q") return;
+
   clearTimeout(discoverTimer);
-  /* Cancel any in-flight discovery */
-  discoverToken++;
+  discoverToken++; /* cancel any in-flight discovery */
   const v = e.target.value, my = ++discoverSeq, box = $("#found");
   if (!v.trim()){ box.innerHTML = ""; return; }
+
   discoverTimer = setTimeout(async () => {
+    /* Not a URL → fall back to catalog search */
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
       box.innerHTML = hits.length
@@ -3025,31 +3137,100 @@ document.addEventListener("input", e => {
         : `<span class="err">${esc(t("noMatchCatalog"))}</span>`;
       return;
     }
-    box.innerHTML = `<span class="meta">${esc(t("lookingForFeeds"))}</span>`;
+
+    box.innerHTML = `<div class="found-head"><span class="stat">${esc(t("lookingForFeeds"))}</span></div>`;
+
     let res;
     try {
-      res = await discover(v, m => {
-        if (my === discoverSeq) box.innerHTML = `<span class="meta">${esc(m)}</span>`;
+      res = await discover(v, (msg, list) => {
+        if (my !== discoverSeq) return;
+        if (list){
+          renderFoundFeeds(box, list, null);
+        } else if (msg){
+          box.innerHTML = `<div class="found-head"><span class="stat">${esc(msg)}</span></div>`;
+        }
       });
-    } catch (err) {
+    } catch (err){
       if (my === discoverSeq){
         box.innerHTML = `<span class="err">${esc(t("feedNotFound"))}</span>`;
       }
       return;
     }
     if (my !== discoverSeq) return;
+
     if (!res.length){
       box.innerHTML = `<div class="err">${esc(t("feedNotFound"))}</div>
         <div class="row"><span class="meta" style="font-size:11px;line-height:1.6;display:block">${esc(t("proxyHelp"))}</span></div>`;
       return;
     }
-    box.innerHTML = res.map(r => {
-      const has = sources.some(s => s.url === r.url);
-      return `<div class="row"><span class="ok">✓</span><span class="grow" dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} · ${esc(new URL(r.url).hostname)}</span>
-        ${has ? `<span class="meta" style="color:var(--green)">${esc(t("added"))}</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>${esc(t("add"))}</button>`}</div>`;
-    }).join("");
+    renderFoundFeeds(box, res, null);
   }, 450);
 });
+
+/* Renders the list of feeds found for a site — Opera-style. */
+function renderFoundFeeds(box, list, statusMsg){
+  const addedCount = list.filter(r => sources.some(s => s.url === r.url)).length;
+  const canAddAll = (list.length - addedCount) > 1;
+  const headerText = statusMsg
+    ? statusMsg
+    : (appLang === "fa"
+        ? `${formatNum(list.length)} فید پیدا شد${addedCount ? ` — ${formatNum(addedCount)} افزوده‌شده` : ""}`
+        : `${formatNum(list.length)} feed(s) found${addedCount ? ` — ${formatNum(addedCount)} added` : ""}`);
+
+  const head = `<div class="found-head">
+    <span class="stat">${esc(headerText)}</span>
+    ${canAddAll ? `<button class="btn small" id="addAllFound">${esc(appLang === "fa" ? "افزودن همه" : "Add all")}</button>` : ""}
+  </div>`;
+
+  const items = list.map(r => {
+    const has = sources.some(s => s.url === r.url);
+    let host = "";
+    try { host = new URL(r.url).hostname.replace(/^www\./, "") } catch {}
+    const kind = r.kind || "RSS";
+    const count = r.count || 0;
+    const title = r.title || host || r.url;
+    return `<div class="feed-row ${has ? "added" : ""}">
+      <div class="feed-info">
+        <div class="feed-title" dir="auto">${esc(title)}</div>
+        <div class="feed-meta">
+          <span class="feed-kind">${esc(kind)}</span>
+          <span class="feed-url" dir="ltr" title="${escAttr(r.url)}">${esc(r.url)}</span>
+          ${count ? `<span class="feed-count">· ${formatNum(count)} ${appLang === "fa" ? "خبر" : "items"}</span>` : ""}
+        </div>
+      </div>
+      ${has
+        ? `<span class="feed-added">✓ ${esc(t("added"))}</span>`
+        : `<button class="btn small" data-found='${escAttr(JSON.stringify({url: r.url, title: r.title}))}'>${esc(t("add"))}</button>`}
+    </div>`;
+  }).join("");
+
+  box.innerHTML = head + `<div class="feed-list">${items}</div>`;
+
+  const addAllBtn = document.getElementById("addAllFound");
+  if (addAllBtn){
+    addAllBtn.addEventListener("click", () => {
+      const tagsInput = $("#addTags");
+      const tags = (tagsInput && tagsInput.value.trim())
+        ? tagsInput.value.split(",").map(x => x.trim()).filter(Boolean)
+        : [];
+      if (tags.length) addTagsInputValue = "";
+      let added = 0;
+      for (const r of list){
+        if (sources.some(s => s.url === r.url)) continue;
+        const s = { url: r.url, title: r.title, tags };
+        addSource(s);
+        loadSource(s);
+        added++;
+      }
+      if (added){
+        toast(t("sourceAdded"), "ok");
+        renderSide();
+      }
+      /* Re-render list to show all as "Added" */
+      setTimeout(() => renderFoundFeeds(box, list, null), 0);
+    });
+  }
+}
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-found]"); if (!b) return;
   const s = JSON.parse(b.dataset.found);
