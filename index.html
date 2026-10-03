@@ -1275,23 +1275,57 @@ const customProxy = () => store.get("proxy", "");
 function proxies(){
   const list = [u => u,
     u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
-    u => "https://corsproxy.io/?" + encodeURIComponent(u)];
+    u => "https://corsproxy.io/?" + encodeURIComponent(u),
+    u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u)];
   const c = customProxy();
   if (c) list.unshift(u => c.includes("{url}") ? c.replace("{url}", encodeURIComponent(u)) : c + u);
   return list;
 }
 async function fetchText(url, ms = 9000){
-  let lastErr;
-  for (const p of proxies()){
-    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  /* Overall timeout: fail fast if nothing responds in time */
+  const overallDeadline = Math.min(ms, 8000);
+  const proxyList = proxies();
+  const direct = proxyList[0];
+  const proxiedList = proxyList.slice(1);
+
+  /* Try direct fetch with short timeout (3s) */
+  try {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 3000);
+    const r = await fetch(direct(url), {signal: ctl.signal});
+    clearTimeout(t);
+    if (r.ok) return await r.text();
+  } catch {}
+
+  /* If direct fails (CORS or network), race all proxies in parallel — Promise.any
+     resolves on first success, rejects with AggregateError if all fail.
+     Each proxy has a tight 5s timeout so a slow proxy can't block the whole call. */
+  const promises = proxiedList.map(p => (async () => {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 5000);
     try {
       const r = await fetch(p(url), {signal: ctl.signal});
       clearTimeout(t);
       if (r.ok) return await r.text();
-      lastErr = new Error("HTTP " + r.status);
-    } catch (e) { clearTimeout(t); lastErr = e; }
+      throw new Error("HTTP " + r.status);
+    } catch (e) { clearTimeout(t); throw e; }
+  })());
+
+  /* Add an overall timeout promise so we don't wait forever for a hung proxy */
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("timeout")), overallDeadline)
+  );
+
+  try {
+    return await Promise.any([...promises, timeoutPromise]);
+  } catch (aggErr) {
+    /* All proxies failed — throw the first non-timeout error if any */
+    const errs = (aggErr && aggErr.errors) || [aggErr];
+    for (const e of errs) {
+      if (e && e.message && !e.message.includes("aborted") && !e.message.includes("timeout")) {
+        throw e;
+      }
+    }
+    throw errs[0] || new Error("Network error");
   }
-  throw lastErr || new Error("Network error");
 }
 function proxyImageUrls(url){
   const out = [];
@@ -1299,6 +1333,7 @@ function proxyImageUrls(url){
   if (c) out.push(c.includes("{url}") ? c.replace("{url}", encodeURIComponent(url)) : c + url);
   out.push("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
   out.push("https://corsproxy.io/?" + encodeURIComponent(url));
+  out.push("https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(url));
   return out;
 }
 
@@ -1400,20 +1435,56 @@ function normalizeUrl(s){
 }
 async function probe(url){
   try {
-    const t = await fetchText(url, 7000);
+    const t = await fetchText(url, 5000);
     if (!looksFeed(t)) return null;
     const f = parseFeed(t);
     return f ? {url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length} : null;
   } catch { return null }
+}
+/* Probe many URLs in parallel — returns as soon as any succeeds, or after all settle.
+   Uses Promise.any so a single success short-circuits the rest.
+   Optional deadlineMs caps the total time — we abort waiting and return what we have. */
+async function probeRace(urls, onFound, deadlineMs){
+  if (!urls.length) return [];
+  const promises = urls.map(async u => {
+    const r = await probe(u);
+    if (r){ onFound && onFound(r); return r; }
+    /* throw so Promise.any keeps waiting for others */
+    throw new Error("not-feed");
+  });
+  /* If deadline set, race against a timeout promise */
+  const racers = [...promises];
+  if (deadlineMs){
+    racers.push(new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("probeRace-deadline")), deadlineMs)
+    ));
+  }
+  try {
+    /* Promise.any resolves on first success; if all reject, returns AggregateError */
+    const first = await Promise.any(racers);
+    return [first];
+  } catch (e) {
+    /* All probes failed (or deadline expired) */
+    return [];
+  }
 }
 async function discover(input, onStep){
   const url = normalizeUrl(input);
   if (!url) return [];
   const found = new Map();
   const add = r => r && !found.has(r.url) && found.set(r.url, r);
+
+  /* Abort signal so caller can cancel if input changes */
+  const myToken = ++discoverToken;
+  const isCancelled = () => myToken !== discoverToken;
+  /* Overall deadline: 12s — fail fast if a site is unreachable / blocks all proxies */
+  const deadline = Date.now() + 12000;
+  const isExpired = () => Date.now() > deadline;
+
   onStep(t("checkingPage"));
   let html = "";
-  try { html = await fetchText(url); } catch {}
+  try { html = await fetchText(url, 6000); } catch {}
+  if (isCancelled() || isExpired()) return [...found.values()];
   if (html && looksFeed(html)) {
     const f = parseFeed(html);
     if (f) return [{url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length}];
@@ -1428,22 +1499,30 @@ async function discover(input, onStep){
     const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
       .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
       .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
-    onStep(t("verifyingFeeds", {n: cands.length}));
-    const res = await Promise.all([...new Set([...cands, ...anchors])].slice(0, 8).map(probe));
+    const allCands = [...new Set([...cands, ...anchors])].slice(0, 8);
+    onStep(t("verifyingFeeds", {n: allCands.length}));
+    const res = await probeRace(allCands);
+    if (isCancelled() || isExpired()) return [...found.values()];
     res.forEach(add);
   }
-  if (!found.size){
+  if (!found.size && !isExpired()){
     const u = new URL(url), bases = new Set([u.origin]);
     if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
     const tries = [];
     bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
     onStep(t("tryingPaths"));
-    for (let i = 0; i < tries.length && !found.size; i += 6){
-      (await Promise.all(tries.slice(i, i + 6).map(probe))).forEach(add);
+    /* Probe all paths in parallel batches of 8 — fast fail, capped by remaining deadline */
+    for (let i = 0; i < tries.length && !found.size && !isExpired(); i += 8){
+      if (isCancelled()) return [...found.values()];
+      const batch = tries.slice(i, i + 8);
+      const remaining = Math.max(1000, deadline - Date.now());
+      const res = await probeRace(batch, r => add(r), remaining);
+      if (isCancelled()) return [...found.values()];
     }
   }
   return [...found.values()];
 }
+let discoverToken = 0;
 
 /* ============ Images ============ */
 const cssUrl = u => "url('" + String(u).replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
@@ -2917,6 +2996,8 @@ document.addEventListener("click", e => {
 
 /* ============ Events: input / search ============ */
 let searchTimer, seq = 0;
+let discoverTimer = null;
+let discoverSeq = 0;
 const searchInput = $("#search");
 searchInput.addEventListener("input", () => {
   searchQuery = searchInput.value;
@@ -2931,10 +3012,12 @@ document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
   if (e.target.id === "addTags"){ addTagsInputValue = e.target.value; return; }
   if (e.target.id !== "q") return;
-  clearTimeout(timer);
-  const v = e.target.value, my = ++seq, box = $("#found");
+  clearTimeout(discoverTimer);
+  /* Cancel any in-flight discovery */
+  discoverToken++;
+  const v = e.target.value, my = ++discoverSeq, box = $("#found");
   if (!v.trim()){ box.innerHTML = ""; return; }
-  timer = setTimeout(async () => {
+  discoverTimer = setTimeout(async () => {
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
       box.innerHTML = hits.length
@@ -2943,9 +3026,23 @@ document.addEventListener("input", e => {
       return;
     }
     box.innerHTML = `<span class="meta">${esc(t("lookingForFeeds"))}</span>`;
-    const res = await discover(v, m => { if (my === seq) box.innerHTML = `<span class="meta">${esc(m)}</span>`; });
-    if (my !== seq) return;
-    if (!res.length){ box.innerHTML = `<span class="err">${esc(t("feedNotFound"))}</span>`; return; }
+    let res;
+    try {
+      res = await discover(v, m => {
+        if (my === discoverSeq) box.innerHTML = `<span class="meta">${esc(m)}</span>`;
+      });
+    } catch (err) {
+      if (my === discoverSeq){
+        box.innerHTML = `<span class="err">${esc(t("feedNotFound"))}</span>`;
+      }
+      return;
+    }
+    if (my !== discoverSeq) return;
+    if (!res.length){
+      box.innerHTML = `<div class="err">${esc(t("feedNotFound"))}</div>
+        <div class="row"><span class="meta" style="font-size:11px;line-height:1.6;display:block">${esc(t("proxyHelp"))}</span></div>`;
+      return;
+    }
     box.innerHTML = res.map(r => {
       const has = sources.some(s => s.url === r.url);
       return `<div class="row"><span class="ok">✓</span><span class="grow" dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} · ${esc(new URL(r.url).hostname)}</span>
