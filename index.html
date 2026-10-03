@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fa" data-theme="dark" data-density="cozy">
+<html lang="fa" dir="rtl" data-theme="dark" data-density="cozy">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -30,7 +30,6 @@
   --header-bg:rgba(7,11,18,.82);
   --skeleton:linear-gradient(90deg,#141c28 0%,#1c2836 50%,#141c28 100%);
   --rd-size:17px;
-
   --font-sahel:  "Sahel", "Tahoma", "Segoe UI", system-ui, sans-serif;
   --font-iransans:"IRANSans", "Tahoma", "Segoe UI", system-ui, sans-serif;
   --font-vazir:  "Vazirmatn", "Tahoma", "Segoe UI", system-ui, sans-serif;
@@ -45,7 +44,6 @@
 [data-font="samim"]   { --font-app:var(--font-samim);    --font-reader:var(--font-samim); }
 [data-font="shabnam"] { --font-app:var(--font-shabnam);  --font-reader:var(--font-shabnam); }
 [data-font="system"]  { --font-app:var(--font-system);   --font-reader:var(--font-system); }
-
 [data-theme="light"]{
   --bg:#f4f7fb;--bg-soft:#eaeff7;
   --panel:#ffffff;--panel-2:#f2f5fa;--panel-hover:#e8eef8;
@@ -72,8 +70,7 @@ input,select{font-family:inherit}
 
 header{
   position:sticky;top:0;z-index:50;
-  height:var(--header-h);
-  display:flex;align-items:center;gap:16px;
+  height:var(--header-h);display:flex;align-items:center;gap:16px;
   padding:0 18px;
   background:var(--header-bg);
   backdrop-filter:blur(14px) saturate(140%);
@@ -91,47 +88,29 @@ header h1{font-size:15px;font-weight:600;margin:0;letter-spacing:.2px;white-spac
 .search{
   width:100%;height:36px;border-radius:18px;border:1px solid var(--line-2);
   background:var(--bg-soft);color:var(--text);
-  padding:0 38px 0 36px;font-size:13px;outline:none;
+  padding-inline-start:36px;padding-inline-end:38px;
+  font-size:13px;outline:none;
   transition:border-color var(--t),background var(--t),box-shadow var(--t);
 }
 .search::placeholder{color:var(--mute)}
 .search:focus{border-color:var(--blue);background:var(--panel);box-shadow:0 0 0 3px var(--blue-soft)}
-.search-icon{position:absolute;left:12px;color:var(--mute);font-size:15px;pointer-events:none;line-height:1}
-.search-clear{
-  position:absolute;right:8px;width:22px;height:22px;border-radius:50%;
-  border:0;background:var(--panel-2);color:var(--text-dim);cursor:pointer;
-  font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;
-}
+.search-icon{position:absolute;inset-inline-start:12px;color:var(--mute);font-size:15px;pointer-events:none;line-height:1}
+.search-clear{position:absolute;inset-inline-end:8px;width:22px;height:22px;border-radius:50%;border:0;background:var(--panel-2);color:var(--text-dim);cursor:pointer;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center}
 .search-clear:hover{background:var(--panel-hover);color:var(--text)}
 
 .head-actions{display:flex;gap:4px;flex:none}
-.icon-btn{
-  width:36px;height:36px;border-radius:10px;border:0;
-  background:transparent;color:var(--text-dim);cursor:pointer;
-  font-size:16px;display:flex;align-items:center;justify-content:center;
-  transition:background var(--t),color var(--t),transform var(--t);
-}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:var(--text-dim);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background var(--t),color var(--t),transform var(--t)}
 .icon-btn:hover{background:var(--panel-2);color:var(--text)}
 .icon-btn:active{transform:scale(.94)}
 .icon-btn.spin{animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .layout{display:flex;min-height:calc(100vh - var(--header-h))}
-aside{
-  width:250px;flex:none;border-right:1px solid var(--line);
-  padding:20px 12px 30px;
-  position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));
-  overflow-y:auto;scrollbar-width:thin;
-}
+aside{width:250px;flex:none;border-inline-end:1px solid var(--line);padding:20px 12px 30px;position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow-y:auto;scrollbar-width:thin}
 aside::-webkit-scrollbar{width:6px}
 aside::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 
-.nav-link{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 10px;border-radius:var(--radius-sm);
-  color:var(--text-dim);text-decoration:none;cursor:pointer;
-  font-size:13px;transition:background var(--t),color var(--t);user-select:none;
-}
+.nav-link{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--text-dim);text-decoration:none;cursor:pointer;font-size:13px;transition:background var(--t),color var(--t);user-select:none}
 .nav-link:hover{background:var(--panel-2);color:var(--text)}
 .nav-link.on{background:var(--blue-soft);color:var(--blue);font-weight:500}
 .nav-link .ico{width:16px;text-align:center;font-size:13px;opacity:.9}
@@ -139,11 +118,7 @@ aside::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .nav-link .badge{font-size:11px;padding:1px 7px;border-radius:9px;background:var(--panel-2);color:var(--text-dim);font-weight:500}
 .nav-link.on .badge{background:rgba(77,163,255,.2);color:var(--blue)}
 
-aside .grp{
-  margin:20px 10px 6px;color:var(--mute);
-  font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-  display:flex;justify-content:space-between;align-items:center;
-}
+aside .grp{margin:20px 10px 6px;color:var(--mute);font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
 aside .grp button{background:none;border:0;color:var(--mute);cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:0}
 aside .grp button:hover{color:var(--blue)}
 
@@ -151,17 +126,12 @@ aside .grp button:hover{color:var(--blue)}
 .src-row:hover{background:var(--panel-2)}
 .src-row .nav-link{flex:1;background:transparent!important}
 .src-row .nav-link:hover{background:transparent}
-.src-row .mini{
-  width:24px;height:24px;border-radius:6px;border:0;
-  background:transparent;color:var(--mute);cursor:pointer;
-  font-size:13px;display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity var(--t),background var(--t),color var(--t);
-}
+.src-row .mini{width:24px;height:24px;border-radius:6px;border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--t),background var(--t),color var(--t)}
 .src-row:hover .mini{opacity:1}
 .src-row .mini:hover{background:var(--panel-hover);color:var(--text)}
 .src-row .mini.rm:hover{color:var(--red)}
 
-main{flex:1;padding:22px 26px 80px;min-width:0}
+main{flex:1;padding-block:22px 80px;padding-inline:26px;min-width:0}
 
 .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:8px;flex-wrap:wrap}
 .title-wrap{display:flex;align-items:baseline;gap:10px;min-width:0}
@@ -180,13 +150,7 @@ main{flex:1;padding:22px 26px 80px;min-width:0}
 .feed h3::after{content:"";flex:1;height:1px;background:var(--line)}
 .feed h3:first-child{margin-top:6px}
 
-.card{
-  display:flex;background:var(--panel);border:1px solid var(--line);
-  margin-bottom:14px;color:inherit;text-decoration:none;
-  height:160px;overflow:hidden;position:relative;
-  border-radius:var(--radius);opacity:1;
-  transition:transform var(--t),border-color var(--t),background var(--t),box-shadow var(--t),opacity .28s ease;
-}
+.card{display:flex;background:var(--panel);border:1px solid var(--line);margin-bottom:14px;color:inherit;text-decoration:none;height:160px;overflow:hidden;position:relative;border-radius:var(--radius);opacity:1;transition:transform var(--t),border-color var(--t),background var(--t),box-shadow var(--t),opacity .28s ease}
 .card.enter{opacity:0;transform:translateY(6px)}
 .card:hover{background:var(--panel-2);border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-2px)}
 .card.read{opacity:.62}
@@ -199,13 +163,7 @@ main{flex:1;padding:22px 26px 80px;min-width:0}
 .card.read .meta .dot{background:var(--mute);opacity:.5}
 .card .t{font-size:15.5px;font-weight:600;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:-.1px}
 .card .s{color:var(--mute);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:auto}
-.save-btn{
-  position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--mute);cursor:pointer;font-size:16px;line-height:1;
-  background:transparent;border:0;opacity:0;
-  transition:opacity var(--t),color var(--t),background var(--t),transform var(--t);
-}
+.save-btn{position:absolute;top:10px;inset-inline-end:10px;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--mute);cursor:pointer;font-size:16px;line-height:1;background:transparent;border:0;opacity:0;transition:opacity var(--t),color var(--t),background var(--t),transform var(--t)}
 .card:hover .save-btn{opacity:1}
 .save-btn:hover{background:var(--panel-hover);color:var(--text);transform:scale(1.08)}
 .save-btn.on{opacity:1;color:var(--star)}
@@ -256,15 +214,7 @@ main{flex:1;padding:22px 26px 80px;min-width:0}
 .end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
 
 .rec3{display:flex;margin:0 -8px;gap:0}
-.rtile{
-  flex:1 1 0;min-width:0;margin:0 8px;height:120px;
-  background:var(--panel) center/cover;border-radius:var(--radius);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
-  text-align:center;padding:0 12px;color:#fff;border:1px solid var(--line);
-  text-shadow:0 1px 3px rgba(0,0,0,.6);
-  transition:transform var(--t),box-shadow var(--t);
-}
+.rtile{flex:1 1 0;min-width:0;margin:0 8px;height:120px;background:var(--panel) center/cover;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 12px;color:#fff;border:1px solid var(--line);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:transform var(--t),box-shadow var(--t)}
 .rtile:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
 .rtile .btn{text-shadow:none;font-size:11px;padding:5px 12px}
 
@@ -298,11 +248,7 @@ main{flex:1;padding:22px 26px 80px;min-width:0}
 .lnk{background:none;border:0;color:var(--blue);cursor:pointer;font-size:12px;padding:2px 4px;border-radius:4px}
 .lnk:hover{background:var(--blue-soft)}
 
-.btn{
-  background:var(--blue);color:#fff;border:0;
-  padding:8px 18px;cursor:pointer;font-size:13px;font-weight:500;
-  border-radius:8px;transition:background var(--t),transform var(--t),box-shadow var(--t);
-}
+.btn{background:var(--blue);color:#fff;border:0;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:500;border-radius:8px;transition:background var(--t),transform var(--t),box-shadow var(--t)}
 .btn:hover{background:var(--blue-2);box-shadow:0 4px 14px rgba(77,163,255,.3)}
 .btn:active{transform:scale(.97)}
 .btn.ghost{background:var(--panel-2);color:var(--text)}
@@ -320,30 +266,14 @@ main{flex:1;padding:22px 26px 80px;min-width:0}
 .set .switch input{width:auto;margin:0}
 
 .font-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.font-picker button{
-  text-align:left;padding:10px 12px;border-radius:8px;cursor:pointer;
-  background:var(--bg-soft);border:1px solid var(--line-2);color:var(--text);
-  font-size:13px;transition:all var(--t);font-family:var(--font-app);
-  display:flex;flex-direction:column;gap:4px;
-}
+.font-picker button{text-align:start;padding:10px 12px;border-radius:8px;cursor:pointer;background:var(--bg-soft);border:1px solid var(--line-2);color:var(--text);font-size:13px;transition:all var(--t);font-family:var(--font-app);display:flex;flex-direction:column;gap:4px}
 .font-picker button:hover{border-color:var(--blue)}
 .font-picker button.on{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 0 0 3px var(--blue-soft)}
 .font-picker button .fp-name{font-weight:600;font-size:13px}
 .font-picker button .fp-sample{font-size:11px;color:var(--mute);line-height:1.4}
-.font-picker button[data-f="sahel"]   .fp-name{font-family:var(--font-sahel)}
-.font-picker button[data-f="iransans"] .fp-name{font-family:var(--font-iransans)}
-.font-picker button[data-f="vazir"]   .fp-name{font-family:var(--font-vazir)}
-.font-picker button[data-f="samim"]   .fp-name{font-family:var(--font-samim)}
-.font-picker button[data-f="shabnam"] .fp-name{font-family:var(--font-shabnam)}
-.font-picker button[data-f="system"]  .fp-name{font-family:var(--font-system)}
 @media(max-width:520px){.font-picker{grid-template-columns:1fr}}
 
-dialog{
-  background:var(--panel);color:var(--text);
-  border:1px solid var(--line-2);border-radius:var(--radius);
-  width:min(580px,92vw);padding:0;box-shadow:var(--shadow);
-  animation:dlgIn .22s ease both;
-}
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line-2);border-radius:var(--radius);width:min(580px,92vw);padding:0;box-shadow:var(--shadow);animation:dlgIn .22s ease both}
 dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 @keyframes dlgIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 .dlg-head{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
@@ -357,119 +287,42 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 .dlg-body a:hover{color:var(--blue);border-color:var(--blue)}
 .dlg-foot{padding:12px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
 
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--panel);border:1px solid var(--line-2);
-  color:var(--text);padding:10px 18px;border-radius:10px;
-  font-size:13px;box-shadow:var(--shadow);
-  opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;
-  z-index:100;max-width:80vw;text-align:center;
-}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel);border:1px solid var(--line-2);color:var(--text);padding:10px 18px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:100;max-width:80vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-color:var(--green)}
 .toast.err{border-color:var(--red)}
 
-/* ============ READER MODE ============ */
-#reader{
-  position:fixed;inset:0;z-index:200;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  animation:rdIn .22s ease both;
-}
+#reader{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;flex-direction:column;animation:rdIn .22s ease both}
 #reader[hidden]{display:none}
 @keyframes rdIn{from{opacity:0}to{opacity:1}}
-.rd-bar{
-  flex:none;position:relative;
-  display:flex;align-items:center;gap:10px;
-  height:56px;padding:0 14px;
-  background:var(--header-bg);
-  backdrop-filter:blur(14px) saturate(140%);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
-  border-bottom:1px solid var(--line);
-  direction:ltr;                 /* keep the toolbar LTR regardless of article direction */
-}
-.rd-back{
-  width:34px;height:34px;border-radius:9px;border:0;
-  background:transparent;color:var(--text);cursor:pointer;
-  font-size:18px;display:flex;align-items:center;justify-content:center;
-  transition:background var(--t),transform var(--t);
-}
+.rd-bar{flex:none;position:relative;display:flex;align-items:center;gap:10px;height:56px;padding:0 14px;background:var(--header-bg);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--line)}
+.rd-back{width:34px;height:34px;border-radius:9px;border:0;background:transparent;color:var(--text);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background var(--t),transform var(--t)}
 .rd-back:hover{background:var(--panel-2)}
-/* flip back arrow when article is RTL */
-#reader[data-dir="rtl"] .rd-back{transform:scaleX(-1)}
-.rd-title-bar{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2;direction:ltr}
+html[dir="rtl"] .rd-back{transform:scaleX(-1)}
+.rd-title-bar{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .rd-src{font-size:12px;color:var(--blue);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rd-time{font-size:11px;color:var(--mute)}
 .rd-actions{display:flex;gap:4px;flex:none;align-items:center}
-
 .rd-font-wrap{position:relative}
-.rd-font-btn{
-  height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);
-  background:var(--panel);color:var(--text);cursor:pointer;
-  font-size:12px;font-weight:600;
-  display:flex;align-items:center;gap:6px;
-  transition:background var(--t),border-color var(--t);
-}
+.rd-font-btn{height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;transition:background var(--t),border-color var(--t)}
 .rd-font-btn:hover{background:var(--panel-2);border-color:var(--blue)}
 .rd-font-btn .caret{font-size:9px;color:var(--mute)}
-.rd-font-menu{
-  position:absolute;top:calc(100% + 6px);right:0;
-  background:var(--panel);border:1px solid var(--line-2);border-radius:10px;
-  box-shadow:var(--shadow);padding:6px;min-width:220px;
-  z-index:10;display:none;direction:ltr;
-}
+.rd-font-menu{position:absolute;top:calc(100% + 6px);inset-inline-end:0;background:var(--panel);border:1px solid var(--line-2);border-radius:10px;box-shadow:var(--shadow);padding:6px;min-width:220px;z-index:10;display:none}
 .rd-font-menu.open{display:block;animation:dlgIn .18s ease both}
-.rd-font-menu button{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  width:100%;padding:8px 10px;border:0;border-radius:6px;
-  background:transparent;color:var(--text);cursor:pointer;
-  font-size:13px;text-align:left;
-  transition:background var(--t);
-}
+.rd-font-menu button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:var(--text);cursor:pointer;font-size:13px;text-align:start;transition:background var(--t)}
 .rd-font-menu button:hover{background:var(--panel-2)}
 .rd-font-menu button.on{background:var(--blue-soft);color:var(--blue)}
 .rd-font-menu button .nm{font-weight:600}
 .rd-font-menu button .prev{font-size:11px;color:var(--mute)}
-.rd-font-menu button[data-f="sahel"]   .nm{font-family:var(--font-sahel)}
-.rd-font-menu button[data-f="iransans"] .nm{font-family:var(--font-iransans)}
-.rd-font-menu button[data-f="vazir"]   .nm{font-family:var(--font-vazir)}
-.rd-font-menu button[data-f="samim"]   .nm{font-family:var(--font-samim)}
-.rd-font-menu button[data-f="shabnam"] .nm{font-family:var(--font-shabnam)}
-.rd-font-menu button[data-f="system"]  .nm{font-family:var(--font-system)}
-
-.rd-btn{
-  height:32px;min-width:32px;padding:0 10px;border-radius:8px;
-  border:0;background:transparent;color:var(--text-dim);cursor:pointer;
-  font-size:13px;font-weight:500;
-  display:flex;align-items:center;justify-content:center;
-  transition:background var(--t),color var(--t);
-}
+.rd-btn{height:32px;min-width:32px;padding:0 10px;border-radius:8px;border:0;background:transparent;color:var(--text-dim);cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;transition:background var(--t),color var(--t)}
 .rd-btn:hover{background:var(--panel-2);color:var(--text)}
 .rd-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent;overflow:hidden}
 .rd-progress-fill{height:100%;width:0;background:var(--blue);transition:width .1s linear}
-
 .rd-scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
-.rd-content{
-  max-width:720px;margin:0 auto;
-  padding:36px 24px 100px;
-  font-family:var(--font-reader);
-  font-size:var(--rd-size);line-height:1.9;
-  color:var(--text);
-  /* text-align defaults to `start` (direction-aware) */
-}
-.rd-content .rd-hero{
-  width:100%;aspect-ratio:16/9;border-radius:var(--radius);
-  background:var(--panel-2) center/cover;margin-bottom:22px;
-}
-.rd-content h1.rd-h1{
-  font-size:calc(var(--rd-size) * 1.7);
-  line-height:1.4;font-weight:700;letter-spacing:-.01em;
-  margin:0 0 12px;
-}
-.rd-content .rd-byline{
-  color:var(--mute);font-size:13px;margin-bottom:28px;
-  display:flex;gap:12px;flex-wrap:wrap;align-items:center;
-}
+.rd-content{max-width:720px;margin:0 auto;padding:36px 24px 100px;font-family:var(--font-reader);font-size:var(--rd-size);line-height:1.9;color:var(--text)}
+.rd-content .rd-hero{width:100%;aspect-ratio:16/9;border-radius:var(--radius);background:var(--panel-2) center/cover;margin-bottom:22px}
+.rd-content h1.rd-h1{font-size:calc(var(--rd-size) * 1.7);line-height:1.4;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
+.rd-content .rd-byline{color:var(--mute);font-size:13px;margin-bottom:28px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .rd-content .rd-byline .dot{width:4px;height:4px;border-radius:50%;background:var(--mute);display:inline-block}
 .rd-content h2,.rd-content h3,.rd-content h4{line-height:1.5;margin:1.7em 0 .5em;letter-spacing:-.01em}
 .rd-content h2{font-size:calc(var(--rd-size) * 1.35)}
@@ -480,55 +333,29 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 .rd-content figcaption{font-size:12px;color:var(--mute);text-align:center;margin-top:6px}
 .rd-content a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(77,163,255,.35)}
 .rd-content a:hover{border-bottom-color:var(--blue)}
-.rd-content blockquote{
-  margin:1.2em 0;padding:6px 18px;
-  border-inline-start:3px solid var(--blue);   /* flips with direction */
-  color:var(--text-dim);font-style:italic;
-}
+.rd-content blockquote{margin:1.2em 0;padding:6px 18px;border-inline-start:3px solid var(--blue);color:var(--text-dim);font-style:italic}
 .rd-content pre,.rd-content code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.9em}
-.rd-content pre{
-  background:var(--panel);padding:14px 16px;border-radius:8px;
-  overflow-x:auto;border:1px solid var(--line);
-  direction:ltr;text-align:left;                 /* code is always LTR */
-}
+.rd-content pre{background:var(--panel);padding:14px 16px;border-radius:8px;overflow-x:auto;border:1px solid var(--line);direction:ltr;text-align:left}
 .rd-content code{background:var(--panel-2);padding:2px 6px;border-radius:4px;direction:ltr;unicode-bidi:embed}
 .rd-content pre code{background:none;padding:0}
-.rd-content ul,.rd-content ol{padding-inline-start:1.4em;margin:0 0 1.2em}  /* direction-aware */
+.rd-content ul,.rd-content ol{padding-inline-start:1.4em;margin:0 0 1.2em}
 .rd-content li{margin:.4em 0}
 .rd-content hr{border:0;border-top:1px solid var(--line);margin:2em 0}
 .rd-content table{width:100%;border-collapse:collapse;margin:1em 0}
-.rd-content th,.rd-content td{padding:8px 12px;border:1px solid var(--line);text-align:start}  /* direction-aware */
+.rd-content th,.rd-content td{padding:8px 12px;border:1px solid var(--line);text-align:start}
 .rd-content th{background:var(--panel-2)}
-
-.rd-loading{text-align:center;color:var(--mute);padding:80px 20px;font-size:14px}
-.rd-loading::after{
-  content:"";display:block;width:32px;height:32px;
-  border:3px solid var(--line);border-top-color:var(--blue);
-  border-radius:50%;margin:18px auto 0;
-  animation:spin .8s linear infinite;
-}
-.rd-end{margin-top:40px;padding-top:24px;border-top:1px solid var(--line);text-align:center}
-.rd-end .btn{margin:0 4px}
-
-/* ===== RTL specific fixes (article-level direction) ===== */
-/* When direction is RTL, list markers should sit on the right and the bullet
-   should render on the correct side; padding-inline-start already handles it,
-   but the browser occasionally needs a hint for nested lists. */
-.rd-content[dir="rtl"] .rd-h1,
-.rd-content[dir="rtl"] .rd-byline,
-.rd-content[dir="rtl"] p,
-.rd-content[dir="rtl"] li{ text-align:right }
-/* Footnote-ish inline quotes stay aligned to the reading direction */
-.rd-content[dir="rtl"] blockquote{ font-style:normal }
-/* Absolutely ensure code stays LTR even under an RTL parent */
 .rd-content[dir="rtl"] pre,
 .rd-content[dir="rtl"] code,
 .rd-content[dir="rtl"] pre *,
-.rd-content[dir="rtl"] code *{ direction:ltr; text-align:left; unicode-bidi:embed }
+.rd-content[dir="rtl"] code *{direction:ltr;text-align:left;unicode-bidi:embed}
+.rd-loading{text-align:center;color:var(--mute);padding:80px 20px;font-size:14px}
+.rd-loading::after{content:"";display:block;width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;margin:18px auto 0;animation:spin .8s linear infinite}
+.rd-end{margin-top:40px;padding-top:24px;border-top:1px solid var(--line);text-align:center}
+.rd-end .btn{margin:0 4px}
 
 @media(max-width:820px){
   aside{display:none}
-  main{padding:18px 16px 60px}
+  main{padding-block:18px 60px;padding-inline:16px}
   .card .im{width:130px}
   .card{height:140px}
   .card .s{-webkit-line-clamp:2}
@@ -544,17 +371,17 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 <header>
   <div class="brand">
     <div class="logo"></div>
-    <h1>Personal news</h1>
+    <h1 id="appTitle">Personal news</h1>
   </div>
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
-    <input id="search" class="search" placeholder="جستجو در خبرها…  (/) " autocomplete="off" spellcheck="false">
-    <button class="search-clear" id="searchClear" hidden aria-label="پاک کردن">✕</button>
+    <input id="search" class="search" placeholder="" autocomplete="off" spellcheck="false">
+    <button class="search-clear" id="searchClear" hidden aria-label="">✕</button>
   </div>
   <div class="head-actions">
-    <button class="icon-btn" id="refreshBtn" title="Refresh all (R)" aria-label="Refresh">⟳</button>
-    <button class="icon-btn" id="themeBtn" title="Toggle theme (T)" aria-label="Theme">◐</button>
-    <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
+    <button class="icon-btn" id="refreshBtn" aria-label="">⟳</button>
+    <button class="icon-btn" id="themeBtn" aria-label="">◐</button>
+    <button class="icon-btn" id="settingsBtn" aria-label="">⚙</button>
   </div>
 </header>
 
@@ -567,17 +394,17 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
         <span class="count" id="cnt"></span>
       </div>
       <div class="tact">
-        <div class="seg" id="sortSeg" title="Sort">
-          <button data-sort="newest" title="Newest first">↓</button>
-          <button data-sort="oldest" title="Oldest first">↑</button>
+        <div class="seg" id="sortSeg">
+          <button data-sort="newest" id="sortNewest">↓</button>
+          <button data-sort="oldest" id="sortOldest">↑</button>
         </div>
-        <div class="seg" id="densSeg" title="Density">
-          <button data-dens="cozy" title="Cozy">▦</button>
-          <button data-dens="compact" title="Compact">▤</button>
+        <div class="seg" id="densSeg">
+          <button data-dens="cozy" id="densCozy">▦</button>
+          <button data-dens="compact" id="densCompact">▤</button>
         </div>
-        <div class="seg" id="tg" title="View">
-          <button data-v="list" title="List view">☰</button>
-          <button data-v="grid" title="Grid view">▩</button>
+        <div class="seg" id="tg">
+          <button data-v="list" id="tgList">☰</button>
+          <button data-v="grid" id="tgGrid">▩</button>
         </div>
       </div>
     </div>
@@ -585,31 +412,24 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
   </main>
 </div>
 
-<div id="reader" hidden aria-hidden="true" role="dialog" aria-modal="true" data-dir="ltr">
+<div id="reader" hidden aria-hidden="true" role="dialog" aria-modal="true">
   <div class="rd-bar">
-    <button class="rd-back" id="rdBack" title="بازگشت (Esc)" aria-label="Back">←</button>
+    <button class="rd-back" id="rdBack" aria-label="">←</button>
     <div class="rd-title-bar">
       <div class="rd-src" id="rdSrc"></div>
       <div class="rd-time" id="rdTime"></div>
     </div>
     <div class="rd-actions">
       <div class="rd-font-wrap">
-        <button class="rd-font-btn" id="rdFontBtn" title="تغییر فونت">
+        <button class="rd-font-btn" id="rdFontBtn">
           <span id="rdFontLabel">Sahel</span><span class="caret">▼</span>
         </button>
-        <div class="rd-font-menu" id="rdFontMenu">
-          <button data-f="sahel"><span class="nm">ساحل</span><span class="prev">Sahel — پیش‌فرض</span></button>
-          <button data-f="iransans"><span class="nm">ایران‌سنس</span><span class="prev">IranSans</span></button>
-          <button data-f="vazir"><span class="nm">وزیرمتن</span><span class="prev">Vazirmatn</span></button>
-          <button data-f="samim"><span class="nm">صمیم</span><span class="prev">Samim</span></button>
-          <button data-f="shabnam"><span class="nm">شبنم</span><span class="prev">Shabnam</span></button>
-          <button data-f="system"><span class="nm">سیستم</span><span class="prev">System default</span></button>
-        </div>
+        <div class="rd-font-menu" id="rdFontMenu"></div>
       </div>
-      <button class="rd-btn" id="rdFontDec" title="کوچک‌تر">A−</button>
-      <button class="rd-btn" id="rdFontInc" title="بزرگ‌تر">A+</button>
-      <button class="rd-btn" id="rdStar" title="ذخیره">★</button>
-      <button class="rd-btn" id="rdOpen" title="صفحه اصلی">↗</button>
+      <button class="rd-btn" id="rdFontDec" aria-label="">A−</button>
+      <button class="rd-btn" id="rdFontInc" aria-label="">A+</button>
+      <button class="rd-btn" id="rdStar" aria-label="">★</button>
+      <button class="rd-btn" id="rdOpen" aria-label="">↗</button>
     </div>
     <div class="rd-progress"><div class="rd-progress-fill" id="rdProgress"></div></div>
   </div>
@@ -619,50 +439,15 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 </div>
 
 <dialog id="previewDlg">
-  <div class="dlg-head"><h3 id="pvTitle">Preview</h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-head"><h3 id="pvTitle"></h3><button class="close" data-close>✕</button></div>
   <div class="dlg-body" id="pvBody"></div>
-  <div class="dlg-foot"><button class="btn ghost" data-close>Close</button></div>
+  <div class="dlg-foot"><button class="btn ghost" data-close id="pvCloseBtn"></button></div>
 </dialog>
 
 <dialog id="settingsDlg">
-  <div class="dlg-head"><h3>تنظیمات</h3><button class="close" data-close>✕</button></div>
-  <div class="dlg-body">
-    <div class="set" style="margin-top:0">
-      <label for="setTheme">تم</label>
-      <select id="setTheme">
-        <option value="dark">تاریک</option>
-        <option value="light">روشن</option>
-      </select>
-
-      <label>فونت</label>
-      <div class="font-picker" id="fontPicker">
-        <button data-f="sahel"><span class="fp-name">ساحل</span><span class="fp-sample">Sahel — پیش‌فرض</span></button>
-        <button data-f="iransans"><span class="fp-name">ایران‌سنس</span><span class="fp-sample">IranSans</span></button>
-        <button data-f="vazir"><span class="fp-name">وزیرمتن</span><span class="fp-sample">Vazirmatn</span></button>
-        <button data-f="samim"><span class="fp-name">صمیم</span><span class="fp-sample">Samim</span></button>
-        <button data-f="shabnam"><span class="fp-name">شبنم</span><span class="fp-sample">Shabnam</span></button>
-        <button data-f="system"><span class="fp-name">سیستم</span><span class="fp-sample">System default</span></button>
-      </div>
-
-      <label for="setAuto">فاصله‌ی به‌روزرسانی خودکار (دقیقه، ۰ = خاموش)</label>
-      <input id="setAuto" type="number" min="0" max="180" step="5">
-
-      <label for="setProxy">پروکسی CORS (اختیاری، پیشوند یا الگوی <code>{url}</code>)</label>
-      <input id="setProxy" placeholder="https://my-proxy.workers.dev/?url={url}">
-
-      <label class="switch"><input type="checkbox" id="setReader"> باز کردن خبرها در حالت Reader</label>
-      <label class="switch"><input type="checkbox" id="setPrefetch"> Prefetch روی hover</label>
-
-      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
-        <button class="btn ghost" id="opmlExport">خروجی OPML</button>
-        <button class="btn ghost" id="opmlImport">ورود OPML</button>
-        <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
-        <button class="btn ghost" id="imgCacheClear">پاک کردن کش عکس</button>
-        <button class="btn danger" id="resetAll" style="margin-left:auto">بازنشانی همه‌چیز</button>
-      </div>
-    </div>
-  </div>
-  <div class="dlg-foot"><button class="btn" data-close>تمام</button></div>
+  <div class="dlg-head"><h3 id="setTitle"></h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-body" id="setBody"></div>
+  <div class="dlg-foot"><button class="btn" data-close id="setDone"></button></div>
 </dialog>
 
 <script>
@@ -675,7 +460,294 @@ const store = {
 };
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
-/* ============ FONT CONFIG ============ */
+/* ============================================================
+   i18n
+   ============================================================ */
+const LANGS = {
+  fa: {
+    dir: "rtl", name: "Persian", nativeName: "فارسی",
+    appTitle: "اخبار شخصی",
+    searchPlaceholder: "جستجو در خبرها…  (کلید /)",
+    clearSearch: "پاک کردن جستجو",
+    refreshAll: "به‌روزرسانی همه (R)",
+    toggleTheme: "تغییر تم (T)",
+    settings: "تنظیمات",
+    top50: "۵۰ خبر برتر",
+    savedItems: "ذخیره‌شده‌ها",
+    mySources: "منابع من",
+    markAllRead: "علامت‌زدن همه",
+    addSources: "افزودن منبع",
+    refreshSource: "به‌روزرسانی این منبع",
+    removeSource: "حذف",
+    sortNewest: "جدیدترین",
+    sortOldest: "قدیمی‌ترین",
+    viewList: "نمای لیستی",
+    viewGrid: "نمای شبکه‌ای",
+    densCozy: "راحت",
+    densCompact: "فشرده",
+    saveLater: "ذخیره برای بعد",
+    removeFromSaved: "حذف از ذخیره‌ها",
+    groupRecent: "تازه‌ترین",
+    groupToday: "امروز",
+    groupYesterday: "دیروز",
+    groupThisWeek: "این هفته",
+    groupLastWeek: "هفته‌ی گذشته",
+    groupEarlier: "قدیمی‌تر",
+    minAgo: "{n} دقیقه پیش",
+    hourAgo: "{n} ساعت پیش",
+    dayAgo: "{n} روز پیش",
+    monthAgo: "{n} ماه پیش",
+    minRead: "{n} دقیقه",
+    minReadLong: "{n} دقیقه مطالعه",
+    emptyTitle: "هنوز خبری نیست",
+    emptyText: "یک منبع اضافه کنید یا اتصال اینترنت را بررسی کنید.",
+    noMatchesTitle: "چیزی پیدا نشد",
+    noMatchesText: "عبارت دیگری امتحان کنید.",
+    endOfStream: "پایان جریان خبرها",
+    recommended: "پیشنهادی",
+    add: "افزودن",
+    added: "افزوده شد",
+    preview: "پیش‌نمایش",
+    startReading: "شروع خواندن",
+    addSourceTitle: "افزودن منبع",
+    addSourceSubtitle: "آدرس یک سایت را وارد کنید (مثلاً digiato.com) یا آدرس مستقیم فید RSS / Atom.",
+    addSourcePlaceholder: "مثال: digiato.com یا https://example.com/feed.xml",
+    lookingForFeeds: "در حال جستجوی فید…",
+    checkingPage: "بررسی صفحه…",
+    verifyingFeeds: "بررسی {n} لینک فید…",
+    tryingPaths: "امتحان مسیرهای رایج فید…",
+    feedNotFound: "فید RSS یا Atom پیدا نشد. آدرس فید را مستقیم امتحان کنید یا پروکسی CORS تنظیم کنید.",
+    noMatchCatalog: "چیزی پیدا نشد. آدرس یک سایت مثل example.com را وارد کنید.",
+    proxyLabel: "پروکسی CORS (اختیاری)",
+    proxyHelp: "ابتدا مستقیم تلاش می‌شود، سپس از پروکسی‌های عمومی استفاده می‌شود. برای پروکسی شخصی، پیشوند یا الگوی {url} را وارد کنید.",
+    proxyPlaceholder: "http://localhost:8787/?url={url}",
+    settingsTitle: "تنظیمات",
+    language: "زبان",
+    languageFa: "فارسی",
+    languageEn: "English",
+    theme: "تم",
+    themeDark: "تاریک",
+    themeLight: "روشن",
+    font: "فونت",
+    fontDefault: "پیش‌فرض",
+    autoRefresh: "فاصله‌ی به‌روزرسانی خودکار (دقیقه، ۰ = خاموش)",
+    openInReader: "باز کردن خبرها در حالت Reader",
+    prefetch: "Prefetch روی hover",
+    exportOpml: "خروجی OPML",
+    importOpml: "ورود OPML",
+    clearImgCache: "پاک کردن کش عکس",
+    resetAll: "بازنشانی همه‌چیز",
+    done: "تمام",
+    close: "بستن",
+    readerLoading: "در حال بارگذاری متن خبر…",
+    readerErr: "بارگذاری متن کامل ممکن نشد. می‌توانید صفحه‌ی اصلی را باز کنید.",
+    openOriginal: "باز کردن صفحه اصلی",
+    save: "ذخیره",
+    savedBtn: "ذخیره شد",
+    back: "بازگشت",
+    smaller: "کوچک‌تر",
+    larger: "بزرگ‌تر",
+    changeFont: "تغییر فونت",
+    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها و تاریخچه پاک شود؟",
+    importedSources: "{n} منبع وارد شد",
+    noNewSources: "منبع جدیدی پیدا نشد",
+    opmlError: "خطا در خواندن فایل OPML",
+    opmlExported: "OPML گرفته شد",
+    imgCacheCleared: "کش عکس پاک شد — صفحه را دوباره بارگذاری کنید",
+    proxySaved: "پروکسی ذخیره شد",
+    autoOn: "به‌روزرسانی خودکار هر {n} دقیقه",
+    autoOff: "به‌روزرسانی خودکار خاموش شد",
+    readerOn: "حالت Reader روشن شد",
+    readerOff: "حالت Reader خاموش شد",
+    prefetchOn: "Prefetch روشن شد",
+    prefetchOff: "Prefetch خاموش شد",
+    removedFromSaved: "از ذخیره‌ها حذف شد",
+    savedForLater: "ذخیره شد",
+    refreshing: "در حال به‌روزرسانی…",
+    sourceAdded: "منبع اضافه شد",
+    feedsRefreshed: "فیدها به‌روز شد",
+    articleCount: "{n} خبر",
+    sourceWord: "منبع",
+    mySourcesTitle: "منابع من"
+  },
+  en: {
+    dir: "ltr", name: "English", nativeName: "English",
+    appTitle: "Personal news",
+    searchPlaceholder: "Search articles…  (press /)",
+    clearSearch: "Clear search",
+    refreshAll: "Refresh all (R)",
+    toggleTheme: "Toggle theme (T)",
+    settings: "Settings",
+    top50: "Top 50",
+    savedItems: "Saved",
+    mySources: "My sources",
+    markAllRead: "Mark all read",
+    addSources: "Add sources",
+    refreshSource: "Refresh this source",
+    removeSource: "Remove",
+    sortNewest: "Newest first",
+    sortOldest: "Oldest first",
+    viewList: "List view",
+    viewGrid: "Grid view",
+    densCozy: "Cozy",
+    densCompact: "Compact",
+    saveLater: "Save for later",
+    removeFromSaved: "Remove from saved",
+    groupRecent: "Most recent",
+    groupToday: "Today",
+    groupYesterday: "Yesterday",
+    groupThisWeek: "This week",
+    groupLastWeek: "Last week",
+    groupEarlier: "Earlier",
+    minAgo: "{n}m ago",
+    hourAgo: "{n}h ago",
+    dayAgo: "{n}d ago",
+    monthAgo: "{n}mo ago",
+    minRead: "{n} min",
+    minReadLong: "{n} min read",
+    emptyTitle: "Nothing here yet",
+    emptyText: "Add a source or check your connection.",
+    noMatchesTitle: "No matches",
+    noMatchesText: "Try a different search term.",
+    endOfStream: "End of news stream",
+    recommended: "Recommended",
+    add: "Add",
+    added: "Added",
+    preview: "Preview",
+    startReading: "Start reading",
+    addSourceTitle: "Add sources",
+    addSourceSubtitle: "Paste a site address (e.g. digiato.com) or a direct RSS / Atom feed URL.",
+    addSourcePlaceholder: "example.com or https://example.com/feed.xml",
+    lookingForFeeds: "Looking for feeds…",
+    checkingPage: "Checking page…",
+    verifyingFeeds: "Verifying {n} feed link(s)…",
+    tryingPaths: "Trying common feed paths…",
+    feedNotFound: "No RSS or Atom feed found at this address. Try the feed URL directly, or set a CORS proxy.",
+    noMatchCatalog: "No match. Enter a site address such as example.com.",
+    proxyLabel: "CORS proxy (optional)",
+    proxyHelp: "Feeds are fetched directly first, then through public proxies. To use your own, enter a prefix or a template with {url}.",
+    proxyPlaceholder: "http://localhost:8787/?url={url}",
+    settingsTitle: "Settings",
+    language: "Language",
+    languageFa: "فارسی",
+    languageEn: "English",
+    theme: "Theme",
+    themeDark: "Dark",
+    themeLight: "Light",
+    font: "Font",
+    fontDefault: "default",
+    autoRefresh: "Auto-refresh interval (minutes, 0 = off)",
+    openInReader: "Open articles in reader mode",
+    prefetch: "Prefetch articles on hover",
+    exportOpml: "Export OPML",
+    importOpml: "Import OPML",
+    clearImgCache: "Clear image cache",
+    resetAll: "Reset everything",
+    done: "Done",
+    close: "Close",
+    readerLoading: "Loading article…",
+    readerErr: "Couldn't load the full article. You can open the original page instead.",
+    openOriginal: "Open original",
+    save: "Save",
+    savedBtn: "Saved",
+    back: "Back",
+    smaller: "Smaller text",
+    larger: "Larger text",
+    changeFont: "Change font",
+    resetConfirm: "Reset all settings, sources, saved articles and read history?",
+    importedSources: "Imported {n} source(s)",
+    noNewSources: "No new sources found",
+    opmlError: "Couldn't parse OPML file",
+    opmlExported: "OPML exported",
+    imgCacheCleared: "Image cache cleared — refresh to retry",
+    proxySaved: "Proxy saved",
+    autoOn: "Auto-refresh every {n} min",
+    autoOff: "Auto-refresh off",
+    readerOn: "Reader mode on",
+    readerOff: "Reader mode off",
+    prefetchOn: "Prefetch on",
+    prefetchOff: "Prefetch off",
+    removedFromSaved: "Removed from saved",
+    savedForLater: "Saved for later",
+    refreshing: "Refreshing…",
+    sourceAdded: "Source added",
+    feedsRefreshed: "Feeds refreshed",
+    articleCount: "{n} article(s)",
+    sourceWord: "Source",
+    mySourcesTitle: "My sources"
+  }
+};
+
+let appLang = store.get("lang", "fa");
+if (!LANGS[appLang]) appLang = "en";
+
+/* ============================================================
+   Number formatting
+   ============================================================ */
+const FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+function toFaNum(v){
+  return String(v).replace(/\d/g, d => FA_DIGITS[+d]);
+}
+function formatNum(v){
+  return appLang === "fa" ? toFaNum(v) : String(v);
+}
+
+function t(key, vars){
+  const lang = LANGS[appLang] || LANGS.en;
+  let s = lang[key] ?? LANGS.en[key] ?? key;
+  if (vars && typeof s === "string"){
+    for (const k in vars){
+      const raw = vars[k];
+      const val = (appLang === "fa" && typeof raw === "number")
+        ? toFaNum(raw)
+        : String(raw);
+      s = s.replace("{" + k + "}", val);
+    }
+  }
+  return s;
+}
+
+function applyLang(){
+  const lang = LANGS[appLang];
+  document.documentElement.setAttribute("lang", appLang);
+  document.documentElement.setAttribute("dir", lang.dir);
+  document.title = t("appTitle");
+  const appTitle = $("#appTitle"); if (appTitle) appTitle.textContent = t("appTitle");
+  const s = $("#search"); if (s) s.placeholder = t("searchPlaceholder");
+  const sc = $("#searchClear"); if (sc) sc.setAttribute("aria-label", t("clearSearch"));
+  const rb = $("#refreshBtn"); if (rb){ rb.title = t("refreshAll"); rb.setAttribute("aria-label", t("refreshAll")); }
+  const tb = $("#themeBtn"); if (tb){ tb.title = t("toggleTheme"); tb.setAttribute("aria-label", t("toggleTheme")); }
+  const sb = $("#settingsBtn"); if (sb){ sb.title = t("settings"); sb.setAttribute("aria-label", t("settings")); }
+  const sN = $("#sortNewest"); if (sN) sN.title = t("sortNewest");
+  const sO = $("#sortOldest"); if (sO) sO.title = t("sortOldest");
+  const dC = $("#densCozy"); if (dC) dC.title = t("densCozy");
+  const dK = $("#densCompact"); if (dK) dK.title = t("densCompact");
+  const tL = $("#tgList"); if (tL) tL.title = t("viewList");
+  const tG = $("#tgGrid"); if (tG) tG.title = t("viewGrid");
+  const bk = $("#rdBack"); if (bk){ bk.title = t("back"); bk.setAttribute("aria-label", t("back")); }
+  const fD = $("#rdFontDec"); if (fD){ fD.title = t("smaller"); fD.setAttribute("aria-label", t("smaller")); }
+  const fI = $("#rdFontInc"); if (fI){ fI.title = t("larger"); fI.setAttribute("aria-label", t("larger")); }
+  const st = $("#rdStar"); if (st) st.title = t("save");
+  const op = $("#rdOpen"); if (op){ op.title = t("openOriginal"); op.setAttribute("aria-label", t("openOriginal")); }
+  const fb = $("#rdFontBtn"); if (fb) fb.title = t("changeFont");
+  const pv = $("#pvCloseBtn"); if (pv) pv.textContent = t("close");
+  const st2 = $("#setDone"); if (st2) st2.textContent = t("done");
+  const st3 = $("#setTitle"); if (st3) st3.textContent = t("settingsTitle");
+}
+
+function setLang(id){
+  if (!LANGS[id]) return;
+  appLang = id;
+  store.set("lang", appLang);
+  applyLang();
+  buildReaderFontMenu();
+  render();
+  if ($("#settingsDlg").open) fillSettings();
+}
+
+/* ============================================================
+   Fonts
+   ============================================================ */
 const FONTS = [
   { id:"sahel",   label:"Sahel",      labelFa:"ساحل",     family:'"Sahel", "Tahoma", system-ui, sans-serif' },
   { id:"iransans",label:"IranSans",   labelFa:"ایران‌سنس", family:'"IRANSans", "Tahoma", system-ui, sans-serif' },
@@ -691,6 +763,7 @@ const FONT_PRELOAD = {
   samim:    "https://cdn.jsdelivr.net/gh/rastikerdar/samim-font@v4.0.5/dist/Samim.woff2",
   shabnam:  "https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v5.0.1/dist/Shabnam.woff2"
 };
+function fontById(id){ return FONTS.find(f => f.id === id) || FONTS[0]; }
 
 const CATALOG = [
   {title:"BBC News", url:"https://feeds.bbci.co.uk/news/rss.xml"},
@@ -703,7 +776,9 @@ const CATALOG = [
 ];
 const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
 
-/* ============ STATE ============ */
+/* ============================================================
+   State
+   ============================================================ */
 let sources = store.get("sources", []);
 let articles = {};
 let state = {page: sources.length ? "news" : "add", src: null};
@@ -722,7 +797,9 @@ let openInReader = store.get("openInReader", true);
 let prefetchOn = store.get("prefetchOn", true);
 let readerFontSize = store.get("readerFont", 17);
 
-/* ============ NETWORKING ============ */
+/* ============================================================
+   Networking
+   ============================================================ */
 const customProxy = () => store.get("proxy", "");
 function proxies(){
   const list = [u => u,
@@ -754,7 +831,9 @@ function proxyImageUrls(url){
   return out;
 }
 
-/* ============ URL / IMAGE HELPERS ============ */
+/* ============================================================
+   URL / direction
+   ============================================================ */
 function resolveImgUrl(src, base){
   if (!src) return "";
   src = String(src).trim();
@@ -767,25 +846,15 @@ function resolveImgUrl(src, base){
     return u.href;
   } catch { return src; }
 }
-
-/* ============ TEXT DIRECTION DETECTION ============ */
-/* Count strong RTL vs strong LTR letters.
-   RTL wins if it has at least as many letters as LTR and there are any RTL letters.
-   Also treat Hebrew alongside Arabic/Persian. */
 function isRtlChar(cp){
-  return (
-    (cp >= 0x0590 && cp <= 0x05FF) ||   // Hebrew
-    (cp >= 0x0600 && cp <= 0x06FF) ||   // Arabic + Persian additions
-    (cp >= 0x0700 && cp <= 0x074F) ||   // Syriac (bonus)
-    (cp >= 0x0750 && cp <= 0x077F) ||   // Arabic Supplement
-    (cp >= 0x08A0 && cp <= 0x08FF) ||   // Arabic Extended-A
-    (cp >= 0xFB1D && cp <= 0xFDFF) ||   // Hebrew + Arabic Presentation Forms-A
-    (cp >= 0xFE70 && cp <= 0xFEFF)      // Arabic Presentation Forms-B
-  );
+  return (cp >= 0x0590 && cp <= 0x05FF) || (cp >= 0x0600 && cp <= 0x06FF) ||
+         (cp >= 0x0700 && cp <= 0x074F) || (cp >= 0x0750 && cp <= 0x077F) ||
+         (cp >= 0x08A0 && cp <= 0x08FF) || (cp >= 0xFB1D && cp <= 0xFDFF) ||
+         (cp >= 0xFE70 && cp <= 0xFEFF);
 }
 function isLtrChar(cp){
   return (cp >= 0x0041 && cp <= 0x005A) || (cp >= 0x0061 && cp <= 0x007A) ||
-         (cp >= 0x00C0 && cp <= 0x024F);   // Latin + extended
+         (cp >= 0x00C0 && cp <= 0x024F);
 }
 function detectDirection(text){
   if (!text) return "ltr";
@@ -796,11 +865,12 @@ function detectDirection(text){
     else if (isLtrChar(cp)) ltr++;
   }
   if (rtl === 0) return "ltr";
-  // Give RTL a slight edge because Persian/Arabic text is often mixed with Latin acronyms
   return rtl >= ltr * 0.6 ? "rtl" : "ltr";
 }
 
-/* ============ PARSING ============ */
+/* ============================================================
+   Parsing
+   ============================================================ */
 function parseFeed(text){
   const doc = new DOMParser().parseFromString(text.trim(), "text/xml");
   if (doc.querySelector("parsererror")) return null;
@@ -815,7 +885,6 @@ function parseFeed(text){
     }
     return out;
   };
-
   if (name === "rss" || name === "rdf"){
     const ch = root.querySelector("channel") || root;
     const items = [...doc.getElementsByTagNameNS("*", "item")].map(it => {
@@ -828,9 +897,7 @@ function parseFeed(text){
       if (enc && enc.getAttribute("url")) push(enc.getAttribute("url"));
       if (media && media.getAttribute("url")) push(media.getAttribute("url"));
       collectImgs(html, link).forEach(push);
-      return {title: txt(it, "title"), link,
-        date: Date.parse(txt(it, "pubDate") || txt(it, "date")) || 0,
-        html, img: cands[0] || "", imgCandidates: cands};
+      return {title: txt(it, "title"), link, date: Date.parse(txt(it, "pubDate") || txt(it, "date")) || 0, html, img: cands[0] || "", imgCandidates: cands};
     });
     return {kind: "RSS", title: txt(ch, "title"), items};
   }
@@ -845,24 +912,20 @@ function parseFeed(text){
       const push = u => { const r = resolveImgUrl(u, link); if (r && !cands.includes(r)) cands.push(r); };
       if (media && media.getAttribute("url")) push(media.getAttribute("url"));
       collectImgs(html, link).forEach(push);
-      return {title: txt(it, "title"), link,
-        date: Date.parse(txt(it, "published") || txt(it, "updated")) || 0,
-        html, img: cands[0] || "", imgCandidates: cands};
+      return {title: txt(it, "title"), link, date: Date.parse(txt(it, "published") || txt(it, "updated")) || 0, html, img: cands[0] || "", imgCandidates: cands};
     });
     return {kind: "Atom", title: txt(root, "title"), items};
   }
   return null;
-}
-function firstImg(html, base){
-  const m = /<img[^>]+src=["']([^"']+)["']/i.exec(html || "");
-  return m ? resolveImgUrl(m[1], base) : "";
 }
 function plain(html){
   const d = new DOMParser().parseFromString(html || "", "text/html");
   return (d.body.textContent || "").replace(/\s+/g, " ").trim();
 }
 
-/* ============ DISCOVERY ============ */
+/* ============================================================
+   Discovery
+   ============================================================ */
 const looksFeed = t => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000));
 function normalizeUrl(s){
   s = s.trim();
@@ -883,8 +946,7 @@ async function discover(input, onStep){
   if (!url) return [];
   const found = new Map();
   const add = r => r && !found.has(r.url) && found.set(r.url, r);
-
-  onStep("Checking page…");
+  onStep(t("checkingPage"));
   let html = "";
   try { html = await fetchText(url); } catch {}
   if (html && looksFeed(html)) {
@@ -901,7 +963,7 @@ async function discover(input, onStep){
     const anchors = [...d.querySelectorAll("a[href]")].map(a => a.getAttribute("href"))
       .filter(h => /(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)$/i.test(h))
       .map(h => { try { return new URL(h, base).href } catch { return null } }).filter(Boolean);
-    onStep("Verifying " + cands.length + " feed link(s)…");
+    onStep(t("verifyingFeeds", {n: cands.length}));
     const res = await Promise.all([...new Set([...cands, ...anchors])].slice(0, 8).map(probe));
     res.forEach(add);
   }
@@ -910,7 +972,7 @@ async function discover(input, onStep){
     if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
     const tries = [];
     bases.forEach(b => COMMON_PATHS.forEach(p => tries.push(b + p)));
-    onStep("Trying common feed paths…");
+    onStep(t("tryingPaths"));
     for (let i = 0; i < tries.length && !found.size; i += 6){
       (await Promise.all(tries.slice(i, i + 6).map(probe))).forEach(add);
     }
@@ -918,7 +980,9 @@ async function discover(input, onStep){
   return [...found.values()];
 }
 
-/* ============ IMAGES ============ */
+/* ============================================================
+   Images
+   ============================================================ */
 const cssUrl = u => "url('" + String(u).replace(/['()\s]/g, c => "%" + c.charCodeAt(0).toString(16)) + "')";
 const ic = store.get("ic", {}); let icT;
 function icSave(){
@@ -929,7 +993,6 @@ function icSave(){
     store.set("ic", ic);
   }, 1000);
 }
-
 let active = 0; const waiting = [];
 const limit = fn => new Promise(r => {
   const run = async () => {
@@ -939,7 +1002,6 @@ const limit = fn => new Promise(r => {
   };
   active < 6 ? run() : waiting.push(run);
 });
-
 function probeImg(u, {useReferrer = false, timeout = 8000} = {}){
   return new Promise(res => {
     if (!u) return res(false);
@@ -952,7 +1014,6 @@ function probeImg(u, {useReferrer = false, timeout = 8000} = {}){
     i.src = u;
   });
 }
-
 async function ogImage(link){
   try {
     const d = new DOMParser().parseFromString(await fetchText(link, 7000), "text/html");
@@ -960,7 +1021,6 @@ async function ogImage(link){
     return m && m.content ? resolveImgUrl(m.content, link) : "";
   } catch { return "" }
 }
-
 let rt; const soon = () => { clearTimeout(rt); rt = setTimeout(() => (state.page === "news" || state.page === "saved") ? render() : renderSide(), 350); };
 
 function patchCard(a){
@@ -978,7 +1038,6 @@ function patchCard(a){
   }
   return true;
 }
-
 async function resolveItem(a){
   if (a.done) return;
   const c = ic[a.link];
@@ -990,18 +1049,14 @@ async function resolveItem(a){
   const rawCands = Array.isArray(a.imgCandidates) && a.imgCandidates.length ? a.imgCandidates.slice() : (a.img ? [a.img] : []);
   const cands = [...new Set(rawCands.map(u => resolveImgUrl(u, a.link)).filter(Boolean))];
   const primary = cands[0] || "";
-
   let ok = false;
   if (primary) ok = await limit(() => probeImg(primary, {useReferrer: false, timeout: 5000}));
-
   a.img = primary;
   a.ok = ok;
   a.done = true;
   if (ok){ ic[a.link] = {img: a.img, ok: true}; icSave(); }
   if (!patchCard(a)) soon();
-
   if (ok) return;
-
   (async () => {
     let url = primary, got = false;
     if (primary) got = await limit(() => probeImg(primary, {useReferrer: true, timeout: 6000}));
@@ -1030,7 +1085,9 @@ async function resolveItem(a){
   })();
 }
 
-/* ============ DATA ============ */
+/* ============================================================
+   Data
+   ============================================================ */
 async function loadSource(s){
   try {
     const f = parseFeed(await fetchText(s.url));
@@ -1049,7 +1106,7 @@ async function refreshAll(){
   refreshing = false;
   btn.classList.remove("spin");
   render();
-  toast("فیدها به‌روز شد", "ok");
+  toast(t("feedsRefreshed"), "ok");
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
@@ -1064,7 +1121,9 @@ function removeSource(url){
   render();
 }
 
-/* ============ SAVED / READ ============ */
+/* ============================================================
+   Saved / Read
+   ============================================================ */
 const isRead = l => read.has(l);
 function markRead(l){ if (!read.has(l)){ read.add(l); store.set("read", [...read]); } }
 function markAllRead(){
@@ -1076,31 +1135,33 @@ function markAllRead(){
 const isSaved = l => saved.some(s => s.link === l);
 function toggleSave(item){
   const i = saved.findIndex(s => s.link === item.link);
-  if (i >= 0){ saved.splice(i, 1); toast("از ذخیره‌ها حذف شد"); }
-  else { saved.unshift({...item, savedAt: Date.now()}); toast("ذخیره شد", "ok"); }
+  if (i >= 0){ saved.splice(i, 1); toast(t("removedFromSaved")); }
+  else { saved.unshift({...item, savedAt: Date.now()}); toast(t("savedForLater"), "ok"); }
   store.set("saved", saved);
   render();
 }
 
-/* ============ HELPERS ============ */
+/* ============================================================
+   Helpers
+   ============================================================ */
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const escAttr = esc;
 function ago(ts){
   if (!ts) return "";
   const m = Math.max(1, Math.round((Date.now() - ts) / 60000));
-  if (m < 60) return m + " دقیقه پیش";
-  const h = Math.round(m / 60); if (h < 24) return h + " ساعت پیش";
-  const d = Math.round(h / 24); if (d < 30) return d + " روز پیش";
-  return Math.round(d / 30) + " ماه پیش";
+  if (m < 60) return t("minAgo", {n: m});
+  const h = Math.round(m / 60); if (h < 24) return t("hourAgo", {n: h});
+  const d = Math.round(h / 24); if (d < 30) return t("dayAgo", {n: d});
+  return t("monthAgo", {n: Math.round(d / 30)});
 }
 function group(ts){
   const age = Date.now() - ts, day = new Date(); day.setHours(0,0,0,0);
-  if (age < 3 * 3600e3) return "تازه‌ترین";
-  if (ts >= day.getTime()) return "امروز";
-  if (ts >= day.getTime() - 864e5) return "دیروز";
-  if (ts >= day.getTime() - 7 * 864e5) return "این هفته";
-  if (ts >= day.getTime() - 14 * 864e5) return "هفته‌ی گذشته";
-  return "قدیمی‌تر";
+  if (age < 3 * 3600e3) return t("groupRecent");
+  if (ts >= day.getTime()) return t("groupToday");
+  if (ts >= day.getTime() - 864e5) return t("groupYesterday");
+  if (ts >= day.getTime() - 7 * 864e5) return t("groupThisWeek");
+  if (ts >= day.getTime() - 14 * 864e5) return t("groupLastWeek");
+  return t("groupEarlier");
 }
 function readingTime(html){
   const words = plain(html).split(/\s+/).length;
@@ -1116,17 +1177,17 @@ function toast(msg, kind = ""){
   setTimeout(() => { el.classList.remove("show"); setTimeout(() => el.remove(), 300); }, 2600);
 }
 
-/* ============ FONT SWITCHING ============ */
-function fontById(id){ return FONTS.find(f => f.id === id) || FONTS[0]; }
+/* ============================================================
+   Font switching
+   ============================================================ */
 function setFont(id){
   fontId = fontById(id).id;
   store.set("font", fontId);
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
   const f = fontById(fontId);
   const lbl = $("#rdFontLabel");
-  if (lbl) lbl.textContent = f.label;
-  $$("#rdFontMenu button").forEach(b => b.classList.toggle("on", b.dataset.f === fontId));
-  $$("#fontPicker button").forEach(b => b.classList.toggle("on", b.dataset.f === fontId));
+  if (lbl) lbl.textContent = appLang === "fa" ? f.labelFa : f.label;
+  buildReaderFontMenu();
   const href = FONT_PRELOAD[fontId];
   if (href){
     let link = document.getElementById("font-preload");
@@ -1142,11 +1203,27 @@ function setFont(id){
     link.href = href;
   }
 }
+function buildReaderFontMenu(){
+  const menu = $("#rdFontMenu");
+  if (!menu) return;
+  menu.innerHTML = FONTS.map(f => {
+    const primary = appLang === "fa" ? f.labelFa : f.label;
+    const secondary = appLang === "fa" ? f.label : f.labelFa;
+    return `<button data-f="${f.id}" class="${f.id === fontId ? "on" : ""}">
+      <span class="nm" style="font-family:${f.family}">${esc(primary)}</span>
+      <span class="prev">${esc(secondary)}</span>
+    </button>`;
+  }).join("");
+  const lbl = $("#rdFontLabel");
+  const f = fontById(fontId);
+  if (lbl) lbl.textContent = appLang === "fa" ? f.labelFa : f.label;
+}
 
-/* ============ ARTICLE EXTRACTION (Reader Mode) ============ */
+/* ============================================================
+   Article extraction
+   ============================================================ */
 const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL"]);
 const ALLOWED_ATTRS = new Set(["href","src","alt","title","colspan","rowspan","width","height","loading"]);
-
 function sanitizeTree(node, baseUrl){
   if (node.nodeType === 1){
     if (!ALLOWED_TAGS.has(node.tagName)){
@@ -1177,7 +1254,6 @@ function sanitizeTree(node, baseUrl){
     for (const child of [...node.childNodes]) sanitizeTree(child, baseUrl);
   }
 }
-
 function extractArticle(html, url){
   const doc = new DOMParser().parseFromString(html || "", "text/html");
   const metaSel = (sel) => {
@@ -1189,13 +1265,10 @@ function extractArticle(html, url){
     image: resolveImgUrl(metaSel('meta[property="og:image"]') || metaSel('meta[name="twitter:image"]') || "", url),
     description: metaSel('meta[property="og:description"]') || metaSel('meta[name="description"]') || metaSel('meta[name="twitter:description"]') || "",
     siteName: metaSel('meta[property="og:site_name"]') || "",
-    // html lang attribute (great hint: "fa", "ar", "he", "ur", "ckb", "ps", ...)
     htmlLang: (doc.documentElement.getAttribute("lang") || "").toLowerCase(),
     htmlDir: (doc.documentElement.getAttribute("dir") || "").toLowerCase()
   };
-
   doc.querySelectorAll('script,style,noscript,iframe,form,nav,header,footer,aside,svg,button,input,select,textarea,[role="navigation"],[role="banner"],[role="complementary"],[role="contentinfo"],[aria-hidden="true"],.ad,.ads,.advert,.share,.social,.comments,.sidebar,.menu,.nav').forEach(n => n.remove());
-
   const score = el => {
     if (!el || !el.textContent) return 0;
     const text = el.textContent.trim();
@@ -1208,7 +1281,6 @@ function extractArticle(html, url){
     const imgs = el.querySelectorAll("img").length;
     return len * (1 - linkDensity) + commas * 20 + ps * 40 + imgs * 25;
   };
-
   const seeds = [...doc.querySelectorAll('article, main, [role="main"], .post, .article, .entry-content, .post-content, .article-content, .article-body, #content, #main, .content, [itemprop="articleBody"]')];
   let best = null, bestScore = 0;
   for (const el of seeds){
@@ -1222,10 +1294,8 @@ function extractArticle(html, url){
     }
   }
   if (!best) best = doc.body;
-
   const clone = best.cloneNode(true);
   clone.querySelectorAll("div:empty, p:empty, span:empty").forEach(n => n.remove());
-
   clone.querySelectorAll("img").forEach(img => {
     let src = img.getAttribute("src") || img.getAttribute("data-src") || img.getAttribute("data-lazy-src") || img.getAttribute("data-original") || "";
     if (!src){ img.remove(); return; }
@@ -1235,34 +1305,19 @@ function extractArticle(html, url){
     img.removeAttribute("srcset");
     img.removeAttribute("sizes");
   });
-
   sanitizeTree(clone, url);
-
   const contentText = (clone.textContent || "").replace(/\s+/g, " ").trim();
-
-  /* --- Direction detection ---------------------------------------------------
-     Priority:
-       1. If HTML <html dir="rtl"> set by the source, trust it.
-       2. If <html lang="fa|ar|he|ur|ckb|ps|...">, force RTL.
-       3. Otherwise, count characters in title + content. */
   let direction = "";
   if (meta.htmlDir === "rtl") direction = "rtl";
   else if (meta.htmlDir === "ltr") direction = "ltr";
   else if (/^(fa|ar|he|ur|ckb|ps|sd|ug|yi|dv)(-|$)/.test(meta.htmlLang)) direction = "rtl";
   else direction = detectDirection(meta.title + " " + contentText);
-
-  return {
-    title: meta.title,
-    image: meta.image,
-    description: meta.description,
-    siteName: meta.siteName,
-    contentHTML: clone.innerHTML,
-    contentText,
-    direction
-  };
+  return {title: meta.title, image: meta.image, description: meta.description, siteName: meta.siteName, contentHTML: clone.innerHTML, contentText, direction};
 }
 
-/* ============ PREFETCH ============ */
+/* ============================================================
+   Prefetch
+   ============================================================ */
 const prefetchCache = new Map();
 const PREFETCH_MAX = 40;
 function prefetch(link){
@@ -1284,7 +1339,6 @@ function prefetch(link){
   }
   return entry.promise;
 }
-
 let hoverTimer = null, hoverLink = null;
 function schedulePrefetch(link){
   if (!prefetchOn) return;
@@ -1307,7 +1361,9 @@ document.addEventListener("touchstart", e => {
   if (c && prefetchOn) prefetch(c.dataset.link).catch(() => {});
 }, {passive: true});
 
-/* ============ READER MODE ============ */
+/* ============================================================
+   Reader mode
+   ============================================================ */
 const b64urlEncode = s => {
   const bytes = new TextEncoder().encode(s);
   let bin = ""; for (const b of bytes) bin += String.fromCharCode(b);
@@ -1321,7 +1377,6 @@ const b64urlDecode = s => {
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
   return new TextDecoder().decode(bytes);
 };
-
 function findItem(link){
   for (const url in articles){
     const it = articles[url].find(a => a.link === link);
@@ -1329,60 +1384,41 @@ function findItem(link){
   }
   return saved.find(s => s.link === link) || null;
 }
-
 let readerCurrentLink = null;
-
 function openReader(link){
   if (!link) return;
   readerCurrentLink = link;
   history.pushState({reader: link}, "", "#!r=" + b64urlEncode(link));
   showReader(link);
 }
-
-/* Apply direction to the reader content and (subtly) to the toolbar */
-function applyReaderDirection(dir){
-  const rd = $("#reader");
-  const content = $("#rdContent");
-  const d = (dir === "rtl") ? "rtl" : "ltr";
-  content.setAttribute("dir", d);
-  rd.dataset.dir = d;
+function applyReaderContentDirection(dir){
+  $("#rdContent").setAttribute("dir", dir === "rtl" ? "rtl" : "ltr");
 }
-
 async function showReader(link){
   readerCurrentLink = link;
   const rd = $("#reader");
   rd.hidden = false;
   rd.setAttribute("aria-hidden", "false");
   document.body.classList.add("reader-open");
-
   const item = findItem(link);
   $("#rdSrc").textContent = item ? (item.source || "") : "";
   const dateStr = item && item.date ? ago(item.date) : "";
   $("#rdTime").textContent = dateStr;
   $("#rdStar").style.color = isSaved(link) ? "var(--star)" : "";
   $("#rdStar").textContent = "★";
-  $("#rdStar").dataset.link = link;
   $("#rdOpen").onclick = () => window.open(link, "_blank", "noopener");
   $("#rdStar").onclick = () => {
     const it = findItem(link) || {link, title: $("#rdContent h1") ? $("#rdContent h1").textContent : ""};
     toggleSave(it);
     $("#rdStar").style.color = isSaved(link) ? "var(--star)" : "";
   };
-
-  const f = fontById(fontId);
-  const lbl = $("#rdFontLabel");
-  if (lbl) lbl.textContent = f.label;
-  $$("#rdFontMenu button").forEach(b => b.classList.toggle("on", b.dataset.f === fontId));
-
-  /* Provisional direction based on the feed's title (instant, before full extract) */
+  buildReaderFontMenu();
   const provisionalDir = item ? detectDirection(item.title || "") : "ltr";
-  applyReaderDirection(provisionalDir);
-
-  $("#rdContent").innerHTML = `<div class="rd-loading">در حال بارگذاری متن خبر…</div>`;
+  applyReaderContentDirection(provisionalDir);
+  $("#rdContent").innerHTML = `<div class="rd-loading">${esc(t("readerLoading"))}</div>`;
   $("#rdScroll").scrollTop = 0;
   $("#rdProgress").style.width = "0%";
   document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
-
   let art;
   try {
     const entry = prefetchCache.get(link);
@@ -1392,49 +1428,40 @@ async function showReader(link){
     $("#rdContent").innerHTML = `
       <h1 class="rd-h1">${esc(item ? item.title : link)}</h1>
       <div class="rd-byline">${item ? esc(item.source || "") : ""}</div>
-      <p style="color:var(--mute)">بارگذاری متن کامل ممکن نشد. می‌توانید صفحه‌ی اصلی را باز کنید.</p>
-      <div class="rd-end"><button class="btn" id="rdFallbackOpen">باز کردن صفحه اصلی ↗</button></div>`;
+      <p style="color:var(--mute)">${esc(t("readerErr"))}</p>
+      <div class="rd-end"><button class="btn" id="rdFallbackOpen">${esc(t("openOriginal"))} ↗</button></div>`;
     const b = $("#rdFallbackOpen");
     if (b) b.onclick = () => window.open(link, "_blank", "noopener");
     return;
   }
-
-  /* Final direction from the fully-extracted article */
-  applyReaderDirection(art.direction || provisionalDir);
-
+  applyReaderContentDirection(art.direction || provisionalDir);
   const title = (item && item.title) || art.title || "";
-  const rt = readingTime(art.contentText || art.contentHTML);
-  $("#rdTime").textContent = [item ? (item.source || "") : art.siteName, dateStr, rt ? rt + " دقیقه" : ""].filter(Boolean).join(" · ");
+  const rtm = readingTime(art.contentText || art.contentHTML);
+  $("#rdTime").textContent = [item ? (item.source || "") : art.siteName, dateStr, rtm ? t("minReadLong", {n: rtm}) : ""].filter(Boolean).join(" · ");
   $("#rdSrc").textContent = item ? (item.source || "") : (art.siteName || "");
-
   let hero = (item && item.ok && item.img) ? item.img : (art.image || "");
   hero = resolveImgUrl(hero, link);
-
   const html =
     `${hero ? `<div class="rd-hero" style="background-image:${cssUrl(hero)}"></div>` : ""}
      <h1 class="rd-h1">${esc(title)}</h1>
-     <div class="rd-byline">${item && item.source ? `<span>${esc(item.source)}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rt ? `<span class="dot"></span><span>${rt} دقیقه مطالعه</span>` : ""}</div>
+     <div class="rd-byline">${item && item.source ? `<span>${esc(item.source)}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rtm ? `<span class="dot"></span><span>${esc(t("minReadLong", {n: rtm}))}</span>` : ""}</div>
      <div class="rd-body">${art.contentHTML}</div>
      <div class="rd-end">
-       <button class="btn ghost" id="rdEndOpen">باز کردن صفحه اصلی ↗</button>
-       <button class="btn" id="rdEndSave">${isSaved(link) ? "★ ذخیره شد" : "★ ذخیره"}</button>
+       <button class="btn ghost" id="rdEndOpen">${esc(t("openOriginal"))} ↗</button>
+       <button class="btn" id="rdEndSave">★ ${esc(isSaved(link) ? t("savedBtn") : t("save"))}</button>
      </div>`;
   $("#rdContent").innerHTML = html;
-
-  /* Re-apply direction after innerHTML replacement */
-  applyReaderDirection(art.direction || provisionalDir);
-
+  applyReaderContentDirection(art.direction || provisionalDir);
   const endOpen = $("#rdEndOpen");
   if (endOpen) endOpen.onclick = () => window.open(link, "_blank", "noopener");
   const endSave = $("#rdEndSave");
   if (endSave) endSave.onclick = () => {
     const it = item || {link, title};
     toggleSave(it);
-    endSave.textContent = isSaved(link) ? "★ ذخیره شد" : "★ ذخیره";
+    endSave.textContent = "★ " + (isSaved(link) ? t("savedBtn") : t("save"));
     $("#rdStar").style.color = isSaved(link) ? "var(--star)" : "";
   };
 }
-
 function closeReader(){
   const rd = $("#reader");
   rd.hidden = true;
@@ -1445,7 +1472,6 @@ function closeReader(){
     history.replaceState(null, "", location.pathname + location.search);
   }
 }
-
 $("#rdBack").addEventListener("click", () => history.back());
 $("#rdFontInc").addEventListener("click", () => {
   readerFontSize = Math.min(24, readerFontSize + 1);
@@ -1463,7 +1489,6 @@ $("#rdScroll").addEventListener("scroll", () => {
   const pct = max > 0 ? (el.scrollTop / max) * 100 : 0;
   $("#rdProgress").style.width = pct + "%";
 }, {passive: true});
-
 $("#rdFontBtn").addEventListener("click", e => {
   e.stopPropagation();
   $("#rdFontMenu").classList.toggle("open");
@@ -1477,7 +1502,6 @@ $("#rdFontMenu").addEventListener("click", e => {
   setFont(b.dataset.f);
   $("#rdFontMenu").classList.remove("open");
 });
-
 window.addEventListener("popstate", () => {
   if (location.hash.startsWith("#!r=")){
     const link = b64urlDecode(location.hash.slice(4));
@@ -1487,7 +1511,9 @@ window.addEventListener("popstate", () => {
   }
 });
 
-/* ============ RENDER: SIDEBAR ============ */
+/* ============================================================
+   Render: Sidebar
+   ============================================================ */
 function unreadCount(srcUrl){
   const list = articles[srcUrl] || [];
   return list.filter(a => !isRead(a.link)).length;
@@ -1501,16 +1527,16 @@ function renderSide(){
   const el = $("#side");
   el.innerHTML =
     `<a class="nav-link ${state.page==="news"&&!state.src?"on":""}" data-go="all">
-      <span class="ico">◆</span><span class="lbl">۵۰ خبر برتر</span>
-      ${allUnread ? `<span class="badge">${allUnread}</span>` : ""}
+      <span class="ico">◆</span><span class="lbl">${esc(t("top50"))}</span>
+      ${allUnread ? `<span class="badge">${formatNum(allUnread)}</span>` : ""}
     </a>
     <a class="nav-link ${state.page==="saved"?"on":""}" data-go="saved">
-      <span class="ico">★</span><span class="lbl">ذخیره‌شده‌ها</span>
-      ${savedCount ? `<span class="badge">${savedCount}</span>` : ""}
+      <span class="ico">★</span><span class="lbl">${esc(t("savedItems"))}</span>
+      ${savedCount ? `<span class="badge">${formatNum(savedCount)}</span>` : ""}
     </a>
     <div class="grp">
-      <span>منابع من</span>
-      ${sources.length ? `<button data-read-all title="علامت‌زدن همه به‌عنوان خوانده‌شده">علامت‌زدن همه</button>` : ""}
+      <span>${esc(t("mySources"))}</span>
+      ${sources.length ? `<button data-read-all>${esc(t("markAllRead"))}</button>` : ""}
     </div>` +
     sources.map(s => {
       const u = unreadCount(s.url);
@@ -1518,39 +1544,43 @@ function renderSide(){
         <a class="nav-link ${state.src===s.url?"on":""}" data-src="${esc(s.url)}" title="${esc(s.title)}">
           <span class="ico">•</span>
           <span class="lbl" dir="auto">${esc(s.title)}</span>
-          ${u ? `<span class="badge">${u}</span>` : ""}
+          ${u ? `<span class="badge">${formatNum(u)}</span>` : ""}
         </a>
-        <button class="mini" data-rsrc="${esc(s.url)}" title="به‌روزرسانی این منبع" aria-label="Refresh">⟳</button>
-        <button class="mini rm" data-rm="${esc(s.url)}" title="حذف" aria-label="Remove">✕</button>
+        <button class="mini" data-rsrc="${esc(s.url)}" title="${esc(t("refreshSource"))}">⟳</button>
+        <button class="mini rm" data-rm="${esc(s.url)}" title="${esc(t("removeSource"))}">✕</button>
       </div>`;
     }).join("") +
     `<a class="nav-link ${state.page==="add"?"on":""}" data-go="add" style="margin-top:6px">
-      <span class="ico">＋</span><span class="lbl">افزودن منبع</span>
+      <span class="ico">＋</span><span class="lbl">${esc(t("addSources"))}</span>
     </a>`;
 }
 
-/* ============ RENDER: CARDS ============ */
+/* ============================================================
+   Render: Cards
+   ============================================================ */
 function cardHtml(a){
   const r = isRead(a.link), sv = isSaved(a.link);
-  const rt = readingTime(a.html);
+  const rtm = readingTime(a.html);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
-  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${esc(a.link)}">
+  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${appLang}:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
     <div class="bd">
       <div class="meta">
         <span class="dot"></span>
         <b dir="auto">${esc(a.source)}</b>
-        <span class="tm">· ${ago(a.date)}</span>
-        ${rt ? `<span class="tm">· ${rt} دقیقه</span>` : ""}
+        <span class="tm">· ${esc(ago(a.date))}</span>
+        ${rtm ? `<span class="tm">· ${esc(t("minRead", {n: rtm}))}</span>` : ""}
       </div>
       <div class="t" dir="auto">${esc(a.title)}</div>
       <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div>
     </div>
-    <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${sv?"حذف از ذخیره‌ها":"ذخیره برای بعد"}" data-save='${payload}' aria-label="Save">★</span>
+    <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
   </a>`;
 }
 
-/* ============ MOSAIC ============ */
+/* ============================================================
+   Render: Mosaic
+   ============================================================ */
 function mosaic(items){
   const h = l => l.map(cardHtml).join("");
   const takeB = i => {
@@ -1585,7 +1615,9 @@ function mosaic(items){
   return out;
 }
 
-/* ============ RENDER: NEWS ============ */
+/* ============================================================
+   Render: News
+   ============================================================ */
 function filteredItems(){
   const scope = state.page === "saved"
     ? saved.slice()
@@ -1611,37 +1643,31 @@ function renderNewsHTML(){
     sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
     list.length < list0.length
   );
-
   const cnt = $("#cnt");
-  if (cnt) cnt.textContent = list.length ? `${list.length} خبر` : "";
-
+  if (cnt) cnt.textContent = list.length ? t("articleCount", {n: list.length}) : "";
   if (!list.length){
-    if (loading){
-      return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
-    }
+    if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
     const isSearch = !!searchQuery.trim();
     return `<div class="feed"><div class="empty">
       <div class="big">${isSearch ? "⌕" : "◇"}</div>
-      <h3>${isSearch ? "چیزی پیدا نشد" : "هنوز خبری نیست"}</h3>
-      <p>${isSearch ? "عبارت دیگری امتحان کنید." : "یک منبع اضافه کنید یا اتصال اینترنت را بررسی کنید."}</p>
+      <h3>${esc(isSearch ? t("noMatchesTitle") : t("emptyTitle"))}</h3>
+      <p>${esc(isSearch ? t("noMatchesText") : t("emptyText"))}</p>
     </div></div>`;
   }
-
   const groups = [];
   for (const a of list){
-    const g = a.date ? group(a.date) : "قدیمی‌تر";
+    const g = a.date ? group(a.date) : t("groupEarlier");
     const last = groups[groups.length - 1];
     if (last && last.g === g) last.items.push(a); else groups.push({g, items: [a]});
   }
   let out = `<div class="feed">`;
   for (const G of groups)
-    out += `<h3>${G.g}</h3>` + (viewMode === "grid" ? mosaic(G.items) : G.items.map(cardHtml).join(""));
-
+    out += `<h3>${esc(G.g)}</h3>` + (viewMode === "grid" ? mosaic(G.items) : G.items.map(cardHtml).join(""));
   if (state.page === "news" && !state.src && !loading){
     const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
     if (recs.length){
-      out += `<div class="end">پایان جریان خبرها</div><h3>پیشنهادی</h3><div class="rec3">` +
-        recs.map(c => `<div class="rtile" data-u="${esc(c.url)}" data-recycle="rtile:${esc(c.url)}"><span>${esc(c.title)}</span><button class="btn" data-addrec="${esc(c.url)}">افزودن</button></div>`).join("") + `</div>`;
+      out += `<div class="end">${esc(t("endOfStream"))}</div><h3>${esc(t("recommended"))}</h3><div class="rec3">` +
+        recs.map(c => `<div class="rtile" data-u="${esc(c.url)}" data-recycle="rtile:${appLang}:${esc(c.url)}"><span>${esc(c.title)}</span><button class="btn" data-addrec="${esc(c.url)}">${esc(t("add"))}</button></div>`).join("") + `</div>`;
     }
   }
   return out + `</div>`;
@@ -1661,78 +1687,188 @@ function hydrateRec(){
   });
 }
 
-/* ============ RENDER: ADD ============ */
+/* ============================================================
+   Render: Add sources
+   ============================================================ */
 function renderAddHTML(){
   const rec = CATALOG.map(c => {
     const has = sources.some(s => s.url === c.url);
     return `<div class="row ${has?"added":""}">
       <span><span class="name">${esc(c.title)}</span> <small>— ${esc(new URL(c.url).hostname.replace(/^www\./,""))}</small></span>
-      <span>${has ? `<span class="meta" style="color:var(--green)">✓ افزوده شد</span>` :
-        `<button class="lnk" data-prev="${esc(c.url)}">پیش‌نمایش</button>
-         <button class="lnk" data-addrec="${esc(c.url)}">افزودن</button>`}</span>
+      <span>${has ? `<span class="meta" style="color:var(--green)">✓ ${esc(t("added"))}</span>` :
+        `<button class="lnk" data-prev="${esc(c.url)}">${esc(t("preview"))}</button>
+         <button class="lnk" data-addrec="${esc(c.url)}">${esc(t("add"))}</button>`}</span>
     </div>`;
   }).join("");
   return `<div class="add">
-    <h3>افزودن منبع</h3>
-    <p class="sub">آدرس یک سایت را وارد کنید (مثلاً <code>digiato.com</code>) یا آدرس مستقیم فید RSS / Atom.</p>
-    <input id="q" class="search" style="padding:0 16px" placeholder="مثال: digiato.com یا https://example.com/feed.xml" autocomplete="off" spellcheck="false">
+    <h3>${esc(t("addSourceTitle"))}</h3>
+    <p class="sub">${esc(t("addSourceSubtitle"))}</p>
+    <input id="q" class="search" style="padding-inline:16px" placeholder="${esc(t("addSourcePlaceholder"))}" autocomplete="off" spellcheck="false">
     <div class="found" id="found"></div>
-    <div class="box rec"><h4>پیشنهادی</h4>${rec}
-      <div class="actions"><button class="btn" data-go="news">شروع خواندن</button></div>
+    <div class="box rec"><h4>${esc(t("recommended"))}</h4>${rec}
+      <div class="actions"><button class="btn" data-go="news">${esc(t("startReading"))}</button></div>
     </div>
     <div class="set">
-      <label>پروکسی CORS (اختیاری)</label>
-      ابتدا مستقیم تلاش می‌شود، سپس از پروکسی‌های عمومی استفاده می‌شود. برای پروکسی شخصی، پیشوند یا الگوی <code>{url}</code> را وارد کنید.
-      <input id="proxy" placeholder="http://localhost:8787/?url={url}" value="${esc(customProxy())}" style="margin-top:6px">
+      <label>${esc(t("proxyLabel"))}</label>
+      ${esc(t("proxyHelp"))}
+      <input id="proxy" placeholder="${esc(t("proxyPlaceholder"))}" value="${esc(customProxy())}" style="margin-top:6px">
     </div>
   </div>`;
 }
 
-/* ============ RENDER: MAIN ============ */
+/* ============================================================
+   Settings dialog
+   ============================================================ */
+function fillSettings(){
+  $("#setTitle").textContent = t("settingsTitle");
+  $("#setDone").textContent = t("done");
+  const fontPicker = FONTS.map(f => {
+    const primary = appLang === "fa" ? f.labelFa : f.label;
+    const secondary = appLang === "fa" ? f.label : f.labelFa;
+    const def = f.id === "sahel" ? ` — ${esc(t("fontDefault"))}` : "";
+    return `<button data-f="${f.id}" class="${f.id === fontId ? "on" : ""}">
+      <span class="fp-name" style="font-family:${f.family}">${esc(primary)}</span>
+      <span class="fp-sample">${esc(secondary)}${def}</span>
+    </button>`;
+  }).join("");
+  const langPicker = Object.entries(LANGS).map(([id, l]) =>
+    `<button data-lang="${id}" class="${id === appLang ? "on" : ""}">
+      <span class="fp-name">${esc(l.nativeName)}</span>
+      <span class="fp-sample">${esc(l.name)}</span>
+    </button>`
+  ).join("");
+  $("#setBody").innerHTML = `
+    <div class="set" style="margin-top:0">
+      <label>${esc(t("language"))}</label>
+      <div class="font-picker" id="langPicker">${langPicker}</div>
+
+      <label>${esc(t("theme"))}</label>
+      <select id="setTheme">
+        <option value="dark" ${theme==="dark"?"selected":""}>${esc(t("themeDark"))}</option>
+        <option value="light" ${theme==="light"?"selected":""}>${esc(t("themeLight"))}</option>
+      </select>
+
+      <label>${esc(t("font"))}</label>
+      <div class="font-picker" id="fontPicker">${fontPicker}</div>
+
+      <label for="setAuto">${esc(t("autoRefresh"))}</label>
+      <input id="setAuto" type="number" min="0" max="180" step="5" value="${autoMin}">
+
+      <label for="setProxy">${esc(t("proxyLabel"))}</label>
+      <input id="setProxy" placeholder="${esc(t("proxyPlaceholder"))}" value="${esc(customProxy())}">
+
+      <label class="switch"><input type="checkbox" id="setReader" ${openInReader?"checked":""}> ${esc(t("openInReader"))}</label>
+      <label class="switch"><input type="checkbox" id="setPrefetch" ${prefetchOn?"checked":""}> ${esc(t("prefetch"))}</label>
+
+      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn ghost" id="opmlExport">${esc(t("exportOpml"))}</button>
+        <button class="btn ghost" id="opmlImport">${esc(t("importOpml"))}</button>
+        <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
+        <button class="btn ghost" id="imgCacheClear">${esc(t("clearImgCache"))}</button>
+        <button class="btn danger" id="resetAll" style="margin-inline-start:auto">${esc(t("resetAll"))}</button>
+      </div>
+    </div>`;
+  $("#langPicker").addEventListener("click", e => {
+    const b = e.target.closest("button[data-lang]");
+    if (b) setLang(b.dataset.lang);
+  });
+  $("#fontPicker").addEventListener("click", e => {
+    const b = e.target.closest("button[data-f]");
+    if (b){ setFont(b.dataset.f); fillSettings(); }
+  });
+  $("#setTheme").addEventListener("change", e => { theme = e.target.value; store.set("theme", theme); render(); });
+  $("#setAuto").addEventListener("change", e => { autoMin = Math.max(0, +e.target.value || 0); store.set("autoRefresh", autoMin); setupAuto(); toast(autoMin ? t("autoOn", {n: autoMin}) : t("autoOff")); });
+  $("#setProxy").addEventListener("change", e => { store.set("proxy", e.target.value.trim()); toast(t("proxySaved"), "ok"); });
+  $("#setReader").addEventListener("change", e => { openInReader = e.target.checked; store.set("openInReader", openInReader); toast(openInReader ? t("readerOn") : t("readerOff")); });
+  $("#setPrefetch").addEventListener("change", e => { prefetchOn = e.target.checked; store.set("prefetchOn", prefetchOn); toast(prefetchOn ? t("prefetchOn") : t("prefetchOff")); });
+  $("#imgCacheClear").addEventListener("click", () => {
+    for (const k of Object.keys(ic)) delete ic[k];
+    store.del("ic");
+    toast(t("imgCacheCleared"), "ok");
+  });
+  $("#resetAll").addEventListener("click", () => {
+    if (!confirm(t("resetConfirm"))) return;
+    ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang"].forEach(store.del);
+    location.reload();
+  });
+  $("#opmlExport").addEventListener("click", () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head><title>Personal news subscriptions</title></head>
+  <body>
+    ${sources.map(s => `<outline type="rss" text="${escAttr(s.title)}" title="${escAttr(s.title)}" xmlUrl="${escAttr(s.url)}"/>`).join("\n    ")}
+  </body>
+</opml>`;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([xml], {type:"text/xml"}));
+    a.download = "personal-news.opml";
+    a.click(); URL.revokeObjectURL(a.href);
+    toast(t("opmlExported"), "ok");
+  });
+  $("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
+  $("#opmlFile").addEventListener("change", async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const doc = new DOMParser().parseFromString(await f.text(), "text/xml");
+      const outlines = [...doc.querySelectorAll("outline[xmlUrl]")];
+      let n = 0;
+      for (const o of outlines){
+        const url = o.getAttribute("xmlUrl");
+        if (!url || sources.some(s => s.url === url)) continue;
+        const title = o.getAttribute("text") || o.getAttribute("title") || new URL(url).hostname;
+        addSource({url, title}); n++;
+      }
+      $("#settingsDlg").close();
+      toast(n ? t("importedSources", {n}) : t("noNewSources"), n ? "ok" : "");
+      if (n){ refreshAll(); } else { render(); }
+    } catch { toast(t("opmlError"), "err"); }
+  });
+}
+function openSettings(){
+  fillSettings();
+  if (!$("#settingsDlg").open) $("#settingsDlg").showModal();
+}
+
+/* ============================================================
+   Render: main
+   ============================================================ */
 function render(){
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.density = density;
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
   document.body.classList.toggle("grid", viewMode === "grid");
   document.documentElement.dataset.view = viewMode;
-
   renderSide();
-
   $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
   $$("#densSeg button").forEach(b => b.classList.toggle("on", b.dataset.dens === density));
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
-  $$("#fontPicker button").forEach(b => b.classList.toggle("on", b.dataset.f === fontId));
   $("#tg").classList.toggle("hide", state.page === "add");
   $("#densSeg").classList.toggle("hide", state.page === "add");
   $("#sortSeg").classList.toggle("hide", state.page === "add");
-
   const view = $("#view");
   const oldEls = new Map();
   view.querySelectorAll("[data-recycle]").forEach(el => {
     oldEls.set(el.dataset.recycle, el);
   });
-
   let html, after;
   if (state.page === "add"){
-    $("#ttl").textContent = "افزودن منبع";
+    $("#ttl").textContent = t("addSourceTitle");
     const keep = $("#q") && $("#q").value;
     html = renderAddHTML();
     after = () => { if (keep){ const q = $("#q"); if (q) q.value = keep; } };
   } else if (state.page === "saved"){
-    $("#ttl").textContent = "ذخیره‌شده‌ها";
+    $("#ttl").textContent = t("savedItems");
     html = renderNewsHTML();
     after = hydrateRec;
   } else {
     $("#ttl").textContent = state.src
-      ? (sources.find(s => s.url === state.src) || {}).title || "منبع"
-      : "منابع من";
+      ? (sources.find(s => s.url === state.src) || {}).title || t("sourceWord")
+      : t("mySourcesTitle");
     html = renderNewsHTML();
     after = hydrateRec;
   }
-
   const tmp = document.createElement("div");
   tmp.innerHTML = html;
-
   tmp.querySelectorAll("[data-recycle]").forEach(newEl => {
     const key = newEl.dataset.recycle;
     const oldEl = oldEls.get(key);
@@ -1749,23 +1885,21 @@ function render(){
     }
     newEl.replaceWith(oldEl);
   });
-
   tmp.querySelectorAll(".card").forEach(el => {
     if (!oldEls.has(el.dataset.recycle)) el.classList.add("enter");
   });
-
   view.replaceChildren(...tmp.childNodes);
-
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       view.querySelectorAll(".card.enter").forEach(el => el.classList.remove("enter"));
     });
   });
-
   after && after();
 }
 
-/* ============ EVENTS: CLICKS ============ */
+/* ============================================================
+   Events: clicks
+   ============================================================ */
 document.addEventListener("click", e => {
   const c = e.target.closest(".card[data-link]");
   if (!c) return;
@@ -1776,7 +1910,6 @@ document.addEventListener("click", e => {
   e.preventDefault();
   openReader(c.dataset.link);
 });
-
 document.addEventListener("click", async e => {
   const saveEl = e.target.closest("[data-save]");
   if (saveEl){
@@ -1784,13 +1917,10 @@ document.addEventListener("click", async e => {
     try { toggleSave(JSON.parse(saveEl.dataset.save)); } catch {}
     return;
   }
-
-  const t = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-found],[data-read-all],[data-close],[data-font]");
-  if (!t) return;
-  const d = t.dataset;
-
-  if ("font" in d){ setFont(d.font); return; }
-  if ("close" in d){ t.closest("dialog")?.close(); return; }
+  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-found],[data-read-all],[data-close]");
+  if (!t2) return;
+  const d = t2.dataset;
+  if ("close" in d){ t2.closest("dialog")?.close(); return; }
   if (d.v){ viewMode = d.v; store.set("view", viewMode); return render(); }
   if (d.dens){ density = d.dens; store.set("density", density); return render(); }
   if (d.sort){ sortMode = d.sort; store.set("sort", sortMode); return render(); }
@@ -1802,25 +1932,24 @@ document.addEventListener("click", async e => {
   }
   if (d.src){ state.page = "news"; state.src = d.src; return render(); }
   if (d.rm) return removeSource(d.rm);
-  if (d.rsrc){ const s = sources.find(x => x.url === d.rsrc); if (s){ delete articles[s.url]; loadSource(s).then(render); toast("در حال به‌روزرسانی…"); } return; }
+  if (d.rsrc){ const s = sources.find(x => x.url === d.rsrc); if (s){ delete articles[s.url]; loadSource(s).then(render); toast(t("refreshing")); } return; }
   if ("readAll" in d) return markAllRead();
-  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); if (c){ addSource(c); loadSource(c).then(render); toast("منبع اضافه شد", "ok"); renderSide(); } return; }
+  if (d.addrec){ const c = CATALOG.find(x => x.url === d.addrec); if (c){ addSource(c); loadSource(c).then(render); toast(t("sourceAdded"), "ok"); renderSide(); } return; }
   if (d.prev){
     const c = CATALOG.find(x => x.url === d.prev);
     if (!c) return;
     $("#pvTitle").textContent = c.title;
-    $("#pvBody").innerHTML = `<div class="meta">در حال بارگذاری…</div>`;
+    $("#pvBody").innerHTML = `<div class="meta">${esc(t("readerLoading"))}</div>`;
     $("#previewDlg").showModal();
     try {
       const f = parseFeed(await fetchText(c.url));
       $("#pvBody").innerHTML = `<ul dir="auto">` +
         f.items.slice(0, 8).map(i => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${esc(i.title)}</a></li>`).join("") + `</ul>`;
     } catch {
-      $("#pvBody").innerHTML = `<div class="meta" style="color:var(--red)">بارگذاری پیش‌نمایش ممکن نشد.</div>`;
+      $("#pvBody").innerHTML = `<div class="meta" style="color:var(--red)">${esc(t("readerErr"))}</div>`;
     }
   }
 });
-
 document.addEventListener("click", e => {
   const c = e.target.closest(".card[data-link]");
   if (c && !e.target.closest("[data-save]")){
@@ -1830,9 +1959,10 @@ document.addEventListener("click", e => {
   }
 }, true);
 
-/* ============ EVENTS: input / search ============ */
+/* ============================================================
+   Events: input / search
+   ============================================================ */
 let searchTimer, seq = 0;
-
 const searchInput = $("#search");
 searchInput.addEventListener("input", () => {
   searchQuery = searchInput.value;
@@ -1843,7 +1973,6 @@ searchInput.addEventListener("input", () => {
 $("#searchClear").addEventListener("click", () => {
   searchInput.value = ""; searchQuery = ""; $("#searchClear").hidden = true; render(); searchInput.focus();
 });
-
 document.addEventListener("input", e => {
   if (e.target.id === "proxy"){ store.set("proxy", e.target.value.trim()); return; }
   if (e.target.id !== "q") return;
@@ -1854,18 +1983,18 @@ document.addEventListener("input", e => {
     if (!normalizeUrl(v)){
       const hits = CATALOG.filter(c => c.title.toLowerCase().includes(v.toLowerCase()));
       box.innerHTML = hits.length
-        ? hits.map(c => `<div class="row"><span class="grow">${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">افزودن</button></div>`).join("")
-        : `<span class="err">چیزی پیدا نشد. آدرس یک سایت مثل example.com را وارد کنید.</span>`;
+        ? hits.map(c => `<div class="row"><span class="grow">${esc(c.title)}</span><button class="lnk" data-addrec="${esc(c.url)}">${esc(t("add"))}</button></div>`).join("")
+        : `<span class="err">${esc(t("noMatchCatalog"))}</span>`;
       return;
     }
-    box.innerHTML = `<span class="meta">در حال جستجوی فید…</span>`;
+    box.innerHTML = `<span class="meta">${esc(t("lookingForFeeds"))}</span>`;
     const res = await discover(v, m => { if (my === seq) box.innerHTML = `<span class="meta">${esc(m)}</span>`; });
     if (my !== seq) return;
-    if (!res.length){ box.innerHTML = `<span class="err">فید RSS یا Atom پیدا نشد. آدرس فید را مستقیم امتحان کنید یا پروکسی CORS تنظیم کنید.</span>`; return; }
+    if (!res.length){ box.innerHTML = `<span class="err">${esc(t("feedNotFound"))}</span>`; return; }
     box.innerHTML = res.map(r => {
       const has = sources.some(s => s.url === r.url);
       return `<div class="row"><span class="ok">✓</span><span class="grow" dir="auto">${esc(r.title)}</span><span class="meta">${r.kind} · ${esc(new URL(r.url).hostname)}</span>
-        ${has ? `<span class="meta" style="color:var(--green)">افزوده شد</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>افزودن</button>`}</div>`;
+        ${has ? `<span class="meta" style="color:var(--green)">${esc(t("added"))}</span>` : `<button class="lnk" data-found='${esc(JSON.stringify({url:r.url,title:r.title}))}'>${esc(t("add"))}</button>`}</div>`;
     }).join("");
   }, 450);
 });
@@ -1873,87 +2002,32 @@ document.addEventListener("click", e => {
   const b = e.target.closest("[data-found]"); if (!b) return;
   const s = JSON.parse(b.dataset.found);
   addSource(s); loadSource(s).then(render);
-  b.outerHTML = `<span class="meta" style="color:var(--green)">افزوده شد</span>`;
+  b.outerHTML = `<span class="meta" style="color:var(--green)">${esc(t("added"))}</span>`;
   renderSide();
 });
 
-/* ============ HEADER ACTIONS ============ */
+/* ============================================================
+   Header actions
+   ============================================================ */
 $("#refreshBtn").addEventListener("click", refreshAll);
 $("#themeBtn").addEventListener("click", () => {
   theme = theme === "dark" ? "light" : "dark";
   store.set("theme", theme);
   render();
 });
-$("#settingsBtn").addEventListener("click", () => {
-  $("#setTheme").value = theme;
-  $("#setAuto").value = autoMin;
-  $("#setProxy").value = customProxy();
-  $("#setReader").checked = openInReader;
-  $("#setPrefetch").checked = prefetchOn;
-  $$("#fontPicker button").forEach(b => b.classList.toggle("on", b.dataset.f === fontId));
-  $("#settingsDlg").showModal();
-});
-$("#setTheme").addEventListener("change", e => { theme = e.target.value; store.set("theme", theme); render(); });
-$("#setAuto").addEventListener("change", e => { autoMin = Math.max(0, +e.target.value || 0); store.set("autoRefresh", autoMin); setupAuto(); toast(autoMin ? `به‌روزرسانی خودکار هر ${autoMin} دقیقه` : "به‌روزرسانی خودکار خاموش شد"); });
-$("#setProxy").addEventListener("change", e => { store.set("proxy", e.target.value.trim()); toast("پروکسی ذخیره شد", "ok"); });
-$("#setReader").addEventListener("change", e => { openInReader = e.target.checked; store.set("openInReader", openInReader); toast(openInReader ? "حالت Reader روشن شد" : "حالت Reader خاموش شد"); });
-$("#setPrefetch").addEventListener("change", e => { prefetchOn = e.target.checked; store.set("prefetchOn", prefetchOn); toast(prefetchOn ? "Prefetch روشن شد" : "Prefetch خاموش شد"); });
-$("#fontPicker").addEventListener("click", e => {
-  const b = e.target.closest("button[data-f]");
-  if (b) setFont(b.dataset.f);
-});
-$("#imgCacheClear").addEventListener("click", () => {
-  for (const k of Object.keys(ic)) delete ic[k];
-  store.del("ic");
-  toast("کش عکس پاک شد — صفحه را دوباره بارگذاری کنید", "ok");
-});
-$("#resetAll").addEventListener("click", () => {
-  if (!confirm("همه‌ی تنظیمات، منابع، ذخیره‌ها و تاریخچه پاک شود؟")) return;
-  ["sources","view","density","sort","theme","saved","read","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font"].forEach(store.del);
-  location.reload();
-});
+$("#settingsBtn").addEventListener("click", openSettings);
 
-/* OPML */
-$("#opmlExport").addEventListener("click", () => {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<opml version="1.0">
-  <head><title>Personal news subscriptions</title></head>
-  <body>
-    ${sources.map(s => `<outline type="rss" text="${escAttr(s.title)}" title="${escAttr(s.title)}" xmlUrl="${escAttr(s.url)}"/>`).join("\n    ")}
-  </body>
-</opml>`;
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([xml], {type:"text/xml"}));
-  a.download = "personal-news.opml";
-  a.click(); URL.revokeObjectURL(a.href);
-  toast("OPML گرفته شد", "ok");
-});
-$("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
-$("#opmlFile").addEventListener("change", async e => {
-  const f = e.target.files[0]; if (!f) return;
-  try {
-    const doc = new DOMParser().parseFromString(await f.text(), "text/xml");
-    const outlines = [...doc.querySelectorAll("outline[xmlUrl]")];
-    let n = 0;
-    for (const o of outlines){
-      const url = o.getAttribute("xmlUrl");
-      if (!url || sources.some(s => s.url === url)) continue;
-      const title = o.getAttribute("text") || o.getAttribute("title") || new URL(url).hostname;
-      addSource({url, title}); n++;
-    }
-    $("#settingsDlg").close();
-    toast(n ? `${n} منبع وارد شد` : "منبع جدیدی پیدا نشد", n ? "ok" : "");
-    if (n){ refreshAll(); } else { render(); }
-  } catch { toast("خطا در خواندن فایل OPML", "err"); }
-});
-
-/* ============ AUTO REFRESH ============ */
+/* ============================================================
+   Auto refresh
+   ============================================================ */
 function setupAuto(){
   clearInterval(autoTimer);
   if (autoMin > 0) autoTimer = setInterval(refreshAll, autoMin * 60000);
 }
 
-/* ============ KEYBOARD SHORTCUTS ============ */
+/* ============================================================
+   Keyboard shortcuts
+   ============================================================ */
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#reader").hidden){
     e.preventDefault();
@@ -1974,19 +2048,16 @@ document.addEventListener("keydown", e => {
   if (e.key === "l" || e.key === "L"){ viewMode = "list"; store.set("view", viewMode); render(); return; }
 });
 
-/* ============ PWA: manifest + service worker ============ */
+/* ============================================================
+   PWA
+   ============================================================ */
 (function setupPWA(){
   const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#070b12"/><circle cx="256" cy="256" r="150" fill="none" stroke="#ff1b2d" stroke-width="72"/><circle cx="256" cy="256" r="52" fill="#ff1b2d" opacity=".22"/></svg>`;
   const iconUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgIcon);
   const manifest = {
-    name: "Personal news",
-    short_name: "News",
-    description: "A single-file RSS/Atom reader",
-    start_url: "./",
-    scope: "./",
-    display: "standalone",
-    background_color: "#070b12",
-    theme_color: "#070b12",
+    name: "Personal news", short_name: "News", description: "A single-file RSS/Atom reader",
+    start_url: "./", scope: "./", display: "standalone",
+    background_color: "#070b12", theme_color: "#070b12",
     icons: [
       { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
       { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
@@ -1996,7 +2067,6 @@ document.addEventListener("keydown", e => {
     const blob = new Blob([JSON.stringify(manifest)], {type: "application/manifest+json"});
     $("#manifestLink").href = URL.createObjectURL(blob);
   } catch {}
-
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")){
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
@@ -2004,13 +2074,15 @@ document.addEventListener("keydown", e => {
   }
 })();
 
-/* ============ INIT ============ */
+/* ============================================================
+   Init
+   ============================================================ */
+applyLang();
 setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
 render();
 setupAuto();
 if (sources.length) refreshAll();
-
 if (location.hash.startsWith("#!r=")){
   try {
     const link = b64urlDecode(location.hash.slice(4));
