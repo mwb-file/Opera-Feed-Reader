@@ -127,7 +127,7 @@ const CATALOG = [
   {title:"Digiato", url:"https://digiato.com/feed"},
   {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits.atom"}
 ];
-const COMMON_PATHS = ["/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
+const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
 
 let sources = store.get("sources", []);   // {url,title}
 let articles = {};                        // url -> [items]
