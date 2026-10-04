@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#070b12">
+<meta name="theme-color" content="#0e1621">
 <title>Personal news</title>
 <link rel="manifest" id="manifestLink">
 
@@ -432,6 +432,7 @@ body.grid .row > .card .bd{padding:12px 14px;gap:5px;height:auto;min-height:0;fl
 
 .end{text-align:center;color:var(--mute);font-size:11px;letter-spacing:.14em;margin:56px 0 30px;text-transform:uppercase}
 .end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
+.load-more-wrap{display:flex;justify-content:center;padding:12px 0 24px}
 
 .rec3{display:flex;margin:0 -8px;gap:0}
 .rtile{flex:1 1 0;min-width:0;margin:0 8px;height:120px;background:var(--panel) center/cover;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 12px;color:#fff;border:1px solid var(--line);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:transform var(--t),box-shadow var(--t)}
@@ -739,6 +740,60 @@ header h1{font-weight:700;letter-spacing:0}
 img{content-visibility:auto}
 .card{content-visibility:auto;contain-intrinsic-size:auto 160px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Telegram-inspired palette and lighter, quieter surfaces. */
+:root{
+  --bg:#0e1621;--bg-soft:#17212b;
+  --panel:#17212b;--panel-2:#202b36;--panel-hover:#263442;
+  --line:#202b36;--line-2:#2b3948;
+  --text:#f5f7fa;--text-dim:#c5d0db;--mute:#8293a5;
+  --blue:#3390ec;--blue-2:#2aabee;--blue-soft:rgba(51,144,236,.16);
+  --red:#e17076;--green:#4fae75;--amber:#e9b34c;--star:#f5c451;
+  --shadow:0 4px 18px rgba(0,0,0,.18);
+  --radius:12px;--radius-sm:9px;
+  --header-bg:rgba(14,22,33,.94);
+  --skeleton:linear-gradient(90deg,#17212b 0%,#202b36 50%,#17212b 100%);
+  --accent-grad:linear-gradient(135deg,#3390ec,#2aabee);
+}
+[data-theme="light"]{
+  --bg:#f4f6f8;--bg-soft:#fff;
+  --panel:#fff;--panel-2:#f1f4f7;--panel-hover:#e9f2fa;
+  --line:#e5e9ed;--line-2:#d5dce3;
+  --text:#17212b;--text-dim:#526477;--mute:#8293a5;
+  --blue:#3390ec;--blue-2:#2384d8;--blue-soft:rgba(51,144,236,.11);
+  --shadow:0 3px 14px rgba(28,50,72,.07);
+  --header-bg:rgba(255,255,255,.94);
+  --skeleton:linear-gradient(90deg,#eef2f5 0%,#e2e9ef 50%,#eef2f5 100%);
+}
+header{height:56px;padding-inline:16px;gap:12px;backdrop-filter:blur(16px)}
+header h1{color:var(--text);font-size:14px}
+.logo{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--blue);box-shadow:none}
+.logo::after{content:"➤";position:static;inset:auto;background:none;opacity:1;color:#fff;font-size:15px;transform:rotate(-25deg);line-height:1}
+.search{border-color:transparent;background:var(--panel-2);border-radius:10px;height:36px}
+.search:focus{border-color:var(--blue);background:var(--panel);box-shadow:0 0 0 2px var(--blue-soft)}
+.icon-btn{border-radius:50%;width:36px;height:36px}
+.icon-btn:hover{background:var(--blue-soft);color:var(--blue)}
+aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
+.nav-link.on{box-shadow:none;background:var(--blue-soft);color:var(--blue)}
+.seg{background:var(--panel-2);border:0;padding:3px;border-radius:10px}
+.seg button{border-radius:8px}
+.seg button.on{background:var(--blue);box-shadow:none}
+.card,.np-hero,.np-sec,.stat-card,.arc-item,.digest-card,.stats-section{border-radius:12px}
+.card{border-color:var(--line);box-shadow:none}
+.card:hover,.np-hero:hover{transform:none;background:var(--panel-hover);box-shadow:var(--shadow);border-color:var(--line-2)}
+.card .t{font-weight:600}
+.feed h3{font-weight:600;color:var(--mute)}
+.np-hero,.np-sec,.np-headlines,.stat-card,.stats-section,.digest-card,.arc-item{box-shadow:none}
+.np-hero:hover,.np-sec:hover,.arc-item:hover{transform:none;box-shadow:var(--shadow)}
+.btn{background:var(--blue);border-radius:9px;box-shadow:none}
+.btn:hover{background:var(--blue-2);box-shadow:0 3px 10px var(--blue-soft)}
+.empty.welcome{border-radius:18px;background:var(--panel);box-shadow:var(--shadow)}
+@media(max-width:820px){
+  header{gap:8px;padding-inline:10px}
+  .head-actions{gap:0}
+  .head-actions .icon-btn{width:34px;height:34px}
+  aside{border-inline-end:0}
+}
 </style>
 </head>
 <body>
@@ -856,9 +911,9 @@ const store = {
 };
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
-/* ============ IndexedDB (archive) ============ */
+/* ============ IndexedDB (archive + persistent feed history) ============ */
 const idb = (() => {
-  const NAME = "personal-news-db", VER = 1;
+  const NAME = "personal-news-db", VER = 3;
   let dbP = null;
   function open(){
     if (dbP) return dbP;
@@ -872,6 +927,21 @@ const idb = (() => {
           s.createIndex("archivedAt", "archivedAt");
           s.createIndex("date", "date");
           s.createIndex("source", "source");
+        }
+        const makeFeedStore = () => {
+          const s = db.createObjectStore("feedItems", {keyPath: "id"});
+          s.createIndex("sourceUrl", "sourceUrl"); s.createIndex("date", "date");
+          return s;
+        };
+        if (!db.objectStoreNames.contains("feedItems")) makeFeedStore();
+        else {
+          const oldItems = r.transaction.objectStore("feedItems").getAll();
+          oldItems.onsuccess = () => {
+            const rows = oldItems.result || [];
+            db.deleteObjectStore("feedItems");
+            const s = makeFeedStore();
+            rows.filter(a => a && a.sourceUrl && a.link).forEach(a => s.put({...a, id: `${a.sourceUrl}\n${a.link}`}));
+          };
         }
       };
       r.onsuccess = () => res(r.result);
@@ -893,7 +963,22 @@ const idb = (() => {
   };
   return {
     put: (storeName, obj) => tx(storeName, "readwrite", s => s.put(obj)),
+    putMany: (storeName, objects) => tx(storeName, "readwrite", s => objects.forEach(obj => s.put(obj))),
     get: (storeName, key) => tx(storeName, "readonly",  s => s.get(key)),
+    byIndex: (storeName, indexName, value) => tx(storeName, "readonly", s => s.index(indexName).getAll(IDBKeyRange.only(value))).then(v => v || []),
+    deleteByIndex: (storeName, indexName, value) => open().then(db => new Promise((res, rej) => {
+      const t = db.transaction(storeName, "readwrite"), s = t.objectStore(storeName);
+      const req = s.index(indexName).openKeyCursor(IDBKeyRange.only(value));
+      req.onsuccess = () => { const c = req.result; if (c){ s.delete(c.primaryKey); c.continue(); } };
+      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    })),
+    replaceData: (archived, feeds) => open().then(db => new Promise((res, rej) => {
+      const t = db.transaction(["articles", "feedItems"], "readwrite");
+      const a = t.objectStore("articles"), f = t.objectStore("feedItems");
+      a.clear(); f.clear();
+      archived.forEach(x => a.put(x)); feeds.forEach(x => f.put(x));
+      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    })),
     del: (storeName, key) => tx(storeName, "readwrite", s => s.delete(key)),
     clear: (storeName) => tx(storeName, "readwrite", s => s.clear()),
     count: (storeName) => tx(storeName, "readonly",  s => s.count()),
@@ -932,6 +1017,19 @@ async function clearArchive(){
   try { await idb.clear("articles"); } catch {}
   archiveCache = [];
 }
+async function loadFeedCache(){
+  await Promise.all(sources.map(async s => {
+    try {
+      const items = await idb.byIndex("feedItems", "sourceUrl", s.url);
+      articles[s.url] = items.filter(a => a && a.link && a.title).map(a => {
+      a.source = s.title; a.sourceUrl = s.url; a.id = `${s.url}\n${a.link}`; a.done = true;
+        if (ic[a.link]){ a.img = ic[a.link].img || a.img; a.ok = !!ic[a.link].ok; }
+        return a;
+      }).sort((a, b) => (b.date || 0) - (a.date || 0));
+    } catch { articles[s.url] = articles[s.url] || []; }
+  }));
+  feedCacheReady = true;
+}
 
 /* ============ i18n ============ */
 const LANGS = {
@@ -952,7 +1050,7 @@ const LANGS = {
     toggleTheme: "تغییر تم (T)",
     settings: "تنظیمات",
     menu: "منو",
-    top50: "۵۰ خبر برتر",
+    top50: "همه‌ی خبرها",
     savedItems: "ذخیره‌شده‌ها",
     mySources: "منابع من",
     markAllRead: "علامت‌زدن همه",
@@ -990,6 +1088,7 @@ const LANGS = {
     noMatchesTitle: "چیزی پیدا نشد",
     noMatchesText: "عبارت دیگری امتحان کنید.",
     endOfStream: "پایان جریان خبرها",
+    loadMore: "بارگذاری {n} خبر قدیمی‌تر",
     recommended: "پیشنهادی",
     add: "افزودن",
     added: "افزوده شد",
@@ -1020,6 +1119,12 @@ const LANGS = {
     prefetch: "Prefetch روی hover",
     exportOpml: "خروجی OPML",
     importOpml: "ورود OPML",
+    exportBackup: "پشتیبان‌گیری کامل",
+    importBackup: "بازیابی پشتیبان",
+    backupExported: "فایل پشتیبان ساخته شد",
+    backupError: "فایل پشتیبان معتبر نیست یا قابل بازیابی نیست",
+    backupRestoreConfirm: "اطلاعات فعلی با محتوای این فایل پشتیبان جایگزین شود؟",
+    backupImported: "پشتیبان با موفقیت بازیابی شد",
     clearImgCache: "پاک کردن کش عکس",
     resetAll: "بازنشانی همه‌چیز",
     done: "تمام",
@@ -1033,7 +1138,7 @@ const LANGS = {
     smaller: "کوچک‌تر",
     larger: "بزرگ‌تر",
     changeFont: "تغییر فونت",
-    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها و تاریخچه پاک شود؟",
+    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها، تاریخچه و خبرهای آفلاین پاک شوند؟",
     importedSources: "{n} منبع وارد شد",
     noNewSources: "منبع جدیدی پیدا نشد",
     opmlError: "خطا در خواندن فایل OPML",
@@ -1051,6 +1156,9 @@ const LANGS = {
     refreshing: "در حال به‌روزرسانی…",
     sourceAdded: "منبع اضافه شد",
     feedsRefreshed: "فیدها به‌روز شد",
+    feedsRefreshPartial: "{ok} فید به‌روز شد؛ {failed} فید در دسترس نبود",
+    feedsRefreshFailed: "به‌روزرسانی {n} فید ناموفق بود؛ خبرهای ذخیره‌شده باقی هستند",
+    feedCacheFailed: "خبرهای تازه در حافظه‌ی محلی ذخیره نشدند",
     articleCount: "{n} خبر",
     sourceWord: "منبع",
     mySourcesTitle: "منابع من",
@@ -1137,7 +1245,7 @@ const LANGS = {
     toggleTheme: "Toggle theme (T)",
     settings: "Settings",
     menu: "Menu",
-    top50: "Top 50",
+    top50: "All stories",
     savedItems: "Saved",
     mySources: "My sources",
     markAllRead: "Mark all read",
@@ -1175,6 +1283,7 @@ const LANGS = {
     noMatchesTitle: "No matches",
     noMatchesText: "Try a different search term.",
     endOfStream: "End of news stream",
+    loadMore: "Load {n} older articles",
     recommended: "Recommended",
     add: "Add",
     added: "Added",
@@ -1205,6 +1314,12 @@ const LANGS = {
     prefetch: "Prefetch articles on hover",
     exportOpml: "Export OPML",
     importOpml: "Import OPML",
+    exportBackup: "Full backup",
+    importBackup: "Restore backup",
+    backupExported: "Backup file created",
+    backupError: "This backup is invalid or could not be restored",
+    backupRestoreConfirm: "Replace current data with the contents of this backup?",
+    backupImported: "Backup restored successfully",
     clearImgCache: "Clear image cache",
     resetAll: "Reset everything",
     done: "Done",
@@ -1218,7 +1333,7 @@ const LANGS = {
     smaller: "Smaller text",
     larger: "Larger text",
     changeFont: "Change font",
-    resetConfirm: "Reset all settings, sources, saved articles and read history?",
+    resetConfirm: "Reset settings, sources, saved articles, read history and offline news?",
     importedSources: "Imported {n} source(s)",
     noNewSources: "No new sources found",
     opmlError: "Couldn't parse OPML file",
@@ -1236,6 +1351,9 @@ const LANGS = {
     refreshing: "Refreshing…",
     sourceAdded: "Source added",
     feedsRefreshed: "Feeds refreshed",
+    feedsRefreshPartial: "Updated {ok} feed(s); {failed} unavailable",
+    feedsRefreshFailed: "Couldn't refresh {n} feed(s); saved stories are still here",
+    feedCacheFailed: "New stories couldn't be saved to local storage",
     articleCount: "{n} article(s)",
     sourceWord: "Source",
     mySourcesTitle: "My sources",
@@ -1413,6 +1531,9 @@ const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.x
 /* ============ State ============ */
 let sources = store.get("sources", []);
 let articles = {};
+let visibleNewsCount = 50;
+let feedCacheReady = false;
+let feedCacheWarned = false;
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
 if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
@@ -1430,7 +1551,7 @@ function applyTheme(){
   const eff = effectiveTheme();
   document.documentElement.dataset.theme = eff;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", eff === "dark" ? "#070b12" : "#f4f7fb");
+  if (meta) meta.setAttribute("content", eff === "dark" ? "#0e1621" : "#f4f6f8");
 }
 if (prefersDarkMq){
   prefersDarkMq.addEventListener("change", () => {
@@ -1826,26 +1947,47 @@ async function resolveItem(a){
 
 /* ============ Data ============ */
 async function loadSource(s){
+  let loaded = false;
   try {
     const f = parseFeed(await fetchText(s.url));
-    const items = f ? f.items.map(i => ({...i, source: s.title, sourceUrl: s.url})) : [];
+    if (!f) throw new Error("invalid-feed");
+    const previous = new Map((articles[s.url] || []).map(a => [a.link, a]));
+    const fresh = f ? f.items.filter(i => i.link && i.title).map(i => {
+      const old = previous.get(i.link);
+      const item = {...old, ...i, source: s.title, sourceUrl: s.url};
+      if (old && !i.img){ item.img = old.img || ""; item.imgCandidates = old.imgCandidates || []; }
+      delete item.done;
+      return item;
+    }) : [];
+    for (const item of fresh) previous.set(item.link, item);
+    const items = [...previous.values()].sort((a, b) => (b.date || 0) - (a.date || 0));
     articles[s.url] = items;
-    items.sort((a, b) => b.date - a.date).slice(0, 30).forEach(resolveItem);
+    try { await idb.putMany("feedItems", fresh.map(a => ({...a, id: `${s.url}\n${a.link}`}))); }
+    catch { if (!feedCacheWarned){ feedCacheWarned = true; toast(t("feedCacheFailed"), "err"); } }
+    fresh.slice(0, 30).forEach(resolveItem);
+    loaded = true;
   } catch { if (!articles[s.url]) articles[s.url] = []; }
   soon();
+  return loaded;
 }
 async function refreshAll(){
   if (refreshing) return;
   refreshing = true;
   const btn = $("#refreshBtn"); btn.classList.add("spin");
   const queue = sources.slice();
+  let succeeded = 0, failed = 0;
   await Promise.all(Array.from({length: Math.min(4, queue.length)}, async () => {
-    while (queue.length) await loadSource(queue.shift());
+    while (queue.length){
+      const ok = await loadSource(queue.shift());
+      if (ok) succeeded++; else failed++;
+    }
   }));
   refreshing = false;
   btn.classList.remove("spin");
   render();
-  toast(t("feedsRefreshed"), "ok");
+  if (!failed) toast(t("feedsRefreshed"), "ok");
+  else if (succeeded) toast(t("feedsRefreshPartial", {ok:succeeded, failed}), "");
+  else toast(t("feedsRefreshFailed", {n:failed}), "err");
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
@@ -1879,6 +2021,7 @@ function renameTag(oldName, newName){
 }
 function removeSource(url){
   sources = sources.filter(s => s.url !== url); delete articles[url];
+  idb.deleteByIndex("feedItems", "sourceUrl", url).catch(() => {});
   store.set("sources", sources);
   if (state.src === url) state.src = null;
   if (!sources.length) state.page = "add";
@@ -2903,7 +3046,6 @@ function filteredItems(){
     );
   }
   items.sort((a, b) => (b.date || 0) - (a.date || 0));
-  if (state.page !== "saved") items = items.slice(0, 50);
   if (sortMode === "oldest") items.reverse();
   return items;
 }
@@ -2975,13 +3117,14 @@ function newspaperHTML(items){
 }
 function renderNewsHTML(){
   const list0 = filteredItems();
-  const list = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
+  const readyItems = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
   const loading = state.page !== "saved" && (
-    sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
-    (viewMode !== "channel" && list.length < list0.length)
+    !feedCacheReady || sources.some(s => (!articles[s.url] || (refreshing && !articles[s.url].length)) && (!state.src || state.src === s.url)) ||
+    (viewMode !== "channel" && readyItems.length < list0.length)
   );
   const cnt = $("#cnt");
-  if (cnt) cnt.textContent = list.length ? t("articleCount", {n: list.length}) : "";
+  if (cnt) cnt.textContent = list0.length ? t("articleCount", {n: list0.length}) : "";
+  const list = readyItems.slice(0, visibleNewsCount);
   if (!list.length){
     if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
     const isSearch = !!searchQuery.trim();
@@ -3020,7 +3163,11 @@ function renderNewsHTML(){
       out += G.items.map(cardHtml).join("");
     }
   }
-  if (state.page === "news" && !state.src && !loading){
+  if (readyItems.length > visibleNewsCount && !loading){
+    const n = Math.min(50, readyItems.length - visibleNewsCount);
+    out += `<div class="load-more-wrap"><button class="btn ghost" data-load-more>${esc(t("loadMore", {n}))}</button></div>`;
+  }
+  if (state.page === "news" && !state.src && !loading && visibleNewsCount >= readyItems.length){
     const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
     if (recs.length){
       out += `<div class="end">${esc(t("endOfStream"))}</div><h3>${esc(t("recommended"))}</h3><div class="rec3">` +
@@ -3447,6 +3594,9 @@ function fillSettings(){
         <button class="btn ghost" id="opmlExport">${esc(t("exportOpml"))}</button>
         <button class="btn ghost" id="opmlImport">${esc(t("importOpml"))}</button>
         <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
+        <button class="btn ghost" id="backupExport">${esc(t("exportBackup"))}</button>
+        <button class="btn ghost" id="backupImport">${esc(t("importBackup"))}</button>
+        <input type="file" id="backupFile" accept=".json,application/json" hidden>
         <button class="btn ghost" id="imgCacheClear">${esc(t("clearImgCache"))}</button>
         <button class="btn danger" id="resetAll" style="margin-inline-start:auto">${esc(t("resetAll"))}</button>
       </div>
@@ -3478,7 +3628,8 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", () => {
     if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);    idb.clear("articles").finally(() => location.reload());
+    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);
+    Promise.all([idb.clear("articles"), idb.clear("feedItems")]).finally(() => location.reload());
   });
   $("#opmlExport").addEventListener("click", () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -3497,6 +3648,37 @@ function fillSettings(){
     a.download = "personal-news.opml";
     a.click(); URL.revokeObjectURL(a.href);
     toast(t("opmlExported"), "ok");
+  });
+  const backupKeys = ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"];
+  $("#backupExport").addEventListener("click", async () => {
+    try {
+      const [feeds, archived] = await Promise.all([idb.all("feedItems"), idb.all("articles")]);
+      const stateData = Object.fromEntries(backupKeys.map(k => [k, store.get(k, null)]));
+      const data = {format:"personal-news-backup", version:1, createdAt:new Date().toISOString(), state:stateData, feeds, archived};
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data)], {type:"application/json"}));
+      const a = document.createElement("a"); a.href = url; a.download = "personal-news-backup.json"; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast(t("backupExported"), "ok");
+    } catch { toast(t("backupError"), "err"); }
+  });
+  $("#backupImport").addEventListener("click", () => $("#backupFile").click());
+  $("#backupFile").addEventListener("change", async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data.format !== "personal-news-backup" || data.version !== 1 || !data.state || !Array.isArray(data.state.sources) || !Array.isArray(data.feeds) || !Array.isArray(data.archived)) throw new Error("invalid-backup");
+      const validSources = data.state.sources.every(s => s && typeof s.url === "string" && typeof s.title === "string" && /^https?:$/.test(new URL(s.url).protocol));
+      if (!validSources) throw new Error("invalid-source");
+      const urls = new Set(data.state.sources.map(s => s.url));
+      const feeds = data.feeds.filter(a => a && typeof a.link === "string" && urls.has(a.sourceUrl)).map(a => ({...a, id:`${a.sourceUrl}\n${a.link}`}));
+      const archived = data.archived.filter(a => a && typeof a.link === "string");
+      if (!confirm(t("backupRestoreConfirm"))) return;
+      await idb.replaceData(archived, feeds);
+      backupKeys.forEach(k => { if (Object.prototype.hasOwnProperty.call(data.state, k)) store.set(k, data.state[k]); else store.del(k); });
+      toast(t("backupImported"), "ok");
+      setTimeout(() => location.reload(), 300);
+    } catch { toast(t("backupError"), "err"); }
+    finally { e.target.value = ""; }
   });
   $("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
   $("#opmlFile").addEventListener("change", async e => {
@@ -3779,6 +3961,8 @@ document.addEventListener("click", e => {
   openReader(c.dataset.link);
 });
 document.addEventListener("click", async e => {
+  const more = e.target.closest("[data-load-more]");
+  if (more){ visibleNewsCount += 50; render(); return; }
   const saveEl = e.target.closest("[data-save]");
   if (saveEl){
     e.preventDefault(); e.stopPropagation();
@@ -4177,12 +4361,12 @@ function navigateReader(direction){
 
 /* ============ PWA ============ */
 (function setupPWA(){
-  const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#070b12"/><circle cx="256" cy="256" r="150" fill="none" stroke="#ff1b2d" stroke-width="72"/><circle cx="256" cy="256" r="52" fill="#ff1b2d" opacity=".22"/></svg>`;
+  const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#3390ec"/><path d="M392 114 335 383c-4 19-16 24-32 15l-89-66-43 41c-5 5-9 9-19 9l6-91 166-150c7-6-2-9-11-3L108 270l-88-28c-19-6-19-19 4-28L360 77c16-6 38 4 32 37Z" fill="#fff" transform="translate(60 12) scale(.88)"/></svg>`;
   const iconUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgIcon);
   const manifest = {
     name: "Personal news", short_name: "News", description: "A single-file RSS/Atom reader",
     start_url: "./", scope: "./", display: "standalone",
-    background_color: "#070b12", theme_color: "#070b12",
+    background_color: "#0e1621", theme_color: "#0e1621",
     icons: [
       { src: iconUrl, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
       { src: iconUrl, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
@@ -4206,10 +4390,10 @@ setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
 render();
 setupAuto();
-if (sources.length) refreshAll();
-loadArchive().then(() => {
-  if (state.page === "archive" || state.page === "digest") render();
-  else renderSide();
+try { navigator.storage?.persist?.().catch(() => {}); } catch {}
+Promise.all([loadArchive(), loadFeedCache()]).then(() => {
+  render();
+  if (sources.length) refreshAll();
 });
 if (location.hash.startsWith("#!r=")){
   try {
