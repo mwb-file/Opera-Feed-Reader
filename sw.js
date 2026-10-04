@@ -1,5 +1,5 @@
 /* Personal news — Service Worker */
-const CACHE = "personal-news-v3";
+const CACHE = "personal-news-v4";
 const SHELL = ["./", "./index.html"];
 
 self.addEventListener("install", e => {
