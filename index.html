@@ -443,6 +443,19 @@ body.grid .row > .card .bd{padding:12px 14px;gap:5px;height:auto;min-height:0;fl
 .empty h3{margin:0 0 6px;color:var(--text);font-size:17px;font-weight:600}
 .empty p{margin:0;font-size:13px;line-height:1.6}
 
+/* A welcoming first-run state that gives new readers a clear next step. */
+.empty.welcome{position:relative;isolation:isolate;overflow:hidden;max-width:700px;margin:34px auto 0;padding:clamp(28px,6vw,58px) clamp(20px,5vw,52px);border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,var(--panel),var(--bg-soft));box-shadow:var(--shadow)}
+.empty.welcome::before{content:"";position:absolute;z-index:-1;width:360px;height:240px;top:-150px;inset-inline-end:-70px;background:radial-gradient(ellipse,rgba(255,65,91,.18),transparent 70%);pointer-events:none}
+.welcome-kicker{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border:1px solid var(--line-2);border-radius:999px;background:var(--bg-soft);color:var(--text-dim);font-size:11px;font-weight:600}
+.welcome-kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(255,77,106,.12)}
+.empty.welcome .big{display:grid;place-items:center;width:66px;height:66px;margin:22px auto 15px;border-radius:20px;background:var(--accent-grad);color:white;opacity:1;font-size:30px;box-shadow:0 12px 30px rgba(255,45,85,.22)}
+.empty.welcome h3{font-size:clamp(21px,3vw,29px);letter-spacing:-.3px}
+.empty.welcome p{max-width:430px;margin:8px auto 20px;color:var(--text-dim);font-size:14px}
+.welcome-cta{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 20px;border-radius:12px;font-weight:600}
+.welcome-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;color:var(--mute);font-size:11px}
+.welcome-hint span{width:4px;height:4px;border-radius:50%;background:var(--blue);opacity:.7}
+@media(max-width:640px){.empty.welcome{margin:20px 0;padding:28px 18px;border-radius:18px}.welcome-hint{flex-wrap:wrap}}
+
 .skel{height:160px;margin-bottom:14px;border-radius:var(--radius);background:var(--skeleton);background-size:200% 100%;animation:shimmer 1.4s infinite linear}
 @keyframes shimmer{to{background-position:-200% 0}}
 
@@ -703,6 +716,29 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
 /* TTS paragraph highlight */
 .tts-highlight{background:linear-gradient(90deg,var(--blue-soft),transparent);border-radius:4px;box-shadow:inset 3px 0 0 var(--blue);transition:background .2s}
 [dir=auto]{unicode-bidi:plaintext}
+
+/* ===== Polish ===== */
+:root{--accent-grad:linear-gradient(135deg,#ff6a3d,#ff2d55 55%,#c4208f);--ring:0 0 0 1px var(--line-2)}
+::selection{background:var(--blue-soft);color:var(--text)}
+.logo{border:0;background:var(--accent-grad);box-shadow:0 4px 14px rgba(255,45,85,.35)}
+.logo::after{inset:7px;background:var(--bg);opacity:1}
+header h1{font-weight:700;letter-spacing:0}
+.search{border-radius:12px;height:38px}
+.card,.np-hero,.np-sec,.stat-card{border-radius:16px}
+.card{box-shadow:0 1px 0 rgba(255,255,255,.03) inset}
+.card:hover,.np-hero:hover{transform:none;box-shadow:var(--shadow),var(--ring)}
+.card .im,.np-hero-img,.np-sec-img{transition:filter var(--t)}
+.card:hover .im{filter:saturate(1.12) brightness(1.04)}
+.card .t{font-weight:700;font-size:16px;line-height:1.55}
+.card:not(.read) .meta .dot{box-shadow:0 0 0 3px var(--blue-soft)}
+.feed h3{text-transform:none;letter-spacing:0;font-size:13px;color:var(--text-dim)}
+.nav-link{border-radius:10px}
+.nav-link.on{box-shadow:inset 3px 0 0 var(--blue)}
+[dir=rtl] .nav-link.on{box-shadow:inset -3px 0 0 var(--blue)}
+.seg{border-radius:12px}.seg button.on{box-shadow:0 2px 8px rgba(0,0,0,.25)}
+img{content-visibility:auto}
+.card{content-visibility:auto;contain-intrinsic-size:auto 160px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -757,7 +793,7 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
         </div>
       </div>
     </div>
-    <div id="view"></div>
+    <div id="view" aria-live="polite"></div>
   </main>
 </div>
 
@@ -946,6 +982,11 @@ const LANGS = {
     minReadLong: "{n} دقیقه مطالعه",
     emptyTitle: "هنوز خبری نیست",
     emptyText: "یک منبع اضافه کنید یا اتصال اینترنت را بررسی کنید.",
+    welcomeKicker: "خبرخوان شخصی شما",
+    welcomeTitle: "خبرهای موردعلاقه‌تان را یک‌جا بخوانید",
+    welcomeText: "فیدهای موردعلاقه‌تان را یک‌جا دنبال کنید؛ بدون شلوغی و با کنترل کامل روی خواندن.",
+    welcomeCta: "افزودن اولین منبع",
+    welcomeHint: "فقط آدرس سایت را وارد کنید",
     noMatchesTitle: "چیزی پیدا نشد",
     noMatchesText: "عبارت دیگری امتحان کنید.",
     endOfStream: "پایان جریان خبرها",
@@ -1126,6 +1167,11 @@ const LANGS = {
     minReadLong: "{n} min read",
     emptyTitle: "Nothing here yet",
     emptyText: "Add a source or check your connection.",
+    welcomeKicker: "Your personal news reader",
+    welcomeTitle: "Your favorite stories, all in one place",
+    welcomeText: "Follow your favorite feeds in one calm place, with simple tools to organize and read at your pace.",
+    welcomeCta: "Add your first source",
+    welcomeHint: "A website address is all you need",
     noMatchesTitle: "No matches",
     noMatchesText: "Try a different search term.",
     endOfStream: "End of news stream",
@@ -1785,15 +1831,17 @@ async function loadSource(s){
     const items = f ? f.items.map(i => ({...i, source: s.title, sourceUrl: s.url})) : [];
     articles[s.url] = items;
     items.sort((a, b) => b.date - a.date).slice(0, 30).forEach(resolveItem);
-  } catch { articles[s.url] = []; }
+  } catch { if (!articles[s.url]) articles[s.url] = []; }
   soon();
 }
 async function refreshAll(){
   if (refreshing) return;
   refreshing = true;
   const btn = $("#refreshBtn"); btn.classList.add("spin");
-  Object.keys(articles).forEach(k => delete articles[k]);
-  await Promise.all(sources.map(loadSource));
+  const queue = sources.slice();
+  await Promise.all(Array.from({length: Math.min(4, queue.length)}, async () => {
+    while (queue.length) await loadSource(queue.shift());
+  }));
   refreshing = false;
   btn.classList.remove("spin");
   render();
@@ -2937,6 +2985,16 @@ function renderNewsHTML(){
   if (!list.length){
     if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
     const isSearch = !!searchQuery.trim();
+    if (!isSearch && state.page === "news" && !state.src && sources.length === 0){
+      return `<div class="feed"><section class="empty welcome">
+        <span class="welcome-kicker">${esc(t("welcomeKicker"))}</span>
+        <div class="big" aria-hidden="true">✦</div>
+        <h3>${esc(t("welcomeTitle"))}</h3>
+        <p>${esc(t("welcomeText"))}</p>
+        <button class="btn welcome-cta" data-go="add"><span aria-hidden="true">＋</span>${esc(t("welcomeCta"))}</button>
+        <div class="welcome-hint"><span></span>${esc(t("welcomeHint"))}</div>
+      </section></div>`;
+    }
     return `<div class="feed"><div class="empty">
       <div class="big">${isSearch ? "⌕" : "◇"}</div>
       <h3>${esc(isSearch ? t("noMatchesTitle") : t("emptyTitle"))}</h3>
