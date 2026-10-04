@@ -20,33 +20,61 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // CDN fonts: stale-while-revalidate, so the UI keeps its typeface offline
+  // CDN fonts: stale-while-revalidate, so the UI keeps its typeface offline.
   if (url.hostname === "cdn.jsdelivr.net") {
+    // Fetch synchronously so e.waitUntil() is called during dispatch.
+    const networkPromise = fetch(req);
+    e.waitUntil(
+      networkPromise
+        .then(r => {
+          // Cross-origin no-cors font requests can be opaque (status 0)
+          // and are still valid cache entries.
+          if (r.ok || r.type === "opaque") {
+            return caches.open(FONTS)
+              .then(c => c.put(req, r.clone()))
+              .catch(() => {});
+          }
+        })
+        .catch(() => {})
+    );
     e.respondWith((async () => {
       try {
-        const c = await caches.open(FONTS);
-        const hit = await c.match(req);
-        const net = fetch(req).then(r => {
-          // Cross-origin no-cors font requests can be opaque (status 0) and
-          // are still valid cache entries.
-          if (r.ok || r.type === "opaque") e.waitUntil(c.put(req, r.clone()).catch(() => {}));
-          return r;
-        }).catch(() => hit || Response.error());
-        return hit || await net;
+        return await networkPromise;
       } catch {
-        return fetch(req);
+        try {
+          const hit = await caches.match(req);
+          return hit || Response.error();
+        } catch {
+          return Response.error();
+        }
       }
     })());
     return;
   }
   if (url.origin !== location.origin) return;
 
-  // App shell only: network first, cached copy when offline
-  const isShell = req.mode === "navigate" || SHELL.some(p => p !== "./" && url.pathname.endsWith(p.slice(2)));
+  // App shell only: network first, cached copy when offline.
+  const isShell = req.mode === "navigate"
+    || SHELL.some(p => p !== "./" && url.pathname.endsWith(p.slice(2)));
   if (!isShell) return;
-  e.respondWith(
-    fetch(req)
-      .then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {}); return r; })
-      .catch(() => caches.match(req).then(hit => hit || caches.match("./index.html")))
+
+  const networkPromise = fetch(req);
+  e.waitUntil(
+    networkPromise
+      .then(r => {
+        const copy = r.clone();
+        return caches.open(CACHE)
+          .then(c => c.put(req, copy))
+          .catch(() => {});
+      })
+      .catch(() => {})
   );
+  e.respondWith((async () => {
+    try {
+      return await networkPromise;
+    } catch {
+      const hit = await caches.match(req);
+      return hit || (await caches.match("./index.html"));
+    }
+  })());
 });
