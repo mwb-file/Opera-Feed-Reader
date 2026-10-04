@@ -432,6 +432,7 @@ body.grid .row > .card .bd{padding:12px 14px;gap:5px;height:auto;min-height:0;fl
 
 .end{text-align:center;color:var(--mute);font-size:11px;letter-spacing:.14em;margin:56px 0 30px;text-transform:uppercase}
 .end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
+.load-more-wrap{display:flex;justify-content:center;padding:12px 0 24px}
 
 .rec3{display:flex;margin:0 -8px;gap:0}
 .rtile{flex:1 1 0;min-width:0;margin:0 8px;height:120px;background:var(--panel) center/cover;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 12px;color:#fff;border:1px solid var(--line);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:transform var(--t),box-shadow var(--t)}
@@ -794,6 +795,19 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
   aside{border-inline-end:0}
 }
 @media(hover:none){.save-btn,.card-action.share-btn,.np-hero .save-btn,.np-sec .save-btn,.np-head .save-btn,.src-row .mini,.tag-link .tag-ren{opacity:.75}.save-btn.on{opacity:1}}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+.seg .ic{width:16px;height:16px}.search-icon .ic{width:16px;height:16px}
+.seg button{display:inline-flex;align-items:center;justify-content:center}
+.icon-btn.hide{display:none}
+.opts{position:relative}
+.opts-pop{position:absolute;inset-inline-end:0;top:calc(100% + 8px);z-index:80;min-width:230px;display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow)}
+.opts-pop[hidden]{display:none}
+.opts-row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12.5px;color:var(--text-dim)}
+.opts-row:has(.seg.hide){display:none}
+.opts-keys{display:flex;align-items:center;gap:8px;padding:8px 6px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text-dim);font-size:12.5px;cursor:pointer}
+.opts-keys:hover{color:var(--text)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;align-items:center;font-size:13.5px}
+.keys kbd{justify-self:start;direction:ltr;min-width:30px;text-align:center;padding:3px 9px;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:7px;background:var(--panel-2);font:600 12px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre}
 </style>
 </head>
 <body>
@@ -802,18 +816,18 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
     <div class="logo"></div>
     <h1 id="appTitle">Personal news</h1>
   </div>
-  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   <div class="search-wrap">
-    <span class="search-icon">⌕</span>
+    <span class="search-icon"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
     <input id="search" class="search" placeholder="" autocomplete="off" spellcheck="false">
     <button class="search-clear" id="searchClear" hidden aria-label="">✕</button>
   </div>
   <div class="head-actions">
-    <button class="icon-btn" id="digestBtn" aria-label="">☀</button>
-    <button class="icon-btn" id="liveTranslateBtn" aria-label="">🌐</button>
-    <button class="icon-btn" id="refreshBtn" aria-label="">⟳</button>
-    <button class="icon-btn" id="themeBtn" aria-label="">◐</button>
-    <button class="icon-btn" id="settingsBtn" aria-label="">⚙</button>
+    <button class="icon-btn" id="digestBtn" aria-label=""><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    <button class="icon-btn" id="liveTranslateBtn" aria-label=""><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 5.5 6 7M12 5c-.5 3-3 6-7 7.5M13 21l4-9 4 9M14.5 18h5"/></svg></button>
+    <button class="icon-btn" id="refreshBtn" aria-label=""><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+    <button class="icon-btn" id="themeBtn" aria-label=""><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" style="fill:currentColor"/></svg></button>
+    <button class="icon-btn" id="settingsBtn" aria-label=""><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
   </div>
 </header>
 
@@ -829,22 +843,28 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
       </div>
       <div class="tact">
         <div class="seg" id="filterSeg">
-          <button data-filter="all" id="filterAll">●</button>
-          <button data-filter="unread" id="filterUnread">○</button>
-        </div>
-        <div class="seg" id="sortSeg">
-          <button data-sort="newest" id="sortNewest">↓</button>
-          <button data-sort="oldest" id="sortOldest">↑</button>
-        </div>
-        <div class="seg" id="densSeg">
-          <button data-dens="cozy" id="densCozy">▦</button>
-          <button data-dens="compact" id="densCompact">▤</button>
+          <button data-filter="all" id="filterAll"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 12h5l1.5 2.5h3L15 12h5"/></svg></button>
+          <button data-filter="unread" id="filterUnread"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5" style="fill:currentColor"/></svg></button>
         </div>
         <div class="seg" id="tg">
-          <button data-v="list" id="tgList">☰</button>
-          <button data-v="channel" id="tgChannel">≡</button>
-          <button data-v="grid" id="tgGrid">▩</button>
-          <button data-v="newspaper" id="tgNews">📰</button>
+          <button data-v="list" id="tgList"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/></svg></button>
+          <button data-v="channel" id="tgChannel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h16M4 18h10"/></svg></button>
+          <button data-v="grid" id="tgGrid"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button>
+          <button data-v="newspaper" id="tgNews"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h11v14H7a2 2 0 0 1-2-2zM16 9h3v8a2 2 0 0 1-2 2M8 9h5M8 12h5M8 15h3"/></svg></button>
+        </div>
+        <div class="opts">
+          <button class="icon-btn" id="optsBtn" aria-haspopup="true" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg></button>
+          <div class="opts-pop" id="optsPop" hidden>
+            <div class="opts-row"><span id="optSortLbl"></span><div class="seg" id="sortSeg">
+              <button data-sort="newest" id="sortNewest"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+              <button data-sort="oldest" id="sortOldest"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+            </div></div>
+            <div class="opts-row"><span id="optDensLbl"></span><div class="seg" id="densSeg">
+              <button data-dens="cozy" id="densCozy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+              <button data-dens="compact" id="densCompact"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16M4 8.5h16M4 13h16M4 17.5h16"/></svg></button>
+            </div></div>
+            <button class="opts-keys" id="keysBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></svg><span id="keysBtnLbl"></span></button>
+          </div>
         </div>
       </div>
     </div>
@@ -895,6 +915,12 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
   <div class="dlg-foot"><button class="btn" data-close id="setDone"></button></div>
 </dialog>
 
+<dialog id="keysDlg">
+  <div class="dlg-head"><h3 id="keysTitle"></h3><button class="close" data-close>✕</button></div>
+  <div class="dlg-body" id="keysBody"></div>
+  <div class="dlg-foot"><button class="btn" data-close id="keysClose"></button></div>
+</dialog>
+
 <dialog id="tagsDlg">
   <div class="dlg-head"><h3 id="tagsDlgTitle">Tags</h3><button class="close" data-close>✕</button></div>
   <div class="dlg-body" id="tagsBody"></div>
@@ -911,9 +937,9 @@ const store = {
 };
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
-/* ============ IndexedDB (archive) ============ */
+/* ============ IndexedDB (archive + persistent feed history) ============ */
 const idb = (() => {
-  const NAME = "personal-news-db", VER = 1;
+  const NAME = "personal-news-db", VER = 3;
   let dbP = null;
   function open(){
     if (dbP) return dbP;
@@ -927,6 +953,21 @@ const idb = (() => {
           s.createIndex("archivedAt", "archivedAt");
           s.createIndex("date", "date");
           s.createIndex("source", "source");
+        }
+        const makeFeedStore = () => {
+          const s = db.createObjectStore("feedItems", {keyPath: "id"});
+          s.createIndex("sourceUrl", "sourceUrl"); s.createIndex("date", "date");
+          return s;
+        };
+        if (!db.objectStoreNames.contains("feedItems")) makeFeedStore();
+        else {
+          const oldItems = r.transaction.objectStore("feedItems").getAll();
+          oldItems.onsuccess = () => {
+            const rows = oldItems.result || [];
+            db.deleteObjectStore("feedItems");
+            const s = makeFeedStore();
+            rows.filter(a => a && a.sourceUrl && a.link).forEach(a => s.put({...a, id: `${a.sourceUrl}\n${a.link}`}));
+          };
         }
       };
       r.onsuccess = () => res(r.result);
@@ -948,7 +989,23 @@ const idb = (() => {
   };
   return {
     put: (storeName, obj) => tx(storeName, "readwrite", s => s.put(obj)),
+    putMany: (storeName, objects) => tx(storeName, "readwrite", s => objects.forEach(obj => s.put(obj))),
+    delMany: (storeName, keys) => tx(storeName, "readwrite", s => keys.forEach(k => s.delete(k))),
     get: (storeName, key) => tx(storeName, "readonly",  s => s.get(key)),
+    byIndex: (storeName, indexName, value) => tx(storeName, "readonly", s => s.index(indexName).getAll(IDBKeyRange.only(value))).then(v => v || []),
+    deleteByIndex: (storeName, indexName, value) => open().then(db => new Promise((res, rej) => {
+      const t = db.transaction(storeName, "readwrite"), s = t.objectStore(storeName);
+      const req = s.index(indexName).openKeyCursor(IDBKeyRange.only(value));
+      req.onsuccess = () => { const c = req.result; if (c){ s.delete(c.primaryKey); c.continue(); } };
+      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    })),
+    replaceData: (archived, feeds) => open().then(db => new Promise((res, rej) => {
+      const t = db.transaction(["articles", "feedItems"], "readwrite");
+      const a = t.objectStore("articles"), f = t.objectStore("feedItems");
+      a.clear(); f.clear();
+      archived.forEach(x => a.put(x)); feeds.forEach(x => f.put(x));
+      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+    })),
     del: (storeName, key) => tx(storeName, "readwrite", s => s.delete(key)),
     clear: (storeName) => tx(storeName, "readwrite", s => s.clear()),
     count: (storeName) => tx(storeName, "readonly",  s => s.count()),
@@ -987,6 +1044,19 @@ async function clearArchive(){
   try { await idb.clear("articles"); } catch {}
   archiveCache = [];
 }
+async function loadFeedCache(){
+  await Promise.all(sources.map(async s => {
+    try {
+      const items = await idb.byIndex("feedItems", "sourceUrl", s.url);
+      articles[s.url] = items.filter(a => a && a.link && a.title).map(a => {
+      a.source = s.title; a.sourceUrl = s.url; a.id = `${s.url}\n${a.link}`; a.done = true;
+        if (ic[a.link]){ a.img = ic[a.link].img || a.img; a.ok = !!ic[a.link].ok; }
+        return a;
+      }).sort((a, b) => (b.date || 0) - (a.date || 0));
+    } catch { articles[s.url] = articles[s.url] || []; }
+  }));
+  feedCacheReady = true;
+}
 
 /* ============ i18n ============ */
 const LANGS = {
@@ -1007,7 +1077,7 @@ const LANGS = {
     toggleTheme: "تغییر تم (T)",
     settings: "تنظیمات",
     menu: "منو",
-    top50: "۵۰ خبر برتر",
+    top50: "همه‌ی خبرها",
     savedItems: "ذخیره‌شده‌ها",
     mySources: "منابع من",
     markAllRead: "علامت‌زدن همه",
@@ -1045,6 +1115,7 @@ const LANGS = {
     noMatchesTitle: "چیزی پیدا نشد",
     noMatchesText: "عبارت دیگری امتحان کنید.",
     endOfStream: "پایان جریان خبرها",
+    loadMore: "بارگذاری {n} خبر قدیمی‌تر",
     recommended: "پیشنهادی",
     add: "افزودن",
     added: "افزوده شد",
@@ -1075,6 +1146,12 @@ const LANGS = {
     prefetch: "Prefetch روی hover",
     exportOpml: "خروجی OPML",
     importOpml: "ورود OPML",
+    exportBackup: "پشتیبان‌گیری کامل",
+    importBackup: "بازیابی پشتیبان",
+    backupExported: "فایل پشتیبان ساخته شد",
+    backupError: "فایل پشتیبان معتبر نیست یا قابل بازیابی نیست",
+    backupRestoreConfirm: "اطلاعات فعلی با محتوای این فایل پشتیبان جایگزین شود؟",
+    backupImported: "پشتیبان با موفقیت بازیابی شد",
     clearImgCache: "پاک کردن کش عکس",
     resetAll: "بازنشانی همه‌چیز",
     done: "تمام",
@@ -1088,7 +1165,7 @@ const LANGS = {
     smaller: "کوچک‌تر",
     larger: "بزرگ‌تر",
     changeFont: "تغییر فونت",
-    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها و تاریخچه پاک شود؟",
+    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها، تاریخچه و خبرهای آفلاین پاک شوند؟",
     importedSources: "{n} منبع وارد شد",
     noNewSources: "منبع جدیدی پیدا نشد",
     opmlError: "خطا در خواندن فایل OPML",
@@ -1106,6 +1183,9 @@ const LANGS = {
     refreshing: "در حال به‌روزرسانی…",
     sourceAdded: "منبع اضافه شد",
     feedsRefreshed: "فیدها به‌روز شد",
+    feedsRefreshPartial: "{ok} فید به‌روز شد؛ {failed} فید در دسترس نبود",
+    feedsRefreshFailed: "به‌روزرسانی {n} فید ناموفق بود؛ خبرهای ذخیره‌شده باقی هستند",
+    feedCacheFailed: "خبرهای تازه در حافظه‌ی محلی ذخیره نشدند",
     articleCount: "{n} خبر",
     sourceWord: "منبع",
     mySourcesTitle: "منابع من",
@@ -1192,7 +1272,7 @@ const LANGS = {
     toggleTheme: "Toggle theme (T)",
     settings: "Settings",
     menu: "Menu",
-    top50: "Top 50",
+    top50: "All stories",
     savedItems: "Saved",
     mySources: "My sources",
     markAllRead: "Mark all read",
@@ -1230,6 +1310,7 @@ const LANGS = {
     noMatchesTitle: "No matches",
     noMatchesText: "Try a different search term.",
     endOfStream: "End of news stream",
+    loadMore: "Load {n} older articles",
     recommended: "Recommended",
     add: "Add",
     added: "Added",
@@ -1260,6 +1341,12 @@ const LANGS = {
     prefetch: "Prefetch articles on hover",
     exportOpml: "Export OPML",
     importOpml: "Import OPML",
+    exportBackup: "Full backup",
+    importBackup: "Restore backup",
+    backupExported: "Backup file created",
+    backupError: "This backup is invalid or could not be restored",
+    backupRestoreConfirm: "Replace current data with the contents of this backup?",
+    backupImported: "Backup restored successfully",
     clearImgCache: "Clear image cache",
     resetAll: "Reset everything",
     done: "Done",
@@ -1273,7 +1360,7 @@ const LANGS = {
     smaller: "Smaller text",
     larger: "Larger text",
     changeFont: "Change font",
-    resetConfirm: "Reset all settings, sources, saved articles and read history?",
+    resetConfirm: "Reset settings, sources, saved articles, read history and offline news?",
     importedSources: "Imported {n} source(s)",
     noNewSources: "No new sources found",
     opmlError: "Couldn't parse OPML file",
@@ -1291,6 +1378,9 @@ const LANGS = {
     refreshing: "Refreshing…",
     sourceAdded: "Source added",
     feedsRefreshed: "Feeds refreshed",
+    feedsRefreshPartial: "Updated {ok} feed(s); {failed} unavailable",
+    feedsRefreshFailed: "Couldn't refresh {n} feed(s); saved stories are still here",
+    feedCacheFailed: "New stories couldn't be saved to local storage",
     articleCount: "{n} article(s)",
     sourceWord: "Source",
     mySourcesTitle: "My sources",
@@ -1468,17 +1558,23 @@ const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.x
 /* ============ State ============ */
 let sources = store.get("sources", []);
 let articles = {};
-const srcErr = {};
-let pageLimit = 50, filteredTotal = 0;
-const AC_KEY = "ac1";
-function saveArticleCache(){
-  const build = h => { const o = {}; for (const s of sources) o[s.url] = (articles[s.url] || []).slice().sort((a, b) => b.date - a.date).slice(0, 30)
-    .map(a => ({title: a.title, link: a.link, date: a.date, source: a.source, img: a.img, ok: a.ok, html: (a.html || "").slice(0, h)})); return o; };
-  try { localStorage.setItem(AC_KEY, JSON.stringify({ts: Date.now(), o: build(1200)})); }
-  catch { try { localStorage.setItem(AC_KEY, JSON.stringify({ts: Date.now(), o: build(200)})); } catch {} }
-}
-function unreadTotal(){ let n = 0; for (const k in articles) for (const a of articles[k]) if (a.title && !isRead(a.link)) n++; return n; }
+let visibleNewsCount = 50;
+let feedCacheReady = false;
+let feedCacheWarned = false;
+const KEEP_PER_SOURCE = 200;
 const normLink = l => String(l || "").replace(/^https?:\/\/(www\.)?/i, "").split(/[?#]/)[0].replace(/\/+$/, "").toLowerCase();
+function unreadTotal(){ let n = 0; for (const k in articles) for (const a of articles[k]) if (a.title && !isRead(a.link)) n++; return n; }
+const dirtyItems = new Map(); let dirtyT;
+function persistItem(a){
+  if (!a.sourceUrl) return;
+  dirtyItems.set(a.link, a);
+  clearTimeout(dirtyT);
+  dirtyT = setTimeout(() => {
+    const rows = [...dirtyItems.values()].map(x => ({...x, id: `${x.sourceUrl}\n${x.link}`}));
+    dirtyItems.clear();
+    idb.putMany("feedItems", rows).catch(() => {});
+  }, 2000);
+}
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
 if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
@@ -1673,9 +1769,15 @@ function parseFeed(text){
   }
   return null;
 }
+const _plainCache = new Map();
 function plain(html){
-  const d = new DOMParser().parseFromString(html || "", "text/html");
-  return (d.body.textContent || "").replace(/\s+/g, " ").trim();
+  html = html || "";
+  const hit = _plainCache.get(html);
+  if (hit !== undefined) return hit;
+  const d = new DOMParser().parseFromString(html, "text/html");
+  const v = (d.body.textContent || "").replace(/\s+/g, " ").trim();
+  if (html.length < 6000){ if (_plainCache.size > 1500) _plainCache.clear(); _plainCache.set(html, v); }
+  return v;
 }
 
 /* ============ Discovery ============ */
@@ -1860,6 +1962,7 @@ async function resolveItem(a){
   a.ok = ok;
   a.done = true;
   if (ok){ ic[a.link] = {img: a.img, ok: true}; icSave(); }
+  persistItem(a);
   if (!patchCard(a)) soon();
   if (ok) return;
   (async () => {
@@ -1886,38 +1989,57 @@ async function resolveItem(a){
     if (got){ a.img = url; a.ok = true; ic[a.link] = {img: a.img, ok: true}; }
     else { ic[a.link] = {img: a.img, ok: false}; }
     icSave();
+    persistItem(a);
     if (got && !patchCard(a)) soon();
   })();
 }
 
 /* ============ Data ============ */
 async function loadSource(s){
+  let loaded = false;
   try {
     const f = parseFeed(await fetchText(s.url));
-    if (!f) throw new Error("parse");
-    const items = f.items.map(i => ({...i, source: s.title, sourceUrl: s.url}));
-    articles[s.url] = items; delete srcErr[s.url];
-    items.sort((a, b) => b.date - a.date).slice(0, 30).forEach(resolveItem);
-  } catch (e) { srcErr[s.url] = (e && e.message) || "error"; if (!articles[s.url]) articles[s.url] = []; }
+    if (!f) throw new Error("invalid-feed");
+    const previous = new Map((articles[s.url] || []).map(a => [a.link, a]));
+    const fresh = f ? f.items.filter(i => i.link && i.title).map(i => {
+      const old = previous.get(i.link);
+      const item = {...old, ...i, source: s.title, sourceUrl: s.url};
+      if (old && !i.img){ item.img = old.img || ""; item.imgCandidates = old.imgCandidates || []; }
+      delete item.done;
+      return item;
+    }) : [];
+    for (const item of fresh) previous.set(item.link, item);
+    const sorted = [...previous.values()].sort((a, b) => (b.date || 0) - (a.date || 0));
+    const items = sorted.slice(0, KEEP_PER_SOURCE), keepL = new Set(items.map(a => a.link));
+    const pruned = sorted.slice(KEEP_PER_SOURCE);
+    articles[s.url] = items;
+    if (pruned.length) idb.delMany("feedItems", pruned.map(a => `${s.url}\n${a.link}`)).catch(() => {});
+    try { await idb.putMany("feedItems", fresh.filter(a => keepL.has(a.link)).map(a => ({...a, id: `${s.url}\n${a.link}`}))); }
+    catch { if (!feedCacheWarned){ feedCacheWarned = true; toast(t("feedCacheFailed"), "err"); } }
+    fresh.slice(0, 30).forEach(resolveItem);
+    loaded = true;
+  } catch { if (!articles[s.url]) articles[s.url] = []; }
   soon();
+  return loaded;
 }
 async function refreshAll(){
   if (refreshing) return;
   refreshing = true;
   const btn = $("#refreshBtn"); btn.classList.add("spin");
   const queue = sources.slice();
+  let succeeded = 0, failed = 0;
   await Promise.all(Array.from({length: Math.min(4, queue.length)}, async () => {
-    while (queue.length) await loadSource(queue.shift());
+    while (queue.length){
+      const ok = await loadSource(queue.shift());
+      if (ok) succeeded++; else failed++;
+    }
   }));
   refreshing = false;
   btn.classList.remove("spin");
   render();
-  saveArticleCache();
-  const bad = sources.filter(x => srcErr[x.url]);
-  if (bad.length){
-    const names = bad.slice(0, 2).map(x => x.title).join(appLang === "fa" ? "، " : ", ");
-    toast(appLang === "fa" ? `${bad.length} منبع بارگذاری نشد: ${names}` : `${bad.length} source(s) failed to load: ${names}`, "err");
-  } else toast(t("feedsRefreshed"), "ok");
+  if (!failed) toast(t("feedsRefreshed"), "ok");
+  else if (succeeded) toast(t("feedsRefreshPartial", {ok:succeeded, failed}), "");
+  else toast(t("feedsRefreshFailed", {n:failed}), "err");
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
@@ -1951,6 +2073,7 @@ function renameTag(oldName, newName){
 }
 function removeSource(url){
   sources = sources.filter(s => s.url !== url); delete articles[url];
+  idb.deleteByIndex("feedItems", "sourceUrl", url).catch(() => {});
   store.set("sources", sources);
   if (state.src === url) state.src = null;
   if (!sources.length) state.page = "add";
@@ -2976,10 +3099,8 @@ function filteredItems(){
       plain(a.html).toLowerCase().includes(q)
     );
   }
-  const dir = sortMode === "oldest" ? -1 : 1;
-  items.sort((a, b) => dir * ((b.date || 0) - (a.date || 0)));
-  filteredTotal = items.length;
-  if (state.page !== "saved") items = items.slice(0, pageLimit);
+  items.sort((a, b) => (b.date || 0) - (a.date || 0));
+  if (sortMode === "oldest") items.reverse();
   return items;
 }
 
@@ -3050,13 +3171,14 @@ function newspaperHTML(items){
 }
 function renderNewsHTML(){
   const list0 = filteredItems();
-  const list = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
+  const readyItems = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
   const loading = state.page !== "saved" && (
-    sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
-    (viewMode !== "channel" && list.length < list0.length)
+    !feedCacheReady || sources.some(s => (!articles[s.url] || (refreshing && !articles[s.url].length)) && (!state.src || state.src === s.url)) ||
+    (viewMode !== "channel" && readyItems.length < list0.length)
   );
   const cnt = $("#cnt");
-  if (cnt) cnt.textContent = list.length ? t("articleCount", {n: list.length}) : "";
+  if (cnt) cnt.textContent = list0.length ? t("articleCount", {n: list0.length}) : "";
+  const list = readyItems.slice(0, visibleNewsCount);
   if (!list.length){
     if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
     const isSearch = !!searchQuery.trim();
@@ -3095,11 +3217,11 @@ function renderNewsHTML(){
       out += G.items.map(cardHtml).join("");
     }
   }
-  if (state.page !== "saved" && filteredTotal > list.length){
-    const left = filteredTotal - list.length;
-    out += `<div class="end"><button class="btn" data-more>${appLang === "fa" ? `نمایش ${Math.min(50, left)} خبر بیشتر (${left} مانده)` : `Show ${Math.min(50, left)} more (${left} left)`}</button></div>`;
+  if (readyItems.length > visibleNewsCount && !loading){
+    const n = Math.min(50, readyItems.length - visibleNewsCount);
+    out += `<div class="load-more-wrap"><button class="btn ghost" data-load-more>${esc(t("loadMore", {n}))}</button></div>`;
   }
-  if (state.page === "news" && !state.src && !loading){
+  if (state.page === "news" && !state.src && !loading && visibleNewsCount >= readyItems.length){
     const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
     if (recs.length){
       out += `<div class="end">${esc(t("endOfStream"))}</div><h3>${esc(t("recommended"))}</h3><div class="rec3">` +
@@ -3526,6 +3648,9 @@ function fillSettings(){
         <button class="btn ghost" id="opmlExport">${esc(t("exportOpml"))}</button>
         <button class="btn ghost" id="opmlImport">${esc(t("importOpml"))}</button>
         <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
+        <button class="btn ghost" id="backupExport">${esc(t("exportBackup"))}</button>
+        <button class="btn ghost" id="backupImport">${esc(t("importBackup"))}</button>
+        <input type="file" id="backupFile" accept=".json,application/json" hidden>
         <button class="btn ghost" id="imgCacheClear">${esc(t("clearImgCache"))}</button>
         <button class="btn danger" id="resetAll" style="margin-inline-start:auto">${esc(t("resetAll"))}</button>
       </div>
@@ -3555,9 +3680,10 @@ function fillSettings(){
     store.del("ic");
     toast(t("imgCacheCleared"), "ok");
   });
-  $("#resetAll").addEventListener("click", () => {
-    if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);    idb.clear("articles").finally(() => location.reload());
+  $("#resetAll").addEventListener("click", async () => {
+    if (!(await askConfirm(t("resetConfirm")))) return;
+    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);
+    Promise.all([idb.clear("articles"), idb.clear("feedItems")]).finally(() => location.reload());
   });
   $("#opmlExport").addEventListener("click", () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -3576,6 +3702,37 @@ function fillSettings(){
     a.download = "personal-news.opml";
     a.click(); URL.revokeObjectURL(a.href);
     toast(t("opmlExported"), "ok");
+  });
+  const backupKeys = ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"];
+  $("#backupExport").addEventListener("click", async () => {
+    try {
+      const [feeds, archived] = await Promise.all([idb.all("feedItems"), idb.all("articles")]);
+      const stateData = Object.fromEntries(backupKeys.map(k => [k, store.get(k, null)]));
+      const data = {format:"personal-news-backup", version:1, createdAt:new Date().toISOString(), state:stateData, feeds, archived};
+      const url = URL.createObjectURL(new Blob([JSON.stringify(data)], {type:"application/json"}));
+      const a = document.createElement("a"); a.href = url; a.download = "personal-news-backup.json"; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast(t("backupExported"), "ok");
+    } catch { toast(t("backupError"), "err"); }
+  });
+  $("#backupImport").addEventListener("click", () => $("#backupFile").click());
+  $("#backupFile").addEventListener("change", async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data.format !== "personal-news-backup" || data.version !== 1 || !data.state || !Array.isArray(data.state.sources) || !Array.isArray(data.feeds) || !Array.isArray(data.archived)) throw new Error("invalid-backup");
+      const validSources = data.state.sources.every(s => s && typeof s.url === "string" && typeof s.title === "string" && /^https?:$/.test(new URL(s.url).protocol));
+      if (!validSources) throw new Error("invalid-source");
+      const urls = new Set(data.state.sources.map(s => s.url));
+      const feeds = data.feeds.filter(a => a && typeof a.link === "string" && urls.has(a.sourceUrl)).map(a => ({...a, id:`${a.sourceUrl}\n${a.link}`}));
+      const archived = data.archived.filter(a => a && typeof a.link === "string");
+      if (!(await askConfirm(t("backupRestoreConfirm")))) return;
+      await idb.replaceData(archived, feeds);
+      backupKeys.forEach(k => { if (Object.prototype.hasOwnProperty.call(data.state, k)) store.set(k, data.state[k]); else store.del(k); });
+      toast(t("backupImported"), "ok");
+      setTimeout(() => location.reload(), 300);
+    } catch { toast(t("backupError"), "err"); }
+    finally { e.target.value = ""; }
   });
   $("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
   $("#opmlFile").addEventListener("change", async e => {
@@ -3722,6 +3879,8 @@ function openTagsEditor(s){
 
 /* ============ Render: main ============ */
 function render(){
+  const vk = [state.page, state.src, activeTag, searchQuery, filterUnread, sortMode].join("|");
+  if (vk !== render._vk){ render._vk = vk; visibleNewsCount = 50; }
   applyTheme();
   document.documentElement.dataset.density = density;
   document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
@@ -3741,6 +3900,7 @@ function render(){
   $("#densSeg").classList.toggle("hide", hideAllSeg || viewMode === "channel" || viewMode === "newspaper");
   $("#sortSeg").classList.toggle("hide", hideAllSeg);
   $("#filterSeg").classList.toggle("hide", hideAllSeg);
+  $("#optsBtn").classList.toggle("hide", hideAllSeg);
   const view = $("#view");
   const oldEls = new Map();
   view.querySelectorAll("[data-recycle]").forEach(el => {
@@ -3859,6 +4019,8 @@ document.addEventListener("click", e => {
   openReader(c.dataset.link);
 });
 document.addEventListener("click", async e => {
+  const more = e.target.closest("[data-load-more]");
+  if (more){ visibleNewsCount += 50; render(); return; }
   const saveEl = e.target.closest("[data-save]");
   if (saveEl){
     e.preventDefault(); e.stopPropagation();
@@ -3877,9 +4039,7 @@ document.addEventListener("click", async e => {
   /* archive page actions */
   const arcClearBtn = e.target.closest("#arcClear");
   if (arcClearBtn){
-    if (confirm(t("archiveClearConfirm"))){
-      clearArchive().then(() => { toast(t("archiveCleared"), "ok"); render(); });
-    }
+    askConfirm(t("archiveClearConfirm")).then(ok => { if (ok) clearArchive().then(() => { toast(t("archiveCleared"), "ok"); render(); }); });
     return;
   }
   const arcRm = e.target.closest("[data-arc-rm]");
@@ -3898,7 +4058,7 @@ document.addEventListener("click", async e => {
     openReader(arcOpen.dataset.arcOpen);
     return;
   }
-  const t2 = e.target.closest("[data-more],[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-share-action],[data-read-all],[data-close]");
+  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-share-action],[data-read-all],[data-close]");
   if (!t2) return;
   const d = t2.dataset;
   if ("close" in d){ t2.closest("dialog")?.close(); return; }
@@ -3962,7 +4122,6 @@ document.addEventListener("click", async e => {
     store.set("activeTag", activeTag);
     return render();
   }
-  if ("more" in d){ pageLimit += 50; render(); return; }
   if ("readAll" in d){ markAllRead(); closeDrawerIfMobile(); return; }
   if (d.addrec){ const c0 = CATALOG.find(x => x.url === d.addrec); if (c0){
     const tagsInput = $("#addTags");
@@ -4003,7 +4162,7 @@ let discoverTimer = null;
 let discoverSeq = 0;
 const searchInput = $("#search");
 searchInput.addEventListener("input", () => {
-  searchQuery = searchInput.value; pageLimit = 50;
+  searchQuery = searchInput.value;
   $("#searchClear").hidden = !searchQuery;
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { if (state.page === "news" || state.page === "saved") render(); }, 180);
@@ -4132,6 +4291,49 @@ $("#digestBtn").addEventListener("click", () => {
   state.page = "digest"; state.src = null; render();
 });
 
+/* ============ Options popover, shortcuts help, confirm dialog ============ */
+function openKeys(){
+  const fa = appLang === "fa";
+  const rows = [["/", fa ? "جستجو" : "Search"], ["r", fa ? "تازه‌سازی همه" : "Refresh all"], ["t", fa ? "تغییر تم" : "Switch theme"],
+    ["u", fa ? "فقط خوانده‌نشده‌ها" : "Unread only"], ["l  g  c  n", fa ? "نمای کارت، شبکه، تیتر، روزنامه" : "Cards, grid, headlines, newspaper"],
+    ["d", fa ? "خلاصه" : "Digest"], ["a", fa ? "آرشیو" : "Archive"], ["j  k", fa ? "خبر بعدی و قبلی هنگام خواندن" : "Next and previous while reading"],
+    ["Esc", fa ? "بستن یا پاک‌کردن جستجو" : "Close or clear search"], ["?", fa ? "این راهنما" : "This help"]];
+  $("#keysTitle").textContent = fa ? "میانبرهای کیبورد" : "Keyboard shortcuts";
+  $("#keysBody").innerHTML = `<div class="keys">${rows.map(([k, v]) => `<kbd>${esc(k)}</kbd><span>${esc(v)}</span>`).join("")}</div>`;
+  $("#keysClose").textContent = fa ? "بستن" : "Close";
+  $("#keysDlg").showModal();
+}
+function askConfirm(msg){
+  return new Promise(res => {
+    const fa = appLang === "fa", d = document.createElement("dialog");
+    d.innerHTML = `<div class="dlg-body"><p style="margin:0;line-height:1.9"></p></div><div class="dlg-foot"><button class="btn ghost"></button><button class="btn" style="background:var(--red)"></button></div>`;
+    d.querySelector("p").textContent = msg;
+    const [no, ok] = d.querySelectorAll("button"); let r = false;
+    no.textContent = fa ? "انصراف" : "Cancel"; ok.textContent = fa ? "تأیید" : "Confirm";
+    ok.onclick = () => { r = true; d.close(); }; no.onclick = () => d.close();
+    d.addEventListener("close", () => { d.remove(); res(r); });
+    document.body.appendChild(d); d.showModal(); no.focus();
+  });
+}
+(function setupOpts(){
+  const b = $("#optsBtn"), p = $("#optsPop");
+  const set = o => { p.hidden = !o; b.setAttribute("aria-expanded", String(o)); };
+  b.addEventListener("click", e => {
+    e.stopPropagation();
+    if (p.hidden){
+      const fa = appLang === "fa";
+      $("#optSortLbl").textContent = fa ? "مرتب‌سازی" : "Sort";
+      $("#optDensLbl").textContent = fa ? "تراکم" : "Density";
+      $("#keysBtnLbl").textContent = fa ? "میانبرهای کیبورد" : "Keyboard shortcuts";
+      b.title = fa ? "گزینه‌های نمایش" : "View options";
+    }
+    set(p.hidden);
+  });
+  $("#keysBtn").addEventListener("click", () => { set(false); openKeys(); });
+  document.addEventListener("click", e => { if (!p.hidden && !p.contains(e.target)) set(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
+})();
+
 /* ============ Auto refresh ============ */
 function setupAuto(){
   clearInterval(autoTimer);
@@ -4202,6 +4404,7 @@ document.addEventListener("keydown", e => {
     return;
   }
   if (typing) return;
+  if (e.key === "?" || e.key === "؟"){ e.preventDefault(); openKeys(); return; }
   if (!$("#reader").hidden){
     if (e.key === "j" || e.key === "J"){ e.preventDefault(); navigateReader(1); return; }
     if (e.key === "k" || e.key === "K"){ e.preventDefault(); navigateReader(-1); return; }
@@ -4285,20 +4488,12 @@ applyLang();
 applyTheme();
 setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
-(function(){
-  const c = store.get(AC_KEY, null);
-  if (!c || !c.o) return;
-  for (const s of sources){
-    const l = c.o[s.url];
-    if (Array.isArray(l)) articles[s.url] = l.map(a => ({...a, done: true, source: s.title, sourceUrl: s.url}));
-  }
-})();
 render();
 setupAuto();
-if (sources.length) refreshAll();
-loadArchive().then(() => {
-  if (state.page === "archive" || state.page === "digest") render();
-  else renderSide();
+try { navigator.storage?.persist?.().catch(() => {}); } catch {}
+Promise.all([loadArchive(), loadFeedCache()]).then(() => {
+  render();
+  if (sources.length) refreshAll();
 });
 if (location.hash.startsWith("#!r=")){
   try {
