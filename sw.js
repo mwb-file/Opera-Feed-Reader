@@ -22,11 +22,21 @@ self.addEventListener("fetch", e => {
 
   // CDN fonts: stale-while-revalidate, so the UI keeps its typeface offline
   if (url.hostname === "cdn.jsdelivr.net") {
-    e.respondWith(caches.open(FONTS).then(async c => {
-      const hit = await c.match(req);
-      const net = fetch(req).then(r => { if (r.ok) c.put(req, r.clone()); return r; }).catch(() => hit);
-      return hit || net;
-    }));
+    e.respondWith((async () => {
+      try {
+        const c = await caches.open(FONTS);
+        const hit = await c.match(req);
+        const net = fetch(req).then(r => {
+          // Cross-origin no-cors font requests can be opaque (status 0) and
+          // are still valid cache entries.
+          if (r.ok || r.type === "opaque") e.waitUntil(c.put(req, r.clone()).catch(() => {}));
+          return r;
+        }).catch(() => hit || Response.error());
+        return hit || await net;
+      } catch {
+        return fetch(req);
+      }
+    })());
     return;
   }
   if (url.origin !== location.origin) return;
