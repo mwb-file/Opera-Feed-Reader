@@ -432,7 +432,6 @@ body.grid .row > .card .bd{padding:12px 14px;gap:5px;height:auto;min-height:0;fl
 
 .end{text-align:center;color:var(--mute);font-size:11px;letter-spacing:.14em;margin:56px 0 30px;text-transform:uppercase}
 .end::before,.end::after{content:"";display:inline-block;width:40px;height:1px;background:var(--line);vertical-align:middle;margin:0 14px}
-.load-more-wrap{display:flex;justify-content:center;padding:12px 0 24px}
 
 .rec3{display:flex;margin:0 -8px;gap:0}
 .rtile{flex:1 1 0;min-width:0;margin:0 8px;height:120px;background:var(--panel) center/cover;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:center;padding:0 12px;color:#fff;border:1px solid var(--line);text-shadow:0 1px 3px rgba(0,0,0,.6);transition:transform var(--t),box-shadow var(--t)}
@@ -794,6 +793,7 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
   .head-actions .icon-btn{width:34px;height:34px}
   aside{border-inline-end:0}
 }
+@media(hover:none){.save-btn,.card-action.share-btn,.np-hero .save-btn,.np-sec .save-btn,.np-head .save-btn,.src-row .mini,.tag-link .tag-ren{opacity:.75}.save-btn.on{opacity:1}}
 </style>
 </head>
 <body>
@@ -911,9 +911,9 @@ const store = {
 };
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
-/* ============ IndexedDB (archive + persistent feed history) ============ */
+/* ============ IndexedDB (archive) ============ */
 const idb = (() => {
-  const NAME = "personal-news-db", VER = 3;
+  const NAME = "personal-news-db", VER = 1;
   let dbP = null;
   function open(){
     if (dbP) return dbP;
@@ -927,21 +927,6 @@ const idb = (() => {
           s.createIndex("archivedAt", "archivedAt");
           s.createIndex("date", "date");
           s.createIndex("source", "source");
-        }
-        const makeFeedStore = () => {
-          const s = db.createObjectStore("feedItems", {keyPath: "id"});
-          s.createIndex("sourceUrl", "sourceUrl"); s.createIndex("date", "date");
-          return s;
-        };
-        if (!db.objectStoreNames.contains("feedItems")) makeFeedStore();
-        else {
-          const oldItems = r.transaction.objectStore("feedItems").getAll();
-          oldItems.onsuccess = () => {
-            const rows = oldItems.result || [];
-            db.deleteObjectStore("feedItems");
-            const s = makeFeedStore();
-            rows.filter(a => a && a.sourceUrl && a.link).forEach(a => s.put({...a, id: `${a.sourceUrl}\n${a.link}`}));
-          };
         }
       };
       r.onsuccess = () => res(r.result);
@@ -963,22 +948,7 @@ const idb = (() => {
   };
   return {
     put: (storeName, obj) => tx(storeName, "readwrite", s => s.put(obj)),
-    putMany: (storeName, objects) => tx(storeName, "readwrite", s => objects.forEach(obj => s.put(obj))),
     get: (storeName, key) => tx(storeName, "readonly",  s => s.get(key)),
-    byIndex: (storeName, indexName, value) => tx(storeName, "readonly", s => s.index(indexName).getAll(IDBKeyRange.only(value))).then(v => v || []),
-    deleteByIndex: (storeName, indexName, value) => open().then(db => new Promise((res, rej) => {
-      const t = db.transaction(storeName, "readwrite"), s = t.objectStore(storeName);
-      const req = s.index(indexName).openKeyCursor(IDBKeyRange.only(value));
-      req.onsuccess = () => { const c = req.result; if (c){ s.delete(c.primaryKey); c.continue(); } };
-      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
-    })),
-    replaceData: (archived, feeds) => open().then(db => new Promise((res, rej) => {
-      const t = db.transaction(["articles", "feedItems"], "readwrite");
-      const a = t.objectStore("articles"), f = t.objectStore("feedItems");
-      a.clear(); f.clear();
-      archived.forEach(x => a.put(x)); feeds.forEach(x => f.put(x));
-      t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
-    })),
     del: (storeName, key) => tx(storeName, "readwrite", s => s.delete(key)),
     clear: (storeName) => tx(storeName, "readwrite", s => s.clear()),
     count: (storeName) => tx(storeName, "readonly",  s => s.count()),
@@ -1017,19 +987,6 @@ async function clearArchive(){
   try { await idb.clear("articles"); } catch {}
   archiveCache = [];
 }
-async function loadFeedCache(){
-  await Promise.all(sources.map(async s => {
-    try {
-      const items = await idb.byIndex("feedItems", "sourceUrl", s.url);
-      articles[s.url] = items.filter(a => a && a.link && a.title).map(a => {
-      a.source = s.title; a.sourceUrl = s.url; a.id = `${s.url}\n${a.link}`; a.done = true;
-        if (ic[a.link]){ a.img = ic[a.link].img || a.img; a.ok = !!ic[a.link].ok; }
-        return a;
-      }).sort((a, b) => (b.date || 0) - (a.date || 0));
-    } catch { articles[s.url] = articles[s.url] || []; }
-  }));
-  feedCacheReady = true;
-}
 
 /* ============ i18n ============ */
 const LANGS = {
@@ -1050,7 +1007,7 @@ const LANGS = {
     toggleTheme: "تغییر تم (T)",
     settings: "تنظیمات",
     menu: "منو",
-    top50: "همه‌ی خبرها",
+    top50: "۵۰ خبر برتر",
     savedItems: "ذخیره‌شده‌ها",
     mySources: "منابع من",
     markAllRead: "علامت‌زدن همه",
@@ -1088,7 +1045,6 @@ const LANGS = {
     noMatchesTitle: "چیزی پیدا نشد",
     noMatchesText: "عبارت دیگری امتحان کنید.",
     endOfStream: "پایان جریان خبرها",
-    loadMore: "بارگذاری {n} خبر قدیمی‌تر",
     recommended: "پیشنهادی",
     add: "افزودن",
     added: "افزوده شد",
@@ -1119,12 +1075,6 @@ const LANGS = {
     prefetch: "Prefetch روی hover",
     exportOpml: "خروجی OPML",
     importOpml: "ورود OPML",
-    exportBackup: "پشتیبان‌گیری کامل",
-    importBackup: "بازیابی پشتیبان",
-    backupExported: "فایل پشتیبان ساخته شد",
-    backupError: "فایل پشتیبان معتبر نیست یا قابل بازیابی نیست",
-    backupRestoreConfirm: "اطلاعات فعلی با محتوای این فایل پشتیبان جایگزین شود؟",
-    backupImported: "پشتیبان با موفقیت بازیابی شد",
     clearImgCache: "پاک کردن کش عکس",
     resetAll: "بازنشانی همه‌چیز",
     done: "تمام",
@@ -1138,7 +1088,7 @@ const LANGS = {
     smaller: "کوچک‌تر",
     larger: "بزرگ‌تر",
     changeFont: "تغییر فونت",
-    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها، تاریخچه و خبرهای آفلاین پاک شوند؟",
+    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها و تاریخچه پاک شود؟",
     importedSources: "{n} منبع وارد شد",
     noNewSources: "منبع جدیدی پیدا نشد",
     opmlError: "خطا در خواندن فایل OPML",
@@ -1156,9 +1106,6 @@ const LANGS = {
     refreshing: "در حال به‌روزرسانی…",
     sourceAdded: "منبع اضافه شد",
     feedsRefreshed: "فیدها به‌روز شد",
-    feedsRefreshPartial: "{ok} فید به‌روز شد؛ {failed} فید در دسترس نبود",
-    feedsRefreshFailed: "به‌روزرسانی {n} فید ناموفق بود؛ خبرهای ذخیره‌شده باقی هستند",
-    feedCacheFailed: "خبرهای تازه در حافظه‌ی محلی ذخیره نشدند",
     articleCount: "{n} خبر",
     sourceWord: "منبع",
     mySourcesTitle: "منابع من",
@@ -1245,7 +1192,7 @@ const LANGS = {
     toggleTheme: "Toggle theme (T)",
     settings: "Settings",
     menu: "Menu",
-    top50: "All stories",
+    top50: "Top 50",
     savedItems: "Saved",
     mySources: "My sources",
     markAllRead: "Mark all read",
@@ -1283,7 +1230,6 @@ const LANGS = {
     noMatchesTitle: "No matches",
     noMatchesText: "Try a different search term.",
     endOfStream: "End of news stream",
-    loadMore: "Load {n} older articles",
     recommended: "Recommended",
     add: "Add",
     added: "Added",
@@ -1314,12 +1260,6 @@ const LANGS = {
     prefetch: "Prefetch articles on hover",
     exportOpml: "Export OPML",
     importOpml: "Import OPML",
-    exportBackup: "Full backup",
-    importBackup: "Restore backup",
-    backupExported: "Backup file created",
-    backupError: "This backup is invalid or could not be restored",
-    backupRestoreConfirm: "Replace current data with the contents of this backup?",
-    backupImported: "Backup restored successfully",
     clearImgCache: "Clear image cache",
     resetAll: "Reset everything",
     done: "Done",
@@ -1333,7 +1273,7 @@ const LANGS = {
     smaller: "Smaller text",
     larger: "Larger text",
     changeFont: "Change font",
-    resetConfirm: "Reset settings, sources, saved articles, read history and offline news?",
+    resetConfirm: "Reset all settings, sources, saved articles and read history?",
     importedSources: "Imported {n} source(s)",
     noNewSources: "No new sources found",
     opmlError: "Couldn't parse OPML file",
@@ -1351,9 +1291,6 @@ const LANGS = {
     refreshing: "Refreshing…",
     sourceAdded: "Source added",
     feedsRefreshed: "Feeds refreshed",
-    feedsRefreshPartial: "Updated {ok} feed(s); {failed} unavailable",
-    feedsRefreshFailed: "Couldn't refresh {n} feed(s); saved stories are still here",
-    feedCacheFailed: "New stories couldn't be saved to local storage",
     articleCount: "{n} article(s)",
     sourceWord: "Source",
     mySourcesTitle: "My sources",
@@ -1531,9 +1468,17 @@ const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.x
 /* ============ State ============ */
 let sources = store.get("sources", []);
 let articles = {};
-let visibleNewsCount = 50;
-let feedCacheReady = false;
-let feedCacheWarned = false;
+const srcErr = {};
+let pageLimit = 50, filteredTotal = 0;
+const AC_KEY = "ac1";
+function saveArticleCache(){
+  const build = h => { const o = {}; for (const s of sources) o[s.url] = (articles[s.url] || []).slice().sort((a, b) => b.date - a.date).slice(0, 30)
+    .map(a => ({title: a.title, link: a.link, date: a.date, source: a.source, img: a.img, ok: a.ok, html: (a.html || "").slice(0, h)})); return o; };
+  try { localStorage.setItem(AC_KEY, JSON.stringify({ts: Date.now(), o: build(1200)})); }
+  catch { try { localStorage.setItem(AC_KEY, JSON.stringify({ts: Date.now(), o: build(200)})); } catch {} }
+}
+function unreadTotal(){ let n = 0; for (const k in articles) for (const a of articles[k]) if (a.title && !isRead(a.link)) n++; return n; }
+const normLink = l => String(l || "").replace(/^https?:\/\/(www\.)?/i, "").split(/[?#]/)[0].replace(/\/+$/, "").toLowerCase();
 let state = {page: sources.length ? "news" : "add", src: null};
 let viewMode = store.get("view", "list");
 if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
@@ -1947,47 +1892,32 @@ async function resolveItem(a){
 
 /* ============ Data ============ */
 async function loadSource(s){
-  let loaded = false;
   try {
     const f = parseFeed(await fetchText(s.url));
-    if (!f) throw new Error("invalid-feed");
-    const previous = new Map((articles[s.url] || []).map(a => [a.link, a]));
-    const fresh = f ? f.items.filter(i => i.link && i.title).map(i => {
-      const old = previous.get(i.link);
-      const item = {...old, ...i, source: s.title, sourceUrl: s.url};
-      if (old && !i.img){ item.img = old.img || ""; item.imgCandidates = old.imgCandidates || []; }
-      delete item.done;
-      return item;
-    }) : [];
-    for (const item of fresh) previous.set(item.link, item);
-    const items = [...previous.values()].sort((a, b) => (b.date || 0) - (a.date || 0));
-    articles[s.url] = items;
-    try { await idb.putMany("feedItems", fresh.map(a => ({...a, id: `${s.url}\n${a.link}`}))); }
-    catch { if (!feedCacheWarned){ feedCacheWarned = true; toast(t("feedCacheFailed"), "err"); } }
-    fresh.slice(0, 30).forEach(resolveItem);
-    loaded = true;
-  } catch { if (!articles[s.url]) articles[s.url] = []; }
+    if (!f) throw new Error("parse");
+    const items = f.items.map(i => ({...i, source: s.title, sourceUrl: s.url}));
+    articles[s.url] = items; delete srcErr[s.url];
+    items.sort((a, b) => b.date - a.date).slice(0, 30).forEach(resolveItem);
+  } catch (e) { srcErr[s.url] = (e && e.message) || "error"; if (!articles[s.url]) articles[s.url] = []; }
   soon();
-  return loaded;
 }
 async function refreshAll(){
   if (refreshing) return;
   refreshing = true;
   const btn = $("#refreshBtn"); btn.classList.add("spin");
   const queue = sources.slice();
-  let succeeded = 0, failed = 0;
   await Promise.all(Array.from({length: Math.min(4, queue.length)}, async () => {
-    while (queue.length){
-      const ok = await loadSource(queue.shift());
-      if (ok) succeeded++; else failed++;
-    }
+    while (queue.length) await loadSource(queue.shift());
   }));
   refreshing = false;
   btn.classList.remove("spin");
   render();
-  if (!failed) toast(t("feedsRefreshed"), "ok");
-  else if (succeeded) toast(t("feedsRefreshPartial", {ok:succeeded, failed}), "");
-  else toast(t("feedsRefreshFailed", {n:failed}), "err");
+  saveArticleCache();
+  const bad = sources.filter(x => srcErr[x.url]);
+  if (bad.length){
+    const names = bad.slice(0, 2).map(x => x.title).join(appLang === "fa" ? "، " : ", ");
+    toast(appLang === "fa" ? `${bad.length} منبع بارگذاری نشد: ${names}` : `${bad.length} source(s) failed to load: ${names}`, "err");
+  } else toast(t("feedsRefreshed"), "ok");
 }
 function addSource(s){
   if (sources.some(x => x.url === s.url)) return;
@@ -2021,7 +1951,6 @@ function renameTag(oldName, newName){
 }
 function removeSource(url){
   sources = sources.filter(s => s.url !== url); delete articles[url];
-  idb.deleteByIndex("feedItems", "sourceUrl", url).catch(() => {});
   store.set("sources", sources);
   if (state.src === url) state.src = null;
   if (!sources.length) state.page = "add";
@@ -3034,6 +2963,8 @@ function filteredItems(){
     ? saved.slice()
     : srcList.flatMap(s => articles[s.url] || []);
   let items = scope.filter(a => a.title);
+  const seenK = new Set();
+  items = items.filter(a => { const k = normLink(a.link); if (!k) return true; if (seenK.has(k)) return false; seenK.add(k); return true; });
   if (filterUnread){
     items = items.filter(a => !isRead(a.link));
   }
@@ -3045,8 +2976,10 @@ function filteredItems(){
       plain(a.html).toLowerCase().includes(q)
     );
   }
-  items.sort((a, b) => (b.date || 0) - (a.date || 0));
-  if (sortMode === "oldest") items.reverse();
+  const dir = sortMode === "oldest" ? -1 : 1;
+  items.sort((a, b) => dir * ((b.date || 0) - (a.date || 0)));
+  filteredTotal = items.length;
+  if (state.page !== "saved") items = items.slice(0, pageLimit);
   return items;
 }
 
@@ -3117,14 +3050,13 @@ function newspaperHTML(items){
 }
 function renderNewsHTML(){
   const list0 = filteredItems();
-  const readyItems = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
+  const list = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
   const loading = state.page !== "saved" && (
-    !feedCacheReady || sources.some(s => (!articles[s.url] || (refreshing && !articles[s.url].length)) && (!state.src || state.src === s.url)) ||
-    (viewMode !== "channel" && readyItems.length < list0.length)
+    sources.some(s => !articles[s.url] && (!state.src || state.src === s.url)) ||
+    (viewMode !== "channel" && list.length < list0.length)
   );
   const cnt = $("#cnt");
-  if (cnt) cnt.textContent = list0.length ? t("articleCount", {n: list0.length}) : "";
-  const list = readyItems.slice(0, visibleNewsCount);
+  if (cnt) cnt.textContent = list.length ? t("articleCount", {n: list.length}) : "";
   if (!list.length){
     if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
     const isSearch = !!searchQuery.trim();
@@ -3163,11 +3095,11 @@ function renderNewsHTML(){
       out += G.items.map(cardHtml).join("");
     }
   }
-  if (readyItems.length > visibleNewsCount && !loading){
-    const n = Math.min(50, readyItems.length - visibleNewsCount);
-    out += `<div class="load-more-wrap"><button class="btn ghost" data-load-more>${esc(t("loadMore", {n}))}</button></div>`;
+  if (state.page !== "saved" && filteredTotal > list.length){
+    const left = filteredTotal - list.length;
+    out += `<div class="end"><button class="btn" data-more>${appLang === "fa" ? `نمایش ${Math.min(50, left)} خبر بیشتر (${left} مانده)` : `Show ${Math.min(50, left)} more (${left} left)`}</button></div>`;
   }
-  if (state.page === "news" && !state.src && !loading && visibleNewsCount >= readyItems.length){
+  if (state.page === "news" && !state.src && !loading){
     const recs = CATALOG.filter(c => !sources.some(s => s.url === c.url)).slice(0, 3);
     if (recs.length){
       out += `<div class="end">${esc(t("endOfStream"))}</div><h3>${esc(t("recommended"))}</h3><div class="rec3">` +
@@ -3594,9 +3526,6 @@ function fillSettings(){
         <button class="btn ghost" id="opmlExport">${esc(t("exportOpml"))}</button>
         <button class="btn ghost" id="opmlImport">${esc(t("importOpml"))}</button>
         <input type="file" id="opmlFile" accept=".opml,.xml" hidden>
-        <button class="btn ghost" id="backupExport">${esc(t("exportBackup"))}</button>
-        <button class="btn ghost" id="backupImport">${esc(t("importBackup"))}</button>
-        <input type="file" id="backupFile" accept=".json,application/json" hidden>
         <button class="btn ghost" id="imgCacheClear">${esc(t("clearImgCache"))}</button>
         <button class="btn danger" id="resetAll" style="margin-inline-start:auto">${esc(t("resetAll"))}</button>
       </div>
@@ -3628,8 +3557,7 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", () => {
     if (!confirm(t("resetConfirm"))) return;
-    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);
-    Promise.all([idb.clear("articles"), idb.clear("feedItems")]).finally(() => location.reload());
+    ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);    idb.clear("articles").finally(() => location.reload());
   });
   $("#opmlExport").addEventListener("click", () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -3648,37 +3576,6 @@ function fillSettings(){
     a.download = "personal-news.opml";
     a.click(); URL.revokeObjectURL(a.href);
     toast(t("opmlExported"), "ok");
-  });
-  const backupKeys = ["sources","view","density","sort","theme","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"];
-  $("#backupExport").addEventListener("click", async () => {
-    try {
-      const [feeds, archived] = await Promise.all([idb.all("feedItems"), idb.all("articles")]);
-      const stateData = Object.fromEntries(backupKeys.map(k => [k, store.get(k, null)]));
-      const data = {format:"personal-news-backup", version:1, createdAt:new Date().toISOString(), state:stateData, feeds, archived};
-      const url = URL.createObjectURL(new Blob([JSON.stringify(data)], {type:"application/json"}));
-      const a = document.createElement("a"); a.href = url; a.download = "personal-news-backup.json"; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast(t("backupExported"), "ok");
-    } catch { toast(t("backupError"), "err"); }
-  });
-  $("#backupImport").addEventListener("click", () => $("#backupFile").click());
-  $("#backupFile").addEventListener("change", async e => {
-    const file = e.target.files[0]; if (!file) return;
-    try {
-      const data = JSON.parse(await file.text());
-      if (data.format !== "personal-news-backup" || data.version !== 1 || !data.state || !Array.isArray(data.state.sources) || !Array.isArray(data.feeds) || !Array.isArray(data.archived)) throw new Error("invalid-backup");
-      const validSources = data.state.sources.every(s => s && typeof s.url === "string" && typeof s.title === "string" && /^https?:$/.test(new URL(s.url).protocol));
-      if (!validSources) throw new Error("invalid-source");
-      const urls = new Set(data.state.sources.map(s => s.url));
-      const feeds = data.feeds.filter(a => a && typeof a.link === "string" && urls.has(a.sourceUrl)).map(a => ({...a, id:`${a.sourceUrl}\n${a.link}`}));
-      const archived = data.archived.filter(a => a && typeof a.link === "string");
-      if (!confirm(t("backupRestoreConfirm"))) return;
-      await idb.replaceData(archived, feeds);
-      backupKeys.forEach(k => { if (Object.prototype.hasOwnProperty.call(data.state, k)) store.set(k, data.state[k]); else store.del(k); });
-      toast(t("backupImported"), "ok");
-      setTimeout(() => location.reload(), 300);
-    } catch { toast(t("backupError"), "err"); }
-    finally { e.target.value = ""; }
   });
   $("#opmlImport").addEventListener("click", () => $("#opmlFile").click());
   $("#opmlFile").addEventListener("change", async e => {
@@ -3833,6 +3730,7 @@ function render(){
   document.body.classList.toggle("newspaper", viewMode === "newspaper");
   document.documentElement.dataset.view = viewMode;
   renderSide();
+  { const u = unreadTotal(); document.title = (u ? `(${u > 99 ? "99+" : u}) ` : "") + t("appTitle"); }
   $$("#tg button").forEach(b => b.classList.toggle("on", b.dataset.v === viewMode));
   $$("#densSeg button").forEach(b => b.classList.toggle("on", b.dataset.dens === density));
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
@@ -3961,8 +3859,6 @@ document.addEventListener("click", e => {
   openReader(c.dataset.link);
 });
 document.addEventListener("click", async e => {
-  const more = e.target.closest("[data-load-more]");
-  if (more){ visibleNewsCount += 50; render(); return; }
   const saveEl = e.target.closest("[data-save]");
   if (saveEl){
     e.preventDefault(); e.stopPropagation();
@@ -4002,7 +3898,7 @@ document.addEventListener("click", async e => {
     openReader(arcOpen.dataset.arcOpen);
     return;
   }
-  const t2 = e.target.closest("[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-share-action],[data-read-all],[data-close]");
+  const t2 = e.target.closest("[data-more],[data-go],[data-src],[data-rm],[data-rsrc],[data-prev],[data-addrec],[data-v],[data-sort],[data-dens],[data-filter],[data-tag],[data-rmtag-toggle],[data-edittags],[data-renametag],[data-found],[data-share-action],[data-read-all],[data-close]");
   if (!t2) return;
   const d = t2.dataset;
   if ("close" in d){ t2.closest("dialog")?.close(); return; }
@@ -4066,6 +3962,7 @@ document.addEventListener("click", async e => {
     store.set("activeTag", activeTag);
     return render();
   }
+  if ("more" in d){ pageLimit += 50; render(); return; }
   if ("readAll" in d){ markAllRead(); closeDrawerIfMobile(); return; }
   if (d.addrec){ const c0 = CATALOG.find(x => x.url === d.addrec); if (c0){
     const tagsInput = $("#addTags");
@@ -4106,7 +4003,7 @@ let discoverTimer = null;
 let discoverSeq = 0;
 const searchInput = $("#search");
 searchInput.addEventListener("input", () => {
-  searchQuery = searchInput.value;
+  searchQuery = searchInput.value; pageLimit = 50;
   $("#searchClear").hidden = !searchQuery;
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { if (state.page === "news" || state.page === "saved") render(); }, 180);
@@ -4388,12 +4285,20 @@ applyLang();
 applyTheme();
 setFont(fontId);
 document.documentElement.style.setProperty("--rd-size", readerFontSize + "px");
+(function(){
+  const c = store.get(AC_KEY, null);
+  if (!c || !c.o) return;
+  for (const s of sources){
+    const l = c.o[s.url];
+    if (Array.isArray(l)) articles[s.url] = l.map(a => ({...a, done: true, source: s.title, sourceUrl: s.url}));
+  }
+})();
 render();
 setupAuto();
-try { navigator.storage?.persist?.().catch(() => {}); } catch {}
-Promise.all([loadArchive(), loadFeedCache()]).then(() => {
-  render();
-  if (sources.length) refreshAll();
+if (sources.length) refreshAll();
+loadArchive().then(() => {
+  if (state.page === "archive" || state.page === "digest") render();
+  else renderSide();
 });
 if (location.hash.startsWith("#!r=")){
   try {
