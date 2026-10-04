@@ -1649,36 +1649,52 @@ function proxies(){
   return list;
 }
 async function fetchText(url, ms = 9000){
-  const overallDeadline = Math.min(ms, 8000);
+  const deadline = Date.now() + Math.max(500, Math.min(ms, 8000));
   const proxyList = proxies();
   const direct = proxyList[0];
   const proxiedList = proxyList.slice(1);
-  try {
-    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 3000);
-    const r = await fetch(direct(url), {signal: ctl.signal});
-    clearTimeout(t);
-    if (r.ok) return await r.text();
-  } catch {}
-  const promises = proxiedList.map(p => (async () => {
-    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 5000);
+  let lastError = new Error("Network error");
+  const directRemaining = deadline - Date.now();
+  if (directRemaining > 0){
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), Math.min(2200, directRemaining));
     try {
-      const r = await fetch(p(url), {signal: ctl.signal});
-      clearTimeout(t);
+      const r = await fetch(direct(url), {signal: ctl.signal});
       if (r.ok) return await r.text();
-      throw new Error("HTTP " + r.status);
-    } catch (e) { clearTimeout(t); throw e; }
-  })());
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error("timeout")), overallDeadline)
-  );
+      lastError = new Error("HTTP " + r.status);
+    } catch (e) { lastError = e; }
+    finally { clearTimeout(timer); }
+  }
+  const remaining = deadline - Date.now();
+  if (remaining <= 0) throw lastError;
+  const controllers = [];
+  const timers = [];
+  let timeoutId;
   try {
-    return await Promise.any([...promises, timeoutPromise]);
+    const promises = proxiedList.map(p => {
+      const ctl = new AbortController();
+      controllers.push(ctl);
+      timers.push(setTimeout(() => ctl.abort(), remaining));
+      return (async () => {
+        const r = await fetch(p(url), {signal: ctl.signal});
+        if (r.ok) return await r.text();
+        throw new Error("HTTP " + r.status);
+      })();
+    });
+    const timeoutPromise = new Promise((_, reject) => {
+      timeoutId = setTimeout(() => reject(new Error("timeout")), remaining);
+    });
+    return await Promise.race([Promise.any(promises), timeoutPromise]);
   } catch (aggErr) {
     const errs = (aggErr && aggErr.errors) || [aggErr];
     for (const e of errs) {
       if (e && e.message && !e.message.includes("aborted") && !e.message.includes("timeout")) throw e;
     }
-    throw errs[0] || new Error("Network error");
+    throw lastError || errs[0] || new Error("Network error");
+  } finally {
+    clearTimeout(timeoutId);
+    timers.forEach(clearTimeout);
+    controllers.forEach(ctl => ctl.abort());
   }
 }
 function proxyImageUrls(url){
@@ -1805,10 +1821,15 @@ async function probeAll(urls, onFound, deadlineMs = 8000){
   const results = [];
   const seen = new Set();
   const queue = [...new Set(urls)].slice(0, 48);
-  if (!queue.length) return results;
+  if (!queue.length || deadlineMs <= 0) return results;
   let next = 0;
+  let stopped = false;
+  let timeoutId;
+  const timeout = new Promise(resolve => {
+    timeoutId = setTimeout(() => { stopped = true; resolve(); }, deadlineMs);
+  });
   const workers = Array.from({length: Math.min(5, queue.length)}, async () => {
-    while (next < queue.length){
+    while (!stopped && next < queue.length){
       const u = queue[next++];
       try {
         const r = await probe(u);
@@ -1820,7 +1841,8 @@ async function probeAll(urls, onFound, deadlineMs = 8000){
       } catch {}
     }
   });
-  await Promise.race([Promise.all(workers), new Promise(r => setTimeout(r, deadlineMs))]);
+  await Promise.race([Promise.all(workers), timeout]);
+  clearTimeout(timeoutId);
   return results;
 }
 let discoverToken = 0;
@@ -1829,7 +1851,7 @@ async function discover(input, onStep){
   if (!url) return [];
   const myToken = ++discoverToken;
   const isCancelled = () => myToken !== discoverToken;
-  const deadline = Date.now() + 22000;
+  const deadline = Date.now() + 24000;
   const isExpired = () => Date.now() > deadline;
   const found = [];
   const seen = new Set();
@@ -1859,7 +1881,6 @@ async function discover(input, onStep){
       if (/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)(\?|$)|\?feed=/i.test(h)) addHttpUrl(candidates, h, base);
     }
 
-    const page = new URL(pageUrl);
     const pageLinks = new Map();
     const categoryPath = /\/(?:category|categories|section|sections|topic|topics|archive|archives|tag|tags)\//i;
     const skipPath = /\/(?:login|signin|register|search|contact|privacy|terms|forum|author|account)(?:\/|$)/i;
@@ -1905,22 +1926,15 @@ async function discover(input, onStep){
     try { sectionPages = inspectPage(html, url, new URL(url).hostname.replace(/^www\./i, "")).slice(0, 12); } catch {}
   }
 
-  try {
-    const u = new URL(url);
-    const bases = new Set([u.origin]);
-    if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
-    for (const b of bases) for (const p of COMMON_PATHS) candidates.add(b + p);
-  } catch {}
-
   // Many sites advertise category feeds only on their section pages. Inspect a
   // small set of same-site navigation links so those feeds are discoverable too.
   if (sectionPages.length && !isExpired()){
     let nextPage = 0;
-    const workers = Array.from({length: Math.min(5, sectionPages.length)}, async () => {
+    const workers = Array.from({length: Math.min(8, sectionPages.length)}, async () => {
       while (!isCancelled() && !isExpired() && nextPage < sectionPages.length){
         const pageUrl = sectionPages[nextPage++];
         try {
-          const pageHtml = await fetchText(pageUrl, Math.min(4500, Math.max(1500, deadline - Date.now())));
+          const pageHtml = await fetchText(pageUrl, Math.min(4000, Math.max(1000, deadline - Date.now())));
           if (isCancelled()) return;
           if (looksFeed(pageHtml)) addHttpUrl(candidates, pageUrl, url);
           else inspectPage(pageHtml, pageUrl, new URL(url).hostname.replace(/^www\./i, ""));
@@ -1930,6 +1944,15 @@ async function discover(input, onStep){
     await Promise.race([Promise.all(workers), new Promise(r => setTimeout(r, Math.max(0, deadline - Date.now())))]);
   }
   if (isCancelled()) return found;
+
+  // Try conventional endpoints after advertised feeds so the candidate limit
+  // never hides real feeds discovered in page metadata.
+  try {
+    const u = new URL(url);
+    const bases = new Set([u.origin]);
+    if (u.pathname.length > 1) bases.add(u.origin + u.pathname.replace(/\/$/, ""));
+    for (const b of bases) for (const p of COMMON_PATHS) candidates.add(b + p);
+  } catch {}
 
   const candList = [...candidates].slice(0, 48);
   if (!candList.length){ onStep && onStep(null, found.slice()); return found; }
