@@ -1558,7 +1558,7 @@ const CATALOG = [
   {title:"Digiato", url:"https://digiato.com/feed"},
   {title:"Recent Commits to axmol:dev", url:"https://github.com/axmolengine/axmol/commits.atom"}
 ];
-const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss.xml","/atom.xml","/feed.xml","/index.xml","/feed/rss","/rss/feed","/blog/feed","/?feed=rss2","/feeds/posts/default"];
+const COMMON_PATHS = [".rss",".atom","/feed","/feed/","/rss","/rss/","/rss.xml","/atom.xml","/feed.xml","/index.xml","/index.rss","/feed.rss","/rss/feed","/feed/rss","/blog/feed","/?feed=rss2","/?feed=atom","/feeds/posts/default"];
 
 /* ============ State ============ */
 let sources = store.get("sources", []);
@@ -1804,13 +1804,12 @@ async function probe(url){
 async function probeAll(urls, onFound, deadlineMs = 8000){
   const results = [];
   const seen = new Set();
-  if (!urls.length) return results;
-  let finishAll;
-  const allDone = new Promise(r => { finishAll = r; });
-  let completed = 0;
-  const total = urls.length;
-  for (const u of urls){
-    (async () => {
+  const queue = [...new Set(urls)].slice(0, 48);
+  if (!queue.length) return results;
+  let next = 0;
+  const workers = Array.from({length: Math.min(5, queue.length)}, async () => {
+    while (next < queue.length){
+      const u = queue[next++];
       try {
         const r = await probe(u);
         if (r && !seen.has(r.url)){
@@ -1819,11 +1818,9 @@ async function probeAll(urls, onFound, deadlineMs = 8000){
           if (onFound) onFound(r, results.slice());
         }
       } catch {}
-      completed++;
-      if (completed === total) finishAll();
-    })();
-  }
-  await Promise.race([allDone, new Promise(r => setTimeout(r, deadlineMs))]);
+    }
+  });
+  await Promise.race([Promise.all(workers), new Promise(r => setTimeout(r, deadlineMs))]);
   return results;
 }
 let discoverToken = 0;
@@ -1832,12 +1829,62 @@ async function discover(input, onStep){
   if (!url) return [];
   const myToken = ++discoverToken;
   const isCancelled = () => myToken !== discoverToken;
-  const deadline = Date.now() + 16000;
+  const deadline = Date.now() + 22000;
   const isExpired = () => Date.now() > deadline;
   const found = [];
   const seen = new Set();
   const push = r => { if (r && !seen.has(r.url)){ seen.add(r.url); found.push(r); return true; } return false; };
   const notify = () => onStep && onStep(null, found.slice());
+
+  const candidates = new Set();
+  const addHttpUrl = (set, raw, base) => {
+    try {
+      const u = new URL(raw, base);
+      if (u.protocol !== "http:" && u.protocol !== "https:") return;
+      u.hash = "";
+      set.add(u.href);
+    } catch {}
+  };
+  const inspectPage = (html, pageUrl, siteHost) => {
+    const d = new DOMParser().parseFromString(html, "text/html");
+    let base = pageUrl;
+    const baseEl = d.querySelector("base[href]");
+    if (baseEl){ try { base = new URL(baseEl.getAttribute("href"), pageUrl).href } catch {} }
+    for (const l of d.querySelectorAll('link[rel~="alternate"][href]')){
+      const type = (l.getAttribute("type") || "").toLowerCase();
+      if (/rss|atom|\bxml\b|feed/.test(type)) addHttpUrl(candidates, l.getAttribute("href"), base);
+    }
+    for (const a of d.querySelectorAll("a[href]")){
+      const h = a.getAttribute("href") || "";
+      if (/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)(\?|$)|\?feed=/i.test(h)) addHttpUrl(candidates, h, base);
+    }
+
+    const page = new URL(pageUrl);
+    const pageLinks = new Map();
+    const categoryPath = /\/(?:category|categories|section|sections|topic|topics|archive|archives|tag|tags)\//i;
+    const skipPath = /\/(?:login|signin|register|search|contact|privacy|terms|forum|author|account)(?:\/|$)/i;
+    const menuLinks = d.querySelectorAll('nav a[href], header a[href], [role="navigation"] a[href], [class*="menu"] a[href], [class*="nav"] a[href], [id*="menu"] a[href], [id*="nav"] a[href]');
+    const menuSet = new Set(menuLinks);
+    for (const a of d.querySelectorAll("a[href]")){
+      const href = a.getAttribute("href") || "";
+      let target;
+      try { target = new URL(href, base); } catch { continue; }
+      if ((target.protocol !== "http:" && target.protocol !== "https:") || target.hostname.replace(/^www\./i, "") !== siteHost) continue;
+      target.hash = "";
+      if (target.href === pageUrl || target.search || skipPath.test(target.pathname)) continue;
+      const path = target.pathname.replace(/\/$/, "");
+      if (/\.(?:pdf|zip|rar|7z|png|jpe?g|gif|webp|mp4|mp3|css|js)$/i.test(path)) continue;
+      const depth = path.split("/").filter(Boolean).length;
+      const inMenu = menuSet.has(a);
+      const categoryLike = categoryPath.test(target.pathname) || /\b(categories|sections|topics|news|feeds?)\b/i.test((a.textContent || "") + " " + target.pathname);
+      if (depth > 5 || (!inMenu && !categoryLike)) continue;
+      // Short links in site navigation are usually section pages; skip deep article pages.
+      if (!categoryLike && depth > 3) continue;
+      const score = (categoryLike ? 4 : 0) + (inMenu ? 2 : 0) + Math.max(0, 4 - depth);
+      if (!pageLinks.has(target.href) || pageLinks.get(target.href).score < score) pageLinks.set(target.href, {url: target.href, score});
+    }
+    return [...pageLinks.values()].sort((a, b) => b.score - a.score).map(x => x.url);
+  };
 
   onStep && onStep(t("checkingPage"));
   let html = "";
@@ -1853,24 +1900,9 @@ async function discover(input, onStep){
     return found;
   }
 
-  const candidates = new Set();
+  let sectionPages = [];
   if (html){
-    const d = new DOMParser().parseFromString(html, "text/html");
-    let base = url;
-    const baseEl = d.querySelector("base[href]");
-    if (baseEl){ try { base = new URL(baseEl.getAttribute("href"), url).href } catch {} }
-    for (const l of d.querySelectorAll('link[rel~="alternate"][href]')){
-      const type = (l.getAttribute("type") || "").toLowerCase();
-      if (/rss|atom|\bxml\b|feed/.test(type)){
-        try { candidates.add(new URL(l.getAttribute("href"), base).href) } catch {}
-      }
-    }
-    for (const a of d.querySelectorAll("a[href]")){
-      const h = a.getAttribute("href") || "";
-      if (/(^|\/)(feed|rss|atom)(\/|\.xml|\.rss|$)|\.(rss|atom)(\?|$)|\?feed=/i.test(h)){
-        try { candidates.add(new URL(h, base).href) } catch {}
-      }
-    }
+    try { sectionPages = inspectPage(html, url, new URL(url).hostname.replace(/^www\./i, "")).slice(0, 12); } catch {}
   }
 
   try {
@@ -1880,10 +1912,29 @@ async function discover(input, onStep){
     for (const b of bases) for (const p of COMMON_PATHS) candidates.add(b + p);
   } catch {}
 
-  const candList = [...candidates].slice(0, 24);
+  // Many sites advertise category feeds only on their section pages. Inspect a
+  // small set of same-site navigation links so those feeds are discoverable too.
+  if (sectionPages.length && !isExpired()){
+    let nextPage = 0;
+    const workers = Array.from({length: Math.min(5, sectionPages.length)}, async () => {
+      while (!isCancelled() && !isExpired() && nextPage < sectionPages.length){
+        const pageUrl = sectionPages[nextPage++];
+        try {
+          const pageHtml = await fetchText(pageUrl, Math.min(4500, Math.max(1500, deadline - Date.now())));
+          if (isCancelled()) return;
+          if (looksFeed(pageHtml)) addHttpUrl(candidates, pageUrl, url);
+          else inspectPage(pageHtml, pageUrl, new URL(url).hostname.replace(/^www\./i, ""));
+        } catch {}
+      }
+    });
+    await Promise.race([Promise.all(workers), new Promise(r => setTimeout(r, Math.max(0, deadline - Date.now())))]);
+  }
+  if (isCancelled()) return found;
+
+  const candList = [...candidates].slice(0, 48);
   if (!candList.length){ onStep && onStep(null, found.slice()); return found; }
   onStep && onStep(t("verifyingFeeds", {n: candList.length}));
-  const remaining = Math.max(3000, deadline - Date.now());
+  const remaining = Math.max(0, deadline - Date.now());
   await probeAll(candList, r => { if (isCancelled()) return; if (push(r)) notify(); }, remaining);
   if (isCancelled()) return found;
 
@@ -2170,7 +2221,8 @@ function toast(msg, kind = ""){
 function setFont(id){
   fontId = fontById(id).id;
   store.set("font", fontId);
-  document.documentElement.dataset.font = fontId === "sahel" ? "" : fontId;
+  if (fontId === "sahel") delete document.documentElement.dataset.font;
+else document.documentElement.dataset.font = fontId;
   const f = fontById(fontId);
   const lbl = $("#rdFontLabel");
   if (lbl) lbl.textContent = appLang === "fa" ? f.labelFa : f.label;
@@ -2633,7 +2685,19 @@ function stopTTS(){
   ttsUpdateButton();
 }
 if (ttsAvailable()){
-  window.speechSynthesis.onvoiceschanged = () => { ttsLoadVoices(); };
+  window.speechSynthesis.onvoiceschanged = () => {
+    ttsLoadVoices();
+    // getVoices() is async in Firefox/Chrome; refresh the settings dialog
+    // voice list in place if it's currently mounted and open.
+    const sel = document.getElementById("setTTSVoice");
+    if (sel && sel.isConnected){
+      const cur = store.get("ttsVoice", "");
+      sel.innerHTML = `<option value="">${esc(t("voiceDefault"))}</option>` +
+        ttsVoices.map(v =>
+          `<option value="${escAttr(v.voiceURI)}" ${cur === v.voiceURI ? "selected" : ""}>${esc(v.name)} (${esc(v.lang)})</option>`
+        ).join("");
+    }
+  };
   ttsLoadVoices();
 }
 /* ============ Translate article to Persian ============ */
@@ -3682,10 +3746,15 @@ function fillSettings(){
     const b = e.target.closest("button[data-lang]");
     if (b) setLang(b.dataset.lang);
   });
-  $("#fontPicker").addEventListener("click", e => {
-    const b = e.target.closest("button[data-f]");
-    if (b){ setFont(b.dataset.f); fillSettings(); }
-  });
+ $("#fontPicker").addEventListener("click", e => {
+  const b = e.target.closest("button[data-f]");
+  if (!b) return;
+  setFont(b.dataset.f);
+  // Update the .on state in place instead of rebuilding the dialog;
+  // rebuilding resets the TTS voice <select> and loses scroll/focus.
+  $("#fontPicker").querySelectorAll("button[data-f]").forEach(x =>
+    x.classList.toggle("on", x.dataset.f === fontId));
+});
   $("#setTheme").addEventListener("change", e => { theme = e.target.value; store.set("theme", theme); render(); });
   $("#setAuto").addEventListener("change", e => { autoMin = Math.max(0, +e.target.value || 0); store.set("autoRefresh", autoMin); setupAuto(); toast(autoMin ? t("autoOn", {n: autoMin}) : t("autoOff")); });
   $("#setProxy").addEventListener("change", e => { store.set("proxy", e.target.value.trim()); toast(t("proxySaved"), "ok"); });
@@ -3854,6 +3923,7 @@ function handleShareAction(action, link, title){
 }
 
 /* ============ Tags editor dialog ============ */
+let currentTagEditSource = null;
 function openTagsEditor(s){
   const dlg = $("#tagsDlg");
   $("#tagsDlgTitle").textContent = t("editTags");
@@ -3887,19 +3957,29 @@ function openTagsEditor(s){
       b.remove();
     });
   });
-  const saveHandler = () => {
-    setSourceTags(s.url, input.value);
-    toast(t("tagsSaved"), "ok");
-    renderSide();
-  };
-  const doneBtn = $("#tagsDone");
-  const onDone = () => {
-    saveHandler();
-    doneBtn.removeEventListener("click", onDone);
-  };
-  doneBtn.addEventListener("click", onDone);
-}
+    currentTagEditSource = s;
 
+  // const saveHandler = () => {
+  //   setSourceTags(s.url, input.value);
+  //   toast(t("tagsSaved"), "ok");
+  //   renderSide();
+  // };
+  // const doneBtn = $("#tagsDone");
+  // const onDone = () => {
+  //   saveHandler();
+  //   doneBtn.removeEventListener("click", onDone);
+  // };
+  // doneBtn.addEventListener("click", onDone);
+}
+$("#tagsDone").addEventListener("click", () => {
+  if (!currentTagEditSource) return;
+  const input = $("#tagsInput");
+  if (!input) return;
+  setSourceTags(currentTagEditSource.url, input.value);
+  toast(t("tagsSaved"), "ok");
+  renderSide();
+  currentTagEditSource = null;
+});
 /* ============ Render: main ============ */
 function render(){
   const vk = [state.page, state.src, activeTag, searchQuery, filterUnread, sortMode].join("|");
