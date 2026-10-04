@@ -808,6 +808,11 @@ aside{background:var(--bg-soft);border-inline-end:1px solid var(--line)}
 .opts-keys:hover{color:var(--text)}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;align-items:center;font-size:13.5px}
 .keys kbd{justify-self:start;direction:ltr;min-width:30px;text-align:center;padding:3px 9px;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:7px;background:var(--panel-2);font:600 12px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre}
+.today-src{font-size:12px;font-weight:600;color:var(--text-dim);margin:16px 0 4px}
+.today-src:first-of-type{margin-top:2px}
+.today-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.today-done{display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 10px}
+.today-done b{font-size:16px;color:var(--text)}.today-done span{color:var(--mute)}
 </style>
 </head>
 <body>
@@ -1575,7 +1580,7 @@ function persistItem(a){
     idb.putMany("feedItems", rows).catch(() => {});
   }, 2000);
 }
-let state = {page: sources.length ? "news" : "add", src: null};
+let state = {page: sources.length ? "digest" : "add", src: null};
 let viewMode = store.get("view", "list");
 if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
 let density = store.get("density", "cozy");
@@ -3465,6 +3470,35 @@ function digestItemHtml(a){
     </span>
   </a>`;
 }
+function todayQueue(){
+  const y0 = startOfDay(Date.now()) - 864e5, seen = new Set(), list = [];
+  for (const s of sources) for (const a of (articles[s.url] || [])){
+    if (!a || !a.title || !a.date || a.date < y0 || isRead(a.link)) continue;
+    const k = normLink(a.link); if (seen.has(k)) continue;
+    seen.add(k); list.push(a);
+  }
+  list.sort((a, b) => b.date - a.date);
+  return {total: list.length, shown: list.slice(0, 20)};
+}
+function markItemsRead(list){
+  list.forEach(a => { if (!read.has(a.link)){ read.add(a.link); readLog[a.link] = {ts: Date.now(), source: a.source || "", title: a.title || ""}; } });
+  store.set("read", [...read]); store.set("readLog", readLog);
+  render();
+  toast(appLang === "fa" ? "علامت‌گذاری شد" : "Marked as read", "ok");
+}
+function todayQueueHtml(){
+  const fa = appLang === "fa";
+  if (!feedCacheReady) return "<div class='skel'></div>".repeat(3);
+  const q = todayQueue();
+  if (!q.total) return `<div class="digest-empty today-done"><b>${fa ? "همه‌ی خبرهای تازه را خواندید ✓" : "You're all caught up ✓"}</b><span>${fa ? "از دیروز تا حالا خبر نخوانده‌ای نمانده." : "Nothing unread since yesterday."}</span><button class="btn ghost" data-go="all">${fa ? "دیدن همه‌ی خبرها" : "Browse all stories"}</button></div>`;
+  const groups = new Map();
+  q.shown.forEach(a => { const k = a.source || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(a); });
+  let html = "";
+  for (const [src, items] of groups) html += `<div class="today-src" dir="auto">${esc(src)}</div><div class="digest-items">${items.map(digestItemHtml).join("")}</div>`;
+  const more = q.total - q.shown.length;
+  html += `<div class="today-foot"><button class="btn" data-today-read>${fa ? `علامت‌زدن این ${q.shown.length} مورد به‌عنوان خوانده` : `Mark these ${q.shown.length} as read`}</button>${more > 0 ? `<button class="btn ghost" data-go="all">${fa ? `${more} خبر دیگر در فید` : `${more} more in the feed`}</button>` : ""}</div>`;
+  return html;
+}
 function renderDigestHTML(){
   const d = computeDigest();
   const grt = greetingForHour();
@@ -3486,20 +3520,9 @@ function renderDigestHTML(){
       <p class="sub">${esc(sub)}</p>
     </div>
     <div class="digest-grid">
-      ${statCard(t("statsToday"), d.todayItems.length, "var(--blue)")}
-      ${statCard(t("filterUnread"), d.unreadToday.length, "var(--amber)")}
-      ${statCard(t("statsSaved"), d.yesterdaySaved.length, "var(--star)")}
-    </div>
-    <div class="digest-grid">
-      <div class="digest-card" style="--accent:var(--blue);grid-column:1/-1">
-        <h3>🔥 ${esc(t("digestSectionTop"))}</h3>
-        ${topList.length ? `<div class="digest-items">${topList.map(digestItemHtml).join("")}</div>` : `<div class="digest-empty">${esc(t("digestNoTop"))}</div>`}
-      </div>
-    </div>
-    <div class="digest-grid">
-      <div class="digest-card" style="--accent:var(--green)">
-        <h3>📰 ${esc(t("digestSectionNew"))}</h3>
-        ${newList.length ? `<div class="digest-items">${newList.map(digestItemHtml).join("")}</div>` : `<div class="digest-empty">${esc(t("digestNoNew"))}</div>`}
+      <div class="digest-card" style="--accent:var(--green);grid-column:1/-1">
+        <h3>${esc(appLang === "fa" ? "صف مطالعه" : "Reading queue")}</h3>
+        ${todayQueueHtml()}
       </div>
       <div class="digest-card" style="--accent:var(--star)">
         <h3>★ ${esc(t("digestSectionSaved"))}</h3>
@@ -4021,6 +4044,8 @@ document.addEventListener("click", e => {
 document.addEventListener("click", async e => {
   const more = e.target.closest("[data-load-more]");
   if (more){ visibleNewsCount += 50; render(); return; }
+  const trd = e.target.closest("[data-today-read]");
+  if (trd){ markItemsRead(todayQueue().shown); return; }
   const saveEl = e.target.closest("[data-save]");
   if (saveEl){
     e.preventDefault(); e.stopPropagation();
@@ -4165,7 +4190,7 @@ searchInput.addEventListener("input", () => {
   searchQuery = searchInput.value;
   $("#searchClear").hidden = !searchQuery;
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { if (state.page === "news" || state.page === "saved") render(); }, 180);
+  searchTimer = setTimeout(() => { if (searchQuery.trim() && state.page === "digest") state.page = "news"; if (state.page === "news" || state.page === "saved") render(); }, 180);
 });
 $("#searchClear").addEventListener("click", () => {
   searchInput.value = ""; searchQuery = ""; $("#searchClear").hidden = true; render(); searchInput.focus();
