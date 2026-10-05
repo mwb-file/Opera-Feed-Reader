@@ -1,5 +1,5 @@
 /* Personal news — Service Worker */
-const CACHE = "personal-news-v5";
+const CACHE = "personal-news-v6";
 const FONTS = "personal-news-fonts-v1";
 const SHELL = ["./", "./index.html"];
 
