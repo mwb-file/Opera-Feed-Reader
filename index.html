@@ -17,6 +17,7 @@
 <style>
 *{box-sizing:border-box}
 :root{
+  color-scheme:light;
   /* Accent hue — every primary shade below derives from this single number,
      so the whole palette can be re-tinted at runtime. */
   --accent-h:217;
@@ -58,6 +59,7 @@
 [data-font="shabnam"] { --font-app:var(--font-shabnam);  --font-reader:var(--font-shabnam); }
 [data-font="system"]  { --font-app:var(--font-system);   --font-reader:var(--font-system); }
 [data-theme="dark"]{
+  color-scheme:dark;
   --bg:#0f1420;--bg-soft:#1a2030;
   --panel:#1a2030;--panel-2:#1e2536;--panel-hover:#232b3d;
   --line:#2a3346;--line-2:#3a4560;
@@ -739,6 +741,12 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
 
 /* ===== Design system: soft blue-gray surfaces, one accent hue, rounded cards ===== */
 ::selection{background:var(--blue-soft);color:var(--text)}
+/* Scrollbars (dialogs, reader, sidebar, page) follow the theme instead of the OS default. */
+*{scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line-2);border:3px solid transparent;border-radius:99px;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--mute);background-clip:padding-box}
 img{content-visibility:auto}
 .card{content-visibility:auto;contain-intrinsic-size:auto 160px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

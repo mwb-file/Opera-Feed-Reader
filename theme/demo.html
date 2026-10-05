@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eef2f8">
+<title>Soft UI — قالب</title>
+<link rel="stylesheet" href="theme.css">
+<script>
+/* Applied before first paint so the page never flashes the wrong theme. */
+try{
+  var t = localStorage.getItem("ui-theme") || "auto";
+  var dark = t === "dark" || (t === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  var a = localStorage.getItem("ui-theme-accent");
+  if (a) document.documentElement.style.setProperty("--accent-h", a);
+}catch(e){}
+</script>
+<style>
+  /* Only what this showcase page needs; everything visual comes from theme.css */
+  .demo{max-width:1000px;margin-inline:auto;padding:24px 16px 80px}
+  .demo > section{margin-bottom:34px}
+  .demo h2{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .demo h2::after{content:"";flex:1;height:1px;background:var(--border)}
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .swatch{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+  .swatch i{display:block;height:52px}
+  .swatch span{display:block;padding:7px 9px;font-size:var(--fs-xs);color:var(--text-dim);font-weight:600}
+  .demo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="row" style="gap:10px;flex:none">
+    <span class="logo"></span>
+    <span class="title">Soft UI</span>
+  </div>
+  <span class="grow"></span>
+  <div class="seg" id="dirSeg">
+    <button data-dir="rtl" class="is-active">RTL</button>
+    <button data-dir="ltr">LTR</button>
+  </div>
+  <button class="icon-btn tip" id="themeBtn" data-tip="تغییر تم">◐</button>
+</div>
+
+<main class="demo">
+
+  <section>
+    <h2>۱. رنگ تأکیدی</h2>
+    <p class="muted">یک عدد، کل پالت. روی هر رنگ کلیک کنید:</p>
+    <div id="accents"></div>
+  </section>
+
+  <section>
+    <h2>۲. توکن‌ها</h2>
+    <div class="swatches" id="tokens"></div>
+  </section>
+
+  <section>
+    <h2>۳. دکمه‌ها</h2>
+    <div class="row">
+      <button class="btn">اصلی</button>
+      <button class="btn ghost">خنثی</button>
+      <button class="btn outline">دورخط</button>
+      <button class="btn danger">حذف</button>
+      <button class="btn success">تأیید</button>
+      <button class="btn" disabled>غیرفعال</button>
+      <button class="btn pill">قرصی</button>
+      <button class="icon-btn tip ghost" data-tip="آیکونی">★</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn sm">کوچک</button>
+      <button class="btn">معمولی</button>
+      <button class="btn lg">بزرگ</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>۴. فرم‌ها</h2>
+    <div class="demo-grid">
+      <div>
+        <div class="field">
+          <label class="label" for="d1">عنوان</label>
+          <input class="input" id="d1" placeholder="یک مقدار بنویسید…">
+          <span class="hint">متن راهنما زیر فیلد.</span>
+        </div>
+        <div class="field">
+          <label class="label" for="d2">انتخاب</label>
+          <select class="input" id="d2">
+            <option>گزینه‌ی اول</option>
+            <option>گزینه‌ی دوم</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label class="label" for="d3">متن چندخطی</label>
+          <textarea class="input" id="d3" placeholder="…"></textarea>
+        </div>
+        <label class="check"><input type="checkbox" checked> گزینه‌ی تیک‌دار</label>
+        <label class="check"><input type="radio" name="r" checked> گزینه‌ی رادیویی</label>
+        <label class="switch" style="margin-top:8px">
+          <input type="checkbox" checked><span class="track"></span> کلید روشن/خاموش
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>۵. کارت و سطح</h2>
+    <div class="demo-grid">
+      <div class="card hoverable">
+        <div class="row between">
+          <strong>کارت ساده</strong>
+          <span class="badge">جدید</span>
+        </div>
+        <p class="muted" style="margin:8px 0 0">پس‌زمینه، حاشیه و گوشه‌ها همه از توکن‌ها می‌آیند.</p>
+      </div>
+      <div class="card">
+        <div class="row" style="gap:10px">
+          <span class="avatar">ن</span>
+          <div class="grow">
+            <strong>کارت با آواتار</strong>
+            <div class="faint" style="font-size:var(--fs-xs)">۳ دقیقه پیش</div>
+          </div>
+          <button class="icon-btn">⋯</button>
+        </div>
+      </div>
+      <div class="surface-2">
+        <strong>سطح ۲</strong>
+        <p class="muted" style="margin:6px 0 0">برای بلوک‌های داخلی.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>۶. برچسب و نشان</h2>
+    <div class="row">
+      <span class="badge">پیش‌فرض</span>
+      <span class="badge solid">توپُر</span>
+      <span class="badge neutral">خنثی</span>
+      <span class="badge success">موفق</span>
+      <span class="badge danger">خطا</span>
+      <span class="badge warning">هشدار</span>
+      <span class="badge dot">فعال</span>
+      <span class="tag">tech</span>
+      <span class="tag">news</span>
+      <kbd class="kbd">Ctrl</kbd><kbd class="kbd">K</kbd>
+    </div>
+  </section>
+
+  <section>
+    <h2>۷. سگمنت و تب</h2>
+    <div class="row">
+      <div class="seg" id="segDemo">
+        <button class="is-active">لیست</button>
+        <button>شبکه</button>
+        <button>کانال</button>
+      </div>
+      <span class="spinner"></span>
+    </div>
+    <div class="tabs" style="margin-top:14px" id="tabsDemo">
+      <button class="tab is-active">صف</button>
+      <button class="tab">تاریخچه</button>
+      <button class="tab">آمار</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>۸. ناوبری</h2>
+    <div class="nav" style="max-width:280px">
+      <a class="nav-link is-active" href="#"><span class="ico">◆</span><span class="lbl">امروز</span><span class="badge">۱۲</span></a>
+      <a class="nav-link" href="#"><span class="ico">★</span><span class="lbl">ذخیره‌شده‌ها</span></a>
+      <a class="nav-link" href="#"><span class="ico">▤</span><span class="lbl">آرشیو</span><span class="badge neutral">۳</span></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>۹. پیشرفت و هشدار</h2>
+    <div class="progress" style="margin-bottom:9px"><i style="width:64%"></i></div>
+    <div class="progress slim" style="margin-bottom:14px"><i style="width:32%"></i></div>
+    <div class="stack">
+      <div class="alert info"><span class="ico">ℹ</span><span>یک پیام اطلاع‌رسانی.</span></div>
+      <div class="alert success"><span class="ico">✓</span><span>عملیات با موفقیت انجام شد.</span></div>
+      <div class="alert warning"><span class="ico">⚠</span><span>اتصال کند است.</span></div>
+      <div class="alert danger"><span class="ico">✕</span><span>خطا در ذخیره‌سازی.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>۱۰. جدول</h2>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="table">
+        <thead><tr><th>منبع</th><th>خبر</th><th>خوانده‌نشده</th></tr></thead>
+        <tbody>
+          <tr><td>Digiato</td><td>۴۲</td><td><span class="badge">۷</span></td></tr>
+          <tr><td>Hacker News</td><td>۳۱</td><td><span class="badge neutral">۰</span></td></tr>
+          <tr><td>The Verge</td><td>۱۸</td><td><span class="badge">۳</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>۱۱. دیالوگ، توست، اسکلتون</h2>
+    <div class="row">
+      <button class="btn" id="dlgBtn">باز کردن دیالوگ</button>
+      <button class="btn ghost" id="toastBtn">نمایش توست</button>
+      <button class="btn ghost tip" data-tip="راهنمای شناور">راهنما</button>
+    </div>
+    <div class="stack" style="margin-top:16px;max-width:420px">
+      <div class="skeleton text" style="width:70%"></div>
+      <div class="skeleton text" style="width:100%"></div>
+      <div class="skeleton block"></div>
+    </div>
+    <div class="empty">
+      <div class="big">🗂</div>
+      <h3>چیزی اینجا نیست</h3>
+      <p>وضعیت خالی، آماده‌ی استفاده.</p>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="demoDlg">
+  <div class="dlg-head">
+    <h3>عنوان دیالوگ</h3>
+    <button class="dlg-close" data-close>✕</button>
+  </div>
+  <div class="dlg-body">
+    <p>محتوای دیالوگ با گوشه‌های گرد، سایه و پس‌زمینه‌ی سطح.</p>
+    <div class="alert info"><span class="ico">ℹ</span><span>اسکرول‌بار هم با تم هماهنگ است.</span></div>
+  </div>
+  <div class="dlg-foot">
+    <button class="btn ghost" data-close>بستن</button>
+    <button class="btn" data-close>تمام</button>
+  </div>
+</dialog>
+
+<div class="toast" id="demoToast"></div>
+
+<script src="theme.js"></script>
+<script>
+Theme.init({ metaColor: { light: "#eef2f8", dark: "#0f1420" } });
+Theme.mountPicker("#accents");
+
+/* theme button cycles light → dark → auto */
+document.getElementById("themeBtn").addEventListener("click", function () { Theme.toggle(); });
+
+/* direction toggle */
+document.getElementById("dirSeg").addEventListener("click", function (e) {
+  var b = e.target.closest("button[data-dir]");
+  if (!b) return;
+  document.documentElement.setAttribute("dir", b.dataset.dir);
+  this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+  renderTokens();
+});
+
+/* token swatches, read straight from the CSS custom properties */
+var TOKENS = ["--primary", "--primary-soft", "--primary-grad", "--bg", "--surface",
+              "--surface-2", "--surface-3", "--border", "--text", "--text-dim",
+              "--success", "--warning", "--danger", "--inverse-bg"];
+function renderTokens() {
+  var cs = getComputedStyle(document.documentElement);
+  document.getElementById("tokens").innerHTML = TOKENS.map(function (name) {
+    var value = cs.getPropertyValue(name).trim();
+    return '<div class="swatch"><i style="background:' + value + '"></i>' +
+           '<span dir="ltr" style="text-align:start">' + name +
+           '<br><span class="faint">' + value + '</span></span></div>';
+  }).join("");
+}
+renderTokens();
+Theme.onChange(renderTokens);
+
+/* segmented demo */
+document.getElementById("segDemo").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (!b) return;
+  this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+});
+document.getElementById("tabsDemo").addEventListener("click", function (e) {
+  var b = e.target.closest("button");
+  if (!b) return;
+  this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("is-active", x === b); });
+});
+
+/* dialog */
+var dlg = document.getElementById("demoDlg");
+document.getElementById("dlgBtn").addEventListener("click", function () { dlg.showModal(); });
+dlg.addEventListener("click", function (e) {
+  if (e.target.closest("[data-close]")) dlg.close();
+});
+
+/* toast */
+var toastEl = document.getElementById("demoToast");
+var toastTimer;
+document.getElementById("toastBtn").addEventListener("click", function () {
+  toastEl.textContent = "ذخیره شد ✓";
+  toastEl.classList.add("is-open", "success");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { toastEl.classList.remove("is-open"); }, 2200);
+});
+</script>
+</body>
+</html>

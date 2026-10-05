@@ -1,0 +1,606 @@
+/*! ==========================================================================
+ *  Soft UI — a small, dependency-free theme layer
+ *  --------------------------------------------------------------------------
+ *  Extracted from the "Personal news" feed reader.
+ *
+ *  • Light by default, dark via <html data-theme="dark">
+ *  • The whole palette is derived from ONE hue: --accent-h
+ *  • No build step, no dependencies, no framework — just link this file
+ *
+ *  Quick start
+ *    <link rel="stylesheet" href="theme.css">
+ *    <html lang="fa" dir="rtl" data-theme="light" style="--accent-h:217">
+ *    (or let theme.js handle it:  <script src="theme.js"></script>)
+ *  ========================================================================== */
+
+
+/* ==========================================================================
+   1. TOKENS — LIGHT (default)
+   ========================================================================== */
+:root{
+  color-scheme:light;
+
+  /* --- Accent ------------------------------------------------------------
+     Change --accent-h and every shade, gradient, ring and glow follows.   */
+  --accent-h:217;
+  --primary:hsl(var(--accent-h) 91% 60%);
+  --primary-hover:hsl(var(--accent-h) 91% 50%);
+  --primary-soft:hsl(var(--accent-h) 91% 96%);      /* tinted surface, focus ring */
+  --primary-glow:hsl(var(--accent-h) 91% 60% / .18);/* ambient shadow / glow      */
+  --primary-grad:linear-gradient(135deg,hsl(var(--accent-h) 91% 63%),hsl(var(--accent-h) 91% 49%));
+  --on-primary:#fff;                                /* text on top of --primary   */
+
+  /* --- Surfaces ---------------------------------------------------------- */
+  --bg:#eef2f8;
+  --surface:#ffffff;
+  --surface-2:#fafbfd;
+  --surface-3:#f5f7fb;
+  --surface-glass:rgba(255,255,255,.88);            /* sticky headers            */
+  --border:#e3e8f0;
+  --border-strong:#d0d8e6;
+
+  /* --- Text -------------------------------------------------------------- */
+  --text:#1a1f36;
+  --text-dim:#6b7280;
+  --text-mute:#9ca3af;
+
+  /* --- Status ------------------------------------------------------------ */
+  --success:#10b981;  --success-soft:#ecfdf5;
+  --danger:#ef4444;   --danger-soft:#fef2f2;  --danger-hover:#dc2626;
+  --warning:#f59e0b;  --warning-soft:#fffbeb;
+
+  /* --- Inverted surfaces (toasts, tooltips, kbd) ------------------------- */
+  --inverse-bg:#1a1f36;
+  --inverse-text:#ffffff;
+
+  /* --- Shape ------------------------------------------------------------- */
+  --radius-lg:16px;
+  --radius:12px;
+  --radius-sm:10px;
+  --radius-pill:999px;
+
+  /* --- Depth ------------------------------------------------------------- */
+  --shadow-sm:0 2px 8px rgba(15,23,42,.05);
+  --shadow:0 6px 24px rgba(15,23,42,.06);
+  --shadow-lg:0 20px 60px rgba(15,23,42,.18);
+  --ring:0 0 0 3px var(--primary-soft);
+  --scrim:rgba(15,23,42,.55);
+
+  /* --- Type -------------------------------------------------------------- */
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,"Vazirmatn","Tahoma",sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,"Courier New",monospace;
+  --fs-xs:.72rem;
+  --fs-sm:.8rem;
+  --fs-base:.875rem;   /* 14px */
+  --fs-md:.95rem;
+  --fs-lg:1.15rem;
+  --fs-xl:1.45rem;
+  --lh:1.6;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --transition:.2s cubic-bezier(.4,0,.2,1);
+  --bounce:.28s cubic-bezier(.4,0,.2,1);
+
+  /* --- Misc -------------------------------------------------------------- */
+  --skeleton:linear-gradient(90deg,#f1f5fa 0%,#e4ebf5 50%,#f1f5fa 100%);
+  --track:var(--surface-3);
+}
+
+
+/* ==========================================================================
+   2. TOKENS — DARK
+   ========================================================================== */
+[data-theme="dark"]{
+  color-scheme:dark;
+
+  --primary:hsl(var(--accent-h) 80% 70%);
+  --primary-hover:hsl(var(--accent-h) 80% 80%);
+  --primary-soft:hsl(var(--accent-h) 40% 18%);
+  --primary-glow:hsl(var(--accent-h) 80% 70% / .2);
+  --primary-grad:linear-gradient(135deg,hsl(var(--accent-h) 80% 72%),hsl(var(--accent-h) 80% 54%));
+  /* NOTE: white on a 70%-light accent is the original look but low contrast.
+     Set --on-primary:#0f1420 if you prefer dark labels on the accent.      */
+  --on-primary:#fff;
+
+  --bg:#0f1420;
+  --surface:#1a2030;
+  --surface-2:#1e2536;
+  --surface-3:#232b3d;
+  --surface-glass:rgba(15,20,32,.88);
+  --border:#2a3346;
+  --border-strong:#3a4560;
+
+  --text:#e8edf5;
+  --text-dim:#94a3b8;
+  --text-mute:#64748b;
+
+  --success:#34d399;  --success-soft:hsl(160 60% 16%);
+  --danger:#f87171;   --danger-soft:hsl(0 60% 18%);   --danger-hover:#ef4444;
+  --warning:#fbbf24;  --warning-soft:hsl(38 60% 16%);
+
+  --inverse-bg:#e8edf5;
+  --inverse-text:#0f1420;
+
+  --shadow-sm:0 2px 8px rgba(0,0,0,.25);
+  --shadow:0 6px 24px rgba(0,0,0,.35);
+  --shadow-lg:0 20px 60px rgba(0,0,0,.55);
+  --scrim:rgba(0,0,0,.6);
+
+  --skeleton:linear-gradient(90deg,#1e2536 0%,#28324a 50%,#1e2536 100%);
+  --track:var(--surface-3);
+}
+
+
+/* ==========================================================================
+   3. BASE
+   ========================================================================== */
+*,*::before,*::after{box-sizing:border-box}
+
+html{-webkit-text-size-adjust:100%}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font:var(--fs-base)/var(--lh) var(--font-sans);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  transition:background var(--transition),color var(--transition);
+}
+
+h1,h2,h3,h4{margin:0 0 .5em;line-height:1.35;letter-spacing:-.01em;font-weight:700}
+h1{font-size:var(--fs-xl)}
+h2{font-size:var(--fs-lg)}
+h3{font-size:var(--fs-md)}
+h4{font-size:var(--fs-base)}
+p{margin:0 0 1em}
+small{font-size:var(--fs-xs);color:var(--text-dim)}
+strong,b{font-weight:700}
+hr{border:0;border-top:1px solid var(--border);margin:1.5em 0}
+
+a{color:var(--primary);text-decoration:none;text-underline-offset:3px}
+a:hover{color:var(--primary-hover);text-decoration:underline}
+
+code,kbd,pre,samp{font-family:var(--font-mono);font-size:.92em}
+pre{
+  margin:0 0 1em;padding:14px 16px;overflow-x:auto;
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  direction:ltr;text-align:left;
+}
+code{padding:.15em .4em;background:var(--surface-2);border-radius:6px}
+pre code{padding:0;background:none}
+
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+
+::selection{background:var(--primary-soft);color:var(--text)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:var(--radius-sm)}
+
+/* Scrollbars (standard properties; old Safari falls back to ::-webkit-*) */
+*{scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border:3px solid transparent;border-radius:var(--radius-pill);background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--text-mute);background-clip:padding-box}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+
+
+/* ==========================================================================
+   4. LAYOUT HELPERS
+   ========================================================================== */
+.container{width:100%;max-width:1120px;margin-inline:auto;padding-inline:16px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.row.end{justify-content:flex-end}
+.grow{flex:1;min-width:0}
+.divider{height:1px;background:var(--border);border:0;margin:16px 0}
+.muted{color:var(--text-dim)}
+.faint{color:var(--text-mute)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+[hidden]{display:none!important}
+
+/* Sticky, blurred top bar */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:14px;
+  height:60px;padding-inline:18px;
+  background:var(--surface-glass);
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+  backdrop-filter:blur(16px) saturate(140%);
+  -webkit-backdrop-filter:blur(16px) saturate(140%);
+}
+.topbar .title{font-size:var(--fs-base);font-weight:700;letter-spacing:.2px;white-space:nowrap}
+
+
+/* ==========================================================================
+   5. SURFACES
+   ========================================================================== */
+.card,.panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);
+}
+.card{padding:16px}
+.panel{padding:20px}
+.card.hoverable:hover,.panel.hoverable:hover{border-color:var(--border-strong);box-shadow:var(--shadow)}
+.card.flat,.panel.flat{box-shadow:none}
+.card.raised{box-shadow:var(--shadow)}
+.surface-2{background:var(--surface-2);border-radius:var(--radius);padding:14px}
+.surface-3{background:var(--surface-3);border-radius:var(--radius);padding:14px}
+
+
+/* ==========================================================================
+   6. BUTTONS
+   ========================================================================== */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+  padding:.6em 1.1em;border:1px solid transparent;border-radius:var(--radius-sm);
+  background:var(--primary);color:var(--on-primary);
+  font-size:var(--fs-base);font-weight:600;line-height:1.2;white-space:nowrap;
+  transition:background var(--transition),border-color var(--transition),box-shadow var(--transition),transform var(--transition),color var(--transition);
+}
+.btn:hover{background:var(--primary-hover);box-shadow:0 6px 16px var(--primary-soft)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+.btn:focus-visible{outline:none;box-shadow:var(--ring)}
+
+.btn.ghost{background:var(--surface-2);color:var(--text);border-color:var(--border)}
+.btn.ghost:hover{background:var(--surface-3);border-color:var(--border-strong);box-shadow:none}
+.btn.outline{background:transparent;color:var(--primary);border-color:var(--primary)}
+.btn.outline:hover{background:var(--primary-soft);box-shadow:none}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.danger:hover{background:var(--danger-hover);box-shadow:0 6px 16px var(--danger-soft)}
+.btn.success{background:var(--success);color:#fff}
+.btn.success:hover{background:var(--success);filter:brightness(.92);box-shadow:0 6px 16px var(--success-soft)}
+
+.btn.sm{padding:.35em .7em;font-size:var(--fs-xs);border-radius:8px}
+.btn.lg{padding:.8em 1.4em;font-size:var(--fs-md);border-radius:var(--radius)}
+.btn.block{width:100%}
+.btn.pill{border-radius:var(--radius-pill)}
+
+/* Square icon button */
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:36px;height:36px;padding:0;flex:none;
+  border:0;border-radius:var(--radius-sm);
+  background:transparent;color:var(--text-dim);
+  font-size:16px;line-height:1;
+  transition:background var(--transition),color var(--transition),transform var(--transition);
+}
+.icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn.is-active{background:var(--primary-soft);color:var(--primary)}
+.icon-btn.round{border-radius:50%}
+
+
+/* ==========================================================================
+   7. FORMS
+   ========================================================================== */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.label{font-size:var(--fs-sm);font-weight:600;color:var(--text-dim)}
+.hint{font-size:var(--fs-xs);color:var(--text-mute);line-height:1.5}
+
+.input,select.input,textarea.input{
+  width:100%;padding:.55em .8em;
+  background:var(--surface-2);color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:var(--fs-base);outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);
+}
+textarea.input{min-height:90px;resize:vertical;line-height:1.55}
+.input::placeholder{color:var(--text-mute)}
+.input:hover{border-color:var(--border-strong)}
+.input:focus{border-color:var(--primary);background:var(--surface);box-shadow:var(--ring)}
+.input:disabled{opacity:.55;cursor:not-allowed}
+select.input{appearance:none;cursor:pointer;padding-inline-end:2em;
+  background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
+[dir="rtl"] select.input{background-position:16px 50%,21px 50%}
+select.input::-ms-expand{display:none}
+
+.input-group{display:flex;gap:8px;align-items:stretch}
+.input-group .input{flex:1;min-width:0}
+
+/* Native controls pick up the accent hue */
+input[type="checkbox"],input[type="radio"],input[type="range"],progress{accent-color:var(--primary)}
+
+.check{display:flex;align-items:center;gap:9px;font-size:var(--fs-base);color:var(--text);padding:5px 0;cursor:pointer;user-select:none}
+.check input{width:16px;height:16px;margin:0;flex:none}
+
+/* Pill switch built from a checkbox */
+.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:var(--fs-base)}
+.switch input{position:absolute;opacity:0;width:0;height:0}
+.switch .track{
+  width:40px;height:22px;flex:none;border-radius:var(--radius-pill);
+  background:var(--border-strong);position:relative;
+  transition:background var(--transition);
+}
+.switch .track::after{
+  content:"";position:absolute;top:3px;inset-inline-start:3px;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+  transition:transform var(--transition);
+}
+.switch input:checked + .track{background:var(--primary)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+[dir="rtl"] .switch input:checked + .track::after{transform:translateX(-18px)}
+.switch input:focus-visible + .track{box-shadow:var(--ring)}
+.switch input:disabled + .track{opacity:.5}
+
+
+/* ==========================================================================
+   8. BADGES, TAGS, PILLS
+   ========================================================================== */
+.badge{
+  display:inline-flex;align-items:center;gap:.35em;
+  padding:.15em .6em;border-radius:var(--radius-pill);
+  font-size:var(--fs-xs);font-weight:700;line-height:1.6;
+  background:var(--primary-soft);color:var(--primary);
+}
+.badge.solid{background:var(--primary);color:var(--on-primary)}
+.badge.neutral{background:var(--surface-3);color:var(--text-dim)}
+.badge.success{background:var(--success-soft);color:var(--success)}
+.badge.danger{background:var(--danger-soft);color:var(--danger)}
+.badge.warning{background:var(--warning-soft);color:var(--warning)}
+.badge.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+
+.tag{
+  display:inline-flex;align-items:center;gap:.3em;
+  padding:.1em .55em;border-radius:8px;
+  font-size:var(--fs-xs);font-weight:600;
+  background:var(--surface-3);color:var(--text-dim);white-space:nowrap;
+}
+
+
+/* ==========================================================================
+   9. SEGMENTED CONTROL & TABS
+   ========================================================================== */
+.seg{
+  display:inline-flex;gap:3px;padding:3px;
+  background:var(--surface-2);border-radius:var(--radius);flex:none;
+}
+.seg button{
+  min-width:34px;height:30px;padding:0 10px;
+  display:inline-flex;align-items:center;justify-content:center;gap:.4em;
+  border:0;border-radius:9px;background:transparent;color:var(--text-dim);
+  font-size:var(--fs-base);font-weight:600;
+  transition:background var(--transition),color var(--transition);
+}
+.seg button:hover{background:var(--surface-3);color:var(--text)}
+.seg button.is-active,.seg button.on{background:var(--primary);color:var(--on-primary)}
+
+.tabs{display:flex;gap:3px;padding:3px;background:var(--surface-2);border-radius:var(--radius);margin-bottom:12px}
+.tab{
+  flex:1;padding:7px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border:0;border-radius:9px;background:transparent;color:var(--text-dim);
+  font-size:var(--fs-base);font-weight:600;
+  transition:background var(--transition),color var(--transition);
+}
+.tab:hover{color:var(--text)}
+.tab.is-active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow-sm)}
+
+
+/* ==========================================================================
+   10. NAVIGATION
+   ========================================================================== */
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 11px;border-radius:var(--radius-sm);
+  color:var(--text-dim);font-size:var(--fs-base);font-weight:500;
+  text-decoration:none;cursor:pointer;user-select:none;
+  transition:background var(--transition),color var(--transition);
+}
+.nav-link:hover{background:var(--surface-2);color:var(--text);text-decoration:none}
+.nav-link.is-active{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.nav-link .ico{width:16px;text-align:center;flex:none;opacity:.9}
+.nav-link .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-link .badge{flex:none}
+
+
+/* ==========================================================================
+   11. PROGRESS & SPINNER
+   ========================================================================== */
+.progress{height:7px;background:var(--track);border-radius:var(--radius-pill);overflow:hidden}
+.progress > i{
+  display:block;height:100%;width:0;border-radius:var(--radius-pill);
+  background:linear-gradient(90deg,var(--primary),var(--success));
+  transition:width .3s var(--transition);
+}
+.progress.slim{height:3px}
+
+.spinner{
+  width:16px;height:16px;flex:none;border-radius:50%;
+  border:2px solid var(--primary-soft);
+  border-top-color:var(--primary);
+  animation:spin .7s linear infinite;
+}
+.spinner.lg{width:32px;height:32px;border-width:3px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+
+/* ==========================================================================
+   12. ALERTS
+   ========================================================================== */
+.alert{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface-2);
+  font-size:var(--fs-base);line-height:1.6;
+}
+.alert .ico{flex:none;line-height:1.4}
+.alert.info{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.alert.success{background:var(--success-soft);border-color:var(--success);color:var(--success)}
+.alert.danger{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.alert.warning{background:var(--warning-soft);border-color:var(--warning);color:var(--warning)}
+
+
+/* ==========================================================================
+   13. TABLES
+   ========================================================================== */
+.table{width:100%;border-collapse:collapse;font-size:var(--fs-base)}
+.table th,.table td{padding:9px 10px;text-align:start;border-bottom:1px solid var(--border)}
+.table th{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
+.table tbody tr:last-child td{border-bottom:0}
+.table tbody tr:hover{background:var(--surface-2)}
+.table.zebra tbody tr:nth-child(even){background:var(--surface-2)}
+
+
+/* ==========================================================================
+   14. DIALOGS
+   ========================================================================== */
+dialog{
+  width:min(560px,92vw);max-height:90vh;padding:0;
+  background:var(--surface);color:var(--text);
+  border:1px solid var(--border-strong);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  animation:dialog-in var(--bounce) both;
+}
+dialog::backdrop{background:var(--scrim);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+@keyframes dialog-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+
+.dlg-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 22px;border-bottom:1px solid var(--border);
+}
+.dlg-head h3{margin:0;font-size:var(--fs-lg)}
+.dlg-body{padding:18px 22px;max-height:70vh;overflow:auto}
+.dlg-body > :last-child{margin-bottom:0}
+.dlg-foot{
+  display:flex;justify-content:flex-end;gap:8px;
+  padding:12px 22px;border-top:1px solid var(--border);
+}
+.dlg-close{
+  width:30px;height:30px;flex:none;display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:8px;background:transparent;color:var(--text-mute);font-size:16px;line-height:1;
+  transition:background var(--transition),color var(--transition);
+}
+.dlg-close:hover{background:var(--surface-2);color:var(--text)}
+
+/* Div-based modal, for projects that don't use <dialog> */
+.modal{
+  position:fixed;inset:0;z-index:100;padding:20px;
+  display:none;align-items:center;justify-content:center;
+  background:var(--scrim);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.modal.is-open{display:flex}
+.modal-content{
+  width:min(560px,100%);max-height:90vh;overflow:auto;
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);animation:dialog-in var(--bounce) both;
+}
+
+
+/* ==========================================================================
+   15. TOASTS
+   ========================================================================== */
+.toast{
+  position:fixed;bottom:24px;inset-inline-start:50%;z-index:120;
+  transform:translateX(-50%) translateY(20px);
+  max-width:min(90vw,420px);
+  padding:11px 18px;border-radius:var(--radius-sm);
+  background:var(--inverse-bg);color:var(--inverse-text);
+  font-size:var(--fs-base);font-weight:600;text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;
+  transition:opacity var(--transition),transform var(--transition);
+}
+.toast.is-open{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1.5px var(--success)}
+.toast.danger{box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1.5px var(--danger)}
+.toast.warning{box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1.5px var(--warning)}
+
+
+/* ==========================================================================
+   16. TOOLTIP (pure CSS)
+   ========================================================================== */
+.tip{position:relative}
+.tip::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 8px);inset-inline-start:50%;
+  transform:translateX(-50%) translateY(2px);
+  padding:.35em .6em;border-radius:8px;
+  background:var(--inverse-bg);color:var(--inverse-text);
+  font-size:var(--fs-xs);font-weight:600;white-space:nowrap;
+  opacity:0;pointer-events:none;z-index:50;
+  transition:opacity var(--transition),transform var(--transition);
+}
+.tip:hover::after,.tip:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+
+
+/* ==========================================================================
+   17. MISC
+   ========================================================================== */
+/* Keyboard key */
+.kbd,kbd{
+  display:inline-block;min-width:24px;text-align:center;
+  padding:2px 7px;border-radius:7px;
+  border:1px solid var(--border-strong);border-bottom-width:2px;
+  background:var(--surface-2);color:var(--text);
+  font:600 var(--fs-xs)/1.5 var(--font-mono);direction:ltr;
+}
+
+/* Skeleton loader */
+.skeleton{
+  border-radius:var(--radius-sm);
+  background:var(--skeleton);background-size:200% 100%;
+  animation:shimmer 1.4s infinite linear;
+}
+.skeleton.text{height:1em;margin-bottom:.5em}
+.skeleton.block{height:120px;border-radius:var(--radius)}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* Avatar */
+.avatar{
+  width:34px;height:34px;flex:none;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:var(--fs-sm);font-weight:700;overflow:hidden;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+/* Empty state */
+.empty{text-align:center;color:var(--text-dim);padding:56px 20px}
+.empty .big{font-size:34px;line-height:1;opacity:.5;margin-bottom:12px}
+.empty h3{color:var(--text);font-size:var(--fs-lg);margin:0 0 6px}
+.empty p{margin:0;font-size:var(--fs-base)}
+
+/* Brand tile — five bars of the accent gradient */
+.logo{
+  position:relative;width:30px;height:30px;flex:none;overflow:hidden;
+  border-radius:var(--radius-sm);
+  background:var(--primary-grad);
+  box-shadow:0 6px 16px var(--primary-soft);
+}
+.logo::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(#fff,#fff) 8px 9px/14px 2.5px no-repeat,
+    linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)) 8px 14px/10px 2.5px no-repeat,
+    linear-gradient(rgba(255,255,255,.72),rgba(255,255,255,.72)) 8px 19px/12px 2.5px no-repeat;
+}
+
+/* Accent-hue swatch row */
+.accent-picker{display:flex;flex-wrap:wrap;gap:9px}
+.accent-sw{
+  width:32px;height:32px;padding:0;cursor:pointer;
+  border:2px solid transparent;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,hsl(var(--h) 91% 63%),hsl(var(--h) 91% 49%));
+  transition:transform var(--transition),border-color var(--transition),box-shadow var(--transition);
+}
+.accent-sw:hover{transform:scale(1.12)}
+.accent-sw.is-active{border-color:var(--text);box-shadow:0 0 0 2px var(--surface)}
