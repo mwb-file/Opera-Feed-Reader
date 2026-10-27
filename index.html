@@ -176,6 +176,8 @@ aside::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .nav-link.on{background:var(--blue-soft);color:var(--blue);font-weight:500}
 .nav-link .ico{width:16px;text-align:center;font-size:13px;opacity:.9;flex:none}
 .nav-link .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[dir="rtl"] .src-row .nav-link .lbl[dir="auto"]{text-align:right}
+html.side-collapsed aside #sideContent .src-row .lbl[dir="auto"]{text-align:center}
 .nav-link .badge{flex:none;font-size:11px;padding:1px 7px;border-radius:9px;background:var(--panel-2);color:var(--text-dim);font-weight:500}
 .nav-link.on .badge{background:var(--blue);color:#fff}
 
@@ -193,6 +195,30 @@ aside .grp button:hover{color:var(--blue)}
 .src-row .mini.rm:hover{color:var(--red)}
 .src-row .mini.tag-edit{font-size:11px}
 .src-row .mini.tag-edit:hover{color:var(--blue)}
+.side-collapse-btn{width:100%;min-height:40px;margin:0 0 14px;padding:8px 10px;display:flex;align-items:center;gap:10px;border:0;border-radius:var(--radius-sm);background:transparent;color:var(--text-dim);cursor:pointer;text-align:start;font-size:12px;transition:background var(--t),color var(--t)}
+.side-collapse-btn:hover{background:var(--panel-2);color:var(--text)}
+.side-collapse-ico{width:18px;flex:none;text-align:center;font-size:20px;line-height:1}
+@media(min-width:821px){
+  html.side-collapsed aside{width:72px!important;padding-inline:8px;overflow-x:hidden}
+  html.side-collapsed #sideResizer{display:none}
+  html.side-collapsed aside .side-collapse-btn,
+  html.side-collapsed aside #sideContent .nav-link{width:48px;height:42px;margin-inline:auto;padding:0;justify-content:center;gap:0}
+  html.side-collapsed aside .side-collapse-btn{margin-block-end:10px}
+  html.side-collapsed aside .lbl{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  html.side-collapsed aside .grp span,
+  html.side-collapsed aside .grp button,
+  html.side-collapsed aside #sideContent .src-row .mini,
+  html.side-collapsed aside #sideContent .tag-pills,
+  html.side-collapsed aside #sideContent .tag-ren{display:none!important}
+  html.side-collapsed aside .grp{height:1px;margin:8px 8px;background:var(--line);font-size:0;letter-spacing:0}
+  html.side-collapsed aside #sideContent .nav-link{position:relative}
+  html.side-collapsed aside #sideContent .nav-link .ico{width:22px;font-size:16px}
+  html.side-collapsed aside #sideContent .nav-link .badge{position:absolute;top:3px;inset-inline-start:4px;width:7px;min-width:7px;height:7px;padding:0;border-radius:50%;font-size:0;line-height:0;overflow:hidden}
+  html.side-collapsed aside #sideContent .src-row{justify-content:center}
+  html.side-collapsed aside #sideContent .src-row .nav-link{flex:none}
+  html.side-collapsed aside #sideContent .src-grp>.src-grp-h{justify-content:center;width:48px;height:30px;margin-inline:auto;padding:0}
+}
+@media(max-width:820px){.side-collapse-btn{display:none!important}}
 
 #filterSeg button{font-size:13px;line-height:1}
 #filterSeg button[data-filter="unread"].on{background:var(--amber);color:#1a1a1a}
@@ -870,7 +896,10 @@ dialog::backdrop{background:rgba(15,23,42,.55);backdrop-filter:blur(4px)}
 </header>
 
 <div class="layout">
-  <aside id="side"></aside>
+  <aside id="side">
+    <button id="sideCollapseBtn" class="side-collapse-btn" type="button"><span class="side-collapse-ico" aria-hidden="true">‹</span><span class="lbl"></span></button>
+    <div id="sideContent"></div>
+  </aside>
   <div class="side-resizer" id="sideResizer" role="separator" aria-orientation="vertical" aria-label="Resize sidebar"></div>
   <div class="side-backdrop" id="sideBackdrop" aria-hidden="true"></div>
   <main>
@@ -973,6 +1002,8 @@ const store = {
   set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)) } catch {} },
   del(k){ try { localStorage.removeItem(k) } catch {} }
 };
+let sideCollapsed = store.get("sideCollapsed", false) === true;
+document.documentElement.classList.toggle("side-collapsed", sideCollapsed);
 const cssEsc = s => (window.CSS && CSS.escape) ? CSS.escape(String(s)) : String(s).replace(/[^\w-]/g, c => "\\" + c);
 
 /* ============ IndexedDB (archive + persistent feed history) ============ */
@@ -3038,6 +3069,12 @@ const drawer = {
 };
 $("#menuBtn").addEventListener("click", () => drawer.toggle());
 $("#sideBackdrop").addEventListener("click", () => drawer.close());
+$("#sideCollapseBtn").addEventListener("click", () => {
+  sideCollapsed = !sideCollapsed;
+  document.documentElement.classList.toggle("side-collapsed", sideCollapsed);
+  store.set("sideCollapsed", sideCollapsed);
+  renderSide();
+});
 window.addEventListener("resize", () => { if (!drawer.isMobile()) drawer.close(); });
 
 /* ============ Render: Sidebar ============ */
@@ -3064,7 +3101,17 @@ function renderSide(){
   const allUnread = totalUnread();
   const savedCount = saved.length;
   const tags = allTags();
-  const el = $("#side");
+  const el = $("#sideContent");
+  const collapseBtn = $("#sideCollapseBtn");
+  const collapseLabel = sideCollapsed
+    ? (appLang === "fa" ? "بازکردن نوار کناری" : "Expand sidebar")
+    : (appLang === "fa" ? "جمع‌کردن نوار کناری" : "Collapse sidebar");
+  const rtl = document.documentElement.dir === "rtl";
+  collapseBtn.title = collapseLabel;
+  collapseBtn.setAttribute("aria-label", collapseLabel);
+  collapseBtn.setAttribute("aria-expanded", String(!sideCollapsed));
+  collapseBtn.querySelector(".side-collapse-ico").textContent = sideCollapsed ? (rtl ? "‹" : "›") : (rtl ? "›" : "‹");
+  collapseBtn.querySelector(".lbl").textContent = collapseLabel;
 
   const tagsHTML = (groupByTags && tags.length) ? `
     <div class="grp">
@@ -3161,6 +3208,11 @@ function renderSide(){
     `<a class="nav-link ${state.page==="add"?"on":""}" data-go="add" style="margin-top:6px">
       <span class="ico">＋</span><span class="lbl">${esc(t("addSources"))}</span>
     </a>`;
+  el.querySelectorAll(".nav-link").forEach(link => {
+    const label = link.querySelector(".lbl")?.textContent.trim();
+    if (label){ link.title = link.title || label; link.setAttribute("aria-label", label); }
+  });
+  el.querySelectorAll(".src-grp-h[data-tag]").forEach(group => { group.title = group.dataset.tag; });
 }
 
 /* ============ Render: Cards ============ */
