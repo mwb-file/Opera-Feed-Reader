@@ -1689,12 +1689,13 @@ function proxies(){
   const list = [u => u,
     u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
     u => "https://corsproxy.io/?" + encodeURIComponent(u),
-    u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u)];
+    u => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u),
+    u => "https://proxy.cors.dev/" + u];
   const c = customProxy();
   if (c) list.unshift(u => c.includes("{url}") ? c.replace("{url}", encodeURIComponent(u)) : c + u);
   return list;
 }
-async function fetchText(url, ms = 9000){
+async function fetchText(url, ms = 9000, acceptResponse = null){
   const deadline = Date.now() + Math.max(500, Math.min(ms, 8000));
   const proxyList = proxies();
   const direct = proxyList[0];
@@ -1706,8 +1707,11 @@ async function fetchText(url, ms = 9000){
     const timer = setTimeout(() => ctl.abort(), Math.min(2200, directRemaining));
     try {
       const r = await fetch(direct(url), {signal: ctl.signal});
-      if (r.ok) return await r.text();
-      lastError = new Error("HTTP " + r.status);
+      if (r.ok){
+        const body = await r.text();
+        if (!acceptResponse || acceptResponse(body)) return body;
+        lastError = new Error("Unexpected response format");
+      } else lastError = new Error("HTTP " + r.status);
     } catch (e) { lastError = e; }
     finally { clearTimeout(timer); }
   }
@@ -1723,7 +1727,11 @@ async function fetchText(url, ms = 9000){
       timers.push(setTimeout(() => ctl.abort(), remaining));
       return (async () => {
         const r = await fetch(p(url), {signal: ctl.signal});
-        if (r.ok) return await r.text();
+        if (r.ok){
+          const body = await r.text();
+          if (!acceptResponse || acceptResponse(body)) return body;
+          throw new Error("Unexpected response format");
+        }
         throw new Error("HTTP " + r.status);
       })();
     });
@@ -1750,6 +1758,7 @@ function proxyImageUrls(url){
   out.push("https://api.allorigins.win/raw?url=" + encodeURIComponent(url));
   out.push("https://corsproxy.io/?" + encodeURIComponent(url));
   out.push("https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(url));
+  out.push("https://proxy.cors.dev/" + url);
   return out;
 }
 
@@ -1849,15 +1858,30 @@ function plain(html){
 
 /* ============ Discovery ============ */
 const looksFeed = t => /<(rss|feed|rdf:RDF)[\s>]/i.test(t.slice(0, 3000));
+function githubCommitAtomUrl(value){
+  try {
+    const u = new URL(value);
+    if (u.hostname.replace(/^www\./i, "").toLowerCase() !== "github.com") return null;
+    const path = u.pathname.replace(/\/+$/, "");
+    if (!/^\/[^/]+\/[^/]+\/commits(?:\/[^?#]+)?$/i.test(path) || /\.atom$/i.test(path)) return null;
+    u.pathname = path + ".atom";
+    u.search = "";
+    u.hash = "";
+    return u.href;
+  } catch { return null; }
+}
 function normalizeUrl(s){
   s = s.trim();
   if (!s || /\s/.test(s) || !s.includes(".")) return null;
   if (!/^https?:\/\//i.test(s)) s = "https://" + s;
-  try { return new URL(s).href } catch { return null }
+  try {
+    const u = new URL(s);
+    return githubCommitAtomUrl(u.href) || u.href;
+  } catch { return null }
 }
 async function probe(url){
   try {
-    const t = await fetchText(url, 5000);
+    const t = await fetchText(url, 5000, looksFeed);
     if (!looksFeed(t)) return null;
     const f = parseFeed(t);
     return f ? {url, title: f.title || new URL(url).hostname, kind: f.kind, count: f.items.length} : null;
@@ -2123,7 +2147,7 @@ async function resolveItem(a){
 async function loadSource(s){
   let loaded = false;
   try {
-    const f = parseFeed(await fetchText(s.url));
+    const f = parseFeed(await fetchText(s.url, 9000, looksFeed));
     if (!f) throw new Error("invalid-feed");
     const previous = new Map((articles[s.url] || []).map(a => [a.link, a]));
     const fresh = f ? f.items.filter(i => i.link && i.title).map(i => {
@@ -4327,7 +4351,7 @@ document.addEventListener("click", async e => {
     $("#pvBody").innerHTML = `<div class="meta">${esc(t("readerLoading"))}</div>`;
     $("#previewDlg").showModal();
     try {
-      const f = parseFeed(await fetchText(c.url));
+      const f = parseFeed(await fetchText(c.url, 9000, looksFeed));
       $("#pvBody").innerHTML = `<ul dir="auto">` +
         f.items.slice(0, 8).map(i => `<li><a href="${esc(i.link)}" target="_blank" rel="noopener noreferrer">${esc(i.title)}</a></li>`).join("") + `</ul>`;
     } catch {
