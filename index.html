@@ -176,7 +176,8 @@ aside::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
 .nav-link.on{background:var(--blue-soft);color:var(--blue);font-weight:500}
 .nav-link .ico{width:16px;text-align:center;font-size:13px;opacity:.9;flex:none}
 .nav-link .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-html[dir="rtl"] .src-row .nav-link .lbl[dir="auto"]{text-align:right}
+html[dir="rtl"] .nav-link .lbl[dir="auto"]{text-align:right}
+html[dir="ltr"] .nav-link .lbl[dir="auto"]{text-align:left}
 html.side-collapsed aside #sideContent .src-row .lbl[dir="auto"]{text-align:center}
 .nav-link .badge{flex:none;font-size:11px;padding:1px 7px;border-radius:9px;background:var(--panel-2);color:var(--text-dim);font-weight:500}
 .nav-link.on .badge{background:var(--blue);color:#fff}
@@ -548,6 +549,8 @@ body.grid .row > .card .bd{padding:12px 14px;gap:5px;height:auto;min-height:0;fl
 .set .switch{display:flex;align-items:center;gap:8px;margin-top:10px;color:var(--text-dim);font-weight:500;cursor:pointer;user-select:none}
 .set .switch input{width:auto;margin:0}
 
+.preview-settings-block{margin-top:22px;padding:15px 16px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2)}
+.preview-settings-block h4{margin:0 0 8px;color:var(--text);font-size:13px;font-weight:650}
 .font-picker{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
 .font-picker button{text-align:start;padding:10px 12px;border-radius:8px;cursor:pointer;background:var(--bg-soft);border:1px solid var(--line-2);color:var(--text);font-size:13px;transition:all var(--t);font-family:var(--font-app);display:flex;flex-direction:column;gap:4px}
 .font-picker button:hover{border-color:var(--blue)}
@@ -584,6 +587,7 @@ dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(4px)}
 html[dir="rtl"] .rd-back{transform:scaleX(-1)}
 .rd-title-bar{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .rd-src{font-size:12px;color:var(--blue);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rd-src[lang="fa"]{direction:rtl;text-align:right}
 .rd-time{font-size:11px;color:var(--mute)}
 .rd-actions{display:flex;gap:4px;flex:none;align-items:center}
 .rd-font-wrap{position:relative}
@@ -602,17 +606,46 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
 .rd-progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent;overflow:hidden}
 .rd-progress-fill{height:100%;width:0;background:var(--blue);transition:width .1s linear}
 .rd-scroll{flex:1;overflow-y:auto;scroll-behavior:smooth}
-.rd-content{max-width:720px;margin:0 auto;padding:36px 24px 100px;font-family:var(--font-reader);font-size:var(--rd-size);line-height:1.9;color:var(--text)}
+.rd-scroll[data-preview-theme="light"]{color-scheme:light;background:#f7f9fc;--panel:#fff;--panel-2:#f1f5f9;--line:#e2e8f0;--line-2:#cbd5e1;--text:#1e293b;--text-dim:#526076;--mute:#78869a;--blue:#2563eb;--blue-soft:#eaf1ff;--blue-glow:rgba(37,99,235,.18)}
+.rd-scroll[data-preview-theme="dark"]{color-scheme:dark;background:#0f1420;--panel:#171e2c;--panel-2:#1d2636;--line:#2a3548;--line-2:#3a4960;--text:#e8edf5;--text-dim:#aab6c8;--mute:#728198;--blue:#79a9ff;--blue-soft:#202f49;--blue-glow:rgba(121,169,255,.2)}
+.rd-scroll[data-preview-theme="sepia"]{color-scheme:light;background:#f5eddd;--panel:#fbf6ec;--panel-2:#efe5d2;--line:#dfd1b9;--line-2:#cebea2;--text:#433629;--text-dim:#705d49;--mute:#8d7861;--blue:#8a6135;--blue-soft:#ede0c8;--blue-glow:rgba(138,97,53,.2)}
+.rd-content{max-width:720px;margin:0 auto;padding:36px 24px 100px;font-family:var(--preview-font,var(--font-reader));font-size:var(--rd-size);line-height:1.9;color:var(--text)}
 .rd-content .rd-hero{width:100%;aspect-ratio:16/9;border-radius:var(--radius);background:var(--panel-2) center/cover;margin-bottom:22px}
 .rd-content h1.rd-h1{font-size:calc(var(--rd-size) * 1.7);line-height:1.4;font-weight:700;letter-spacing:-.01em;margin:0 0 12px}
 .rd-content .rd-byline{color:var(--mute);font-size:13px;margin-bottom:28px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.rd-versions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-14px 0 24px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);color:var(--text-dim);font-size:12px}
+.rd-versions a{color:var(--blue);text-decoration:none;padding:4px 8px;border-radius:7px;background:var(--blue-soft)}
+.rd-versions a:hover{text-decoration:underline}
+.rd-fallback-note{margin:0 0 14px;padding:10px 13px;border:1px solid var(--line);border-inline-start:3px solid var(--blue);border-radius:8px;background:var(--blue-soft);color:var(--text-dim);font-size:12px;line-height:1.6}
+.rd-reader-error{padding:12px;border-radius:8px;background:var(--panel-2);color:var(--text-dim)}
+.rd-fallback-note{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.rd-fallback-note>span{min-width:0;flex:1}
+.rd-show-full{flex:none;padding:7px 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--panel);color:var(--blue);font:600 12px/1.3 var(--font-app);cursor:pointer;white-space:nowrap;transition:background var(--t),border-color var(--t)}
+.rd-show-full:hover{background:var(--blue-soft);border-color:var(--blue)}
+.rd-inline-source-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.rd-inline-source-head h2{margin:0;font-size:16px}
+.rd-inline-source-note{margin:0 0 10px;color:var(--mute);font-size:12px;line-height:1.6}
+.rd-inline-source-frame{display:block;width:100%;height:72vh;min-height:480px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.rd-inline-source[hidden],.rd-summary-block[hidden]{display:none}
+@media(max-width:820px){.rd-inline-source-frame{height:68vh;min-height:360px}.rd-fallback-note{align-items:flex-start;flex-direction:column}}
 .rd-content .rd-byline .dot{width:4px;height:4px;border-radius:50%;background:var(--mute);display:inline-block}
 .rd-content h2,.rd-content h3,.rd-content h4{line-height:1.5;margin:1.7em 0 .5em;letter-spacing:-.01em}
 .rd-content h2{font-size:calc(var(--rd-size) * 1.35)}
 .rd-content h3{font-size:calc(var(--rd-size) * 1.15)}
 .rd-content p{margin:0 0 1.2em}
+html[dir="rtl"] .card .t,html[dir="rtl"] .card .s,html[dir="rtl"] .ch-title,html[dir="rtl"] .ch-src,html[dir="rtl"] .np-hero-title,html[dir="rtl"] .np-hero-summary,html[dir="rtl"] .np-sec-title,html[dir="rtl"] .np-head-title,html[dir="rtl"] .np-head-src,html[dir="rtl"] .digest-item .t{ text-align:right }
+html[dir="ltr"] .card .t,html[dir="ltr"] .card .s,html[dir="ltr"] .ch-title,html[dir="ltr"] .ch-src,html[dir="ltr"] .np-hero-title,html[dir="ltr"] .np-hero-summary,html[dir="ltr"] .np-sec-title,html[dir="ltr"] .np-head-title,html[dir="ltr"] .np-head-src,html[dir="ltr"] .digest-item .t{ text-align:left }
+html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-h1,html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-byline,html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-versions{direction:rtl;text-align:right;justify-content:flex-start}
+html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-h1,html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-byline,html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-versions{direction:ltr;text-align:left;justify-content:flex-start}
+html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-body > *{text-align:right}
+html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-body > *{text-align:left}
+#rdContent[data-preview-align="right"]{text-align:right}
+#rdContent[data-preview-align="left"]{text-align:left}
+#rdContent[data-preview-align="justify"]{text-align:justify}
+#rdContent[data-preview-align="justify"] .rd-h1,#rdContent[data-preview-align="justify"] .rd-byline,#rdContent[data-preview-align="justify"] .rd-versions{text-align:right}
 .rd-content img{max-width:100%;height:auto;border-radius:8px;margin:.6em 0;display:block}
 .rd-content figure{margin:1.4em 0}
+.rd-content iframe[data-reader-embed="true"]{display:block;width:100%;max-width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:10px;background:var(--panel-2);margin:1.2em auto}
 .rd-content figcaption{font-size:12px;color:var(--mute);text-align:center;margin-top:6px}
 .rd-content a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-glow)}
 .rd-content a:hover{border-bottom-color:var(--blue)}
@@ -863,6 +896,72 @@ dialog::backdrop{background:rgba(15,23,42,.55);backdrop-filter:blur(4px)}
 .opts-pop[hidden]{display:none}
 .opts-row{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12.5px;color:var(--text-dim)}
 .opts-row:has(.seg.hide){display:none}
+.opts-row input[type="checkbox"]{width:16px;height:16px;margin:0;flex:none;cursor:pointer}
+.dup-meta{display:inline-flex;align-items:center;gap:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 7px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:10.5px;font-weight:500;line-height:1.45;vertical-align:middle}
+.related-news{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);font-size:11px;line-height:1.5;position:relative;z-index:2;text-align:start}
+.related-head{color:var(--text-dim);font-weight:600;margin-bottom:4px;font-size:10.5px}
+.related-list{display:grid;gap:2px}
+.related-item{display:flex;align-items:baseline;gap:7px;min-width:0;padding:3px 6px;border-radius:6px;color:var(--text-dim);cursor:pointer;text-decoration:none}
+.related-item:hover{background:var(--panel-hover);color:var(--text)}
+.related-item.fresh{background:var(--blue-soft)}
+.related-item.fresh .related-title{color:var(--text);font-weight:600}
+.related-item b{color:var(--blue);font-size:10px;font-weight:600;white-space:nowrap;flex:none}
+.related-item .related-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.related-more{justify-self:start;padding:3px 6px;color:var(--blue);cursor:pointer;border-radius:6px}
+.related-more:hover{background:var(--blue-soft)}
+.related-extra[hidden]{display:none}
+.related-extra{display:grid;gap:2px}
+.related-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px}
+.related-head{margin:0;min-width:0}
+.related-follow{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:999px;color:var(--blue);background:var(--blue-soft);cursor:pointer;white-space:nowrap;font-size:10.5px;line-height:1.3}
+.related-follow.on{color:var(--green);background:color-mix(in srgb,var(--green) 12%,transparent)}
+.related-follow:focus-visible,.related-item:focus-visible,.related-more:focus-visible,.related-seen:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.related-timeline{display:flex;flex-wrap:wrap;gap:3px 12px;margin:2px 0 4px;color:var(--text-dim);font-size:10px;line-height:1.35}
+.related-timeline b{color:var(--mute);font-weight:600}
+.related-item{align-items:center}
+.related-item small{margin-inline-start:auto;flex:none;color:var(--mute);font-size:10px;white-space:nowrap}
+.related-new{display:flex;align-items:center;gap:8px;margin:2px 0 4px;color:var(--blue);font-size:10.5px}
+.related-seen{border:0;background:transparent;color:var(--text-dim);padding:2px 5px;cursor:pointer;border-radius:5px;font:inherit}
+.related-seen:hover{background:var(--blue-soft);color:var(--blue)}
+.card .related-timeline{display:none}
+.card .related-top{margin-bottom:1px}
+.card .related-follow{padding:1px 5px;font-size:9.5px}
+.card .related-item small{display:none}
+.card .related-new{display:none}
+.following-page{max-width:920px;margin:0 auto;padding:8px 0 32px}
+.following-intro{margin:0 0 14px;color:var(--text-dim);font-size:13px;line-height:1.6}
+.following-list{display:grid;gap:10px}
+.followed-card{padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);min-width:0}
+.followed-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.followed-title{flex:1 1 320px;min-width:0;color:var(--text);font-size:15px;font-weight:600;line-height:1.5;text-decoration:none}
+.followed-title:hover{color:var(--blue)}
+.followed-new{padding:3px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:11px;white-space:nowrap}
+.followed-actions{display:flex;align-items:center;gap:6px}
+.followed-actions button{border:1px solid var(--line);background:var(--panel-2);color:var(--text-dim);padding:5px 9px;border-radius:8px;font:inherit;font-size:11px;cursor:pointer}
+.followed-actions button:hover{border-color:var(--blue);color:var(--blue)}
+.followed-meta{margin:5px 0 8px;color:var(--mute);font-size:11px;line-height:1.5}
+.followed-versions{display:grid;gap:2px;border-top:1px solid var(--line);padding-top:5px}
+.followed-versions .related-item{padding:5px 7px}
+.followed-empty,.following-empty{padding:28px 16px;text-align:center;color:var(--text-dim);border:1px dashed var(--line-2);border-radius:var(--radius);background:var(--panel)}
+@media(max-width:600px){.following-page{padding:4px 0 24px}.followed-card{padding:12px}.followed-title{font-size:14px}.related-timeline{gap:2px 8px}}
+.card .bd:has(.related-news) .s,.card .bd:has(.related-news) .dup-meta{display:none}
+.card .related-news{margin-top:3px;padding-top:3px;line-height:1.2}
+.card .related-head{margin-bottom:1px;font-size:10px}
+.card .related-item{padding:1px 4px}
+.digest-item .related-news{flex:0 0 100%;margin-inline-start:16px}
+@media(max-width:760px){.np-sec.has-img .related-news{padding-inline-start:104px}}
+.ch-row{flex-wrap:wrap}
+.ch-row .related-news{flex:0 0 100%;margin-inline-start:18px}
+.np-head{flex-wrap:wrap}
+.np-sec{flex-wrap:wrap}
+.np-sec .related-news{flex:0 0 100%}
+.np-sec.has-img .related-news{padding-inline-start:124px}
+.np-head .related-news{flex:0 0 100%;padding-inline-start:130px}
+.dup-meta[hidden]{display:none}
+.card .dup-meta{margin-inline-start:2px}
+.ch-row .dup-meta{flex:none}
+.np-head .dup-meta{flex:none}
+.digest-item .dup-meta{margin-inline-start:4px}
 .opts-keys{display:flex;align-items:center;gap:8px;padding:8px 6px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text-dim);font-size:12.5px;cursor:pointer}
 .opts-keys:hover{color:var(--text)}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;align-items:center;font-size:13.5px}
@@ -930,6 +1029,7 @@ dialog::backdrop{background:rgba(15,23,42,.55);backdrop-filter:blur(4px)}
               <button data-dens="cozy" id="densCozy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
               <button data-dens="compact" id="densCompact"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16M4 8.5h16M4 13h16M4 17.5h16"/></svg></button>
             </div></div>
+            <div class="opts-row"><span id="optDupLbl"></span><input type="checkbox" id="groupDupToggle" aria-labelledby="optDupLbl"></div>
             <button class="opts-keys" id="keysBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></svg><span id="keysBtnLbl"></span></button>
           </div>
         </div>
@@ -1211,6 +1311,18 @@ const LANGS = {
     accent: "رنگ تأکیدی",
     font: "فونت",
     fontDefault: "پیش‌فرض",
+    previewSettings: "تنظیمات پیش‌نمایش خبر",
+    previewAlignment: "ترازبندی متن",
+    previewAlignAuto: "خودکار",
+    previewAlignRight: "راست‌چین",
+    previewAlignLeft: "چپ‌چین",
+    previewAlignJustify: "دوطرفه",
+    previewTheme: "تم پیش‌نمایش",
+    previewThemeInherit: "هماهنگ با برنامه",
+    previewThemeLight: "روشن",
+    previewThemeDark: "تاریک",
+    previewThemeSepia: "کاغذی",
+    previewFont: "فونت پیش‌نمایش",
     autoRefresh: "فاصله‌ی به‌روزرسانی خودکار (دقیقه، ۰ = خاموش)",
     openInReader: "باز کردن خبرها در حالت Reader",
     prefetch: "Prefetch روی hover",
@@ -1228,6 +1340,11 @@ const LANGS = {
     close: "بستن",
     readerLoading: "در حال بارگذاری متن خبر…",
     readerErr: "بارگذاری متن کامل ممکن نشد. می‌توانید صفحه‌ی اصلی را باز کنید.",
+    readerSummaryFallback: "متن کامل از صفحه دریافت نشد؛ خلاصهٔ موجود در فید نمایش داده شده است.",
+    showFullArticle: "نمایش کامل خبر در همین صفحه",
+    backToSummary: "بازگشت به خلاصه",
+    inlineArticleTitle: "متن کامل خبر",
+    inlineArticleHint: "اگر خبر نمایش داده نشد، سایت ممکن است نمایش درون‌صفحه‌ای را محدود کرده باشد؛ از دکمهٔ بازکردن صفحهٔ اصلی استفاده کنید.",
     openOriginal: "باز کردن صفحه اصلی",
     save: "ذخیره",
     savedBtn: "ذخیره شد",
@@ -1235,7 +1352,7 @@ const LANGS = {
     smaller: "کوچک‌تر",
     larger: "بزرگ‌تر",
     changeFont: "تغییر فونت",
-    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها، تاریخچه و خبرهای آفلاین پاک شوند؟",
+    resetConfirm: "همه‌ی تنظیمات، منابع، ذخیره‌ها، خبرهای دنبال‌شده، تاریخچه و خبرهای آفلاین پاک شوند؟",
     importedSources: "{n} منبع وارد شد",
     noNewSources: "منبع جدیدی پیدا نشد",
     opmlError: "خطا در خواندن فایل OPML",
@@ -1257,6 +1374,26 @@ const LANGS = {
     feedsRefreshFailed: "به‌روزرسانی {n} فید ناموفق بود؛ خبرهای ذخیره‌شده باقی هستند",
     feedCacheFailed: "خبرهای تازه در حافظه‌ی محلی ذخیره نشدند",
     articleCount: "{n} خبر",
+    duplicateGrouped: "{n} نسخهٔ تکراری گروه‌بندی شد",
+    otherVersions: "نسخه‌های دیگر از منابع",
+    groupDuplicates: "گروه‌بندی خبرهای تکراری",
+    relatedStories: "خبرهای مرتبط",
+    relatedMore: "نمایش {n} مورد دیگر",
+    relatedLess: "نمایش کمتر",
+    coverage: "پوشش خبر",
+    firstCoverage: "اولین انتشار",
+    latestCoverage: "آخرین انتشار",
+    followStory: "دنبال کن",
+    unfollowStory: "دنبال‌شده",
+    followedStories: "خبرهای دنبال‌شده",
+    followedHint: "خبرهایی که دنبال می‌کنی و نسخه‌های تازه آن‌ها",
+    noFollowedStories: "هنوز خبری را دنبال نمی‌کنی.",
+    followedUnavailable: "فعلاً نسخه‌ای از این خبر در فیدهای ذخیره‌شده نیست.",
+    newCoverage: "{n} نسخه تازه",
+    markCoverageSeen: "دیدم",
+    coverageSeen: "نسخه‌های تازه دیده‌شده علامت خوردند",
+    storyFollowed: "این خبر را دنبال می‌کنی",
+    storyUnfollowed: "خبر از دنبال‌شده‌ها حذف شد",
     sourceWord: "منبع",
     mySourcesTitle: "منابع من",
     filterUnread: "خوانده‌نشده",
@@ -1407,6 +1544,18 @@ const LANGS = {
     accent: "Accent color",
     font: "Font",
     fontDefault: "default",
+    previewSettings: "Article preview settings",
+    previewAlignment: "Text alignment",
+    previewAlignAuto: "Automatic",
+    previewAlignRight: "Right",
+    previewAlignLeft: "Left",
+    previewAlignJustify: "Justified",
+    previewTheme: "Preview theme",
+    previewThemeInherit: "Match app",
+    previewThemeLight: "Light",
+    previewThemeDark: "Dark",
+    previewThemeSepia: "Sepia",
+    previewFont: "Preview font",
     autoRefresh: "Auto-refresh interval (minutes, 0 = off)",
     openInReader: "Open articles in reader mode",
     prefetch: "Prefetch articles on hover",
@@ -1424,6 +1573,11 @@ const LANGS = {
     close: "Close",
     readerLoading: "Loading article…",
     readerErr: "Couldn't load the full article. You can open the original page instead.",
+    readerSummaryFallback: "The full article could not be extracted; showing the summary provided by the feed.",
+    showFullArticle: "Show full article here",
+    backToSummary: "Back to summary",
+    inlineArticleTitle: "Full article",
+    inlineArticleHint: "If the article does not appear, the site may block in-page display. Use Open original in the reader toolbar.",
     openOriginal: "Open original",
     save: "Save",
     savedBtn: "Saved",
@@ -1431,7 +1585,7 @@ const LANGS = {
     smaller: "Smaller text",
     larger: "Larger text",
     changeFont: "Change font",
-    resetConfirm: "Reset settings, sources, saved articles, read history and offline news?",
+    resetConfirm: "Reset settings, sources, saved articles, followed stories, read history and offline news?",
     importedSources: "Imported {n} source(s)",
     noNewSources: "No new sources found",
     opmlError: "Couldn't parse OPML file",
@@ -1453,6 +1607,26 @@ const LANGS = {
     feedsRefreshFailed: "Couldn't refresh {n} feed(s); saved stories are still here",
     feedCacheFailed: "New stories couldn't be saved to local storage",
     articleCount: "{n} article(s)",
+    duplicateGrouped: "{n} duplicate copies grouped",
+    otherVersions: "Other source versions",
+    groupDuplicates: "Group duplicate stories",
+    relatedStories: "Related stories",
+    relatedMore: "Show {n} more",
+    relatedLess: "Show less",
+    coverage: "Coverage",
+    firstCoverage: "First published",
+    latestCoverage: "Latest published",
+    followStory: "Follow",
+    unfollowStory: "Following",
+    followedStories: "Following",
+    followedHint: "Stories you follow and their latest coverage",
+    noFollowedStories: "You are not following any stories yet.",
+    followedUnavailable: "No matching versions are currently in your saved feeds.",
+    newCoverage: "{n} new versions",
+    markCoverageSeen: "Mark seen",
+    coverageSeen: "New versions marked as seen",
+    storyFollowed: "Story followed",
+    storyUnfollowed: "Story removed from following",
     sourceWord: "Source",
     mySourcesTitle: "My sources",
     filterUnread: "Unread",
@@ -1651,6 +1825,10 @@ let viewMode = store.get("view", "list");
 if (!["list","grid","channel","newspaper"].includes(viewMode)) viewMode = "list";
 let density = store.get("density", "cozy");
 let sortMode = store.get("sort", "newest");
+let groupDuplicates = store.get("groupDuplicates", true) !== false;
+let followedStories = store.get("followedStories", []);
+if (!Array.isArray(followedStories)) followedStories = [];
+else followedStories = followedStories.filter(item => item && typeof item.id === "string" && Array.isArray(item.links) && Array.isArray(item.titleKeys) && Array.isArray(item.seenLinks));
 let theme = store.get("theme", "light");
 /* Accent hues offered in settings — the whole palette re-tints from --accent-h. */
 const ACCENT_HUES = [217, 262, 160, 25, 330, 0, 180, 240];
@@ -1709,10 +1887,17 @@ let openInReader = store.get("openInReader", true);
 let prefetchOn = store.get("prefetchOn", true);
 let liveTranslateAll = store.get("liveTranslateAll", false);
 let translateCache = store.get("translateCache", {});
+let sourceTranslateCache = store.get("sourceTranslateCache", {});
 const translatePending = new Set();
+const sourceTranslatePending = new Set();
 let translateSaveTimer = null;
 let liveRerenderTimer = null;
 let readerFontSize = store.get("readerFont", 17);
+let previewFontId = fontById(store.get("previewFont", fontId)).id;
+let previewAlign = store.get("previewAlign", "auto");
+if (!["auto","right","left","justify"].includes(previewAlign)) previewAlign = "auto";
+let previewTheme = store.get("previewTheme", "inherit");
+if (!["inherit","light","dark","sepia"].includes(previewTheme)) previewTheme = "inherit";
 
 /* ============ Networking ============ */
 const customProxy = () => store.get("proxy", "");
@@ -1877,12 +2062,17 @@ function parseFeed(text){
   return null;
 }
 const _plainCache = new Map();
+function stripSyndicationCreditText(text){
+  return String(text || "")
+    .replace(/(?:^|\s+)(?:the|this)\s+(?:post|article)\b[\s\S]*?\b(?:appeared\s+first\s+on|first\s+appeared\s+on)\b[\s\S]*$/i, "")
+    .replace(/\s+/g, " ").trim();
+}
 function plain(html){
   html = html || "";
   const hit = _plainCache.get(html);
   if (hit !== undefined) return hit;
   const d = new DOMParser().parseFromString(html, "text/html");
-  const v = (d.body.textContent || "").replace(/\s+/g, " ").trim();
+  const v = stripSyndicationCreditText(d.body.textContent || "");
   if (html.length < 6000){ if (_plainCache.size > 1500) _plainCache.clear(); _plainCache.set(html, v); }
   return v;
 }
@@ -2326,12 +2516,7 @@ function readingTime(html){
   const min = Math.max(1, Math.round(words / 220));
   return words > 40 ? min : 0;
 }
-function itemDir(a){
-  if (a.dir) return a.dir;
-  const sample = (a.title || "") + " " + plain(a.html || "").slice(0, 300);
-  a.dir = detectDirection(sample);
-  return a.dir;
-}
+
 function toast(msg, kind = ""){
   const el = document.createElement("div");
   el.className = "toast " + kind;
@@ -2366,27 +2551,88 @@ else document.documentElement.dataset.font = fontId;
     link.href = href;
   }
 }
+function applyReaderPreferences(){
+  const content = $("#rdContent"), scroll = $("#rdScroll");
+  if (!content || !scroll) return;
+  content.dataset.previewAlign = previewAlign;
+  content.style.setProperty("--preview-font", fontById(previewFontId).family);
+  if (previewTheme === "inherit") delete scroll.dataset.previewTheme;
+  else scroll.dataset.previewTheme = previewTheme;
+  const href = FONT_PRELOAD[previewFontId];
+  if (href){
+    let link = document.getElementById("preview-font-preload");
+    if (!link){
+      link = document.createElement("link"); link.id = "preview-font-preload"; link.rel = "preload"; link.as = "font"; link.type = "font/woff2"; link.crossOrigin = ""; document.head.appendChild(link);
+    }
+    link.href = href;
+  }
+}
+function setPreviewFont(id){
+  previewFontId = fontById(id).id;
+  store.set("previewFont", previewFontId);
+  applyReaderPreferences();
+  buildReaderFontMenu();
+  const picker = $("#previewFontPicker");
+  if (picker) picker.querySelectorAll("button[data-preview-font]").forEach(button => button.classList.toggle("on", button.dataset.previewFont === previewFontId));
+}
+
 function buildReaderFontMenu(){
   const menu = $("#rdFontMenu");
   if (!menu) return;
   menu.innerHTML = FONTS.map(f => {
     const primary = appLang === "fa" ? f.labelFa : f.label;
     const secondary = appLang === "fa" ? f.label : f.labelFa;
-    return `<button data-f="${f.id}" class="${f.id === fontId ? "on" : ""}">
+    return `<button data-f="${f.id}" class="${f.id === previewFontId ? "on" : ""}">
       <span class="nm" style="font-family:${f.family}">${esc(primary)}</span>
       <span class="prev">${esc(secondary)}</span>
     </button>`;
   }).join("");
   const lbl = $("#rdFontLabel");
-  const f = fontById(fontId);
+  const f = fontById(previewFontId);
   if (lbl) lbl.textContent = appLang === "fa" ? f.labelFa : f.label;
 }
 
 /* ============ Article extraction ============ */
-const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL"]);
+const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL","IFRAME"]);
 const ALLOWED_ATTRS = new Set(["href","src","alt","title","colspan","rowspan","width","height","loading"]);
+function safeReaderEmbedUrl(raw, baseUrl){
+  try{
+    const u = new URL(String(raw || "").trim(), baseUrl);
+    if (!/^https?:$/.test(u.protocol)) return "";
+    if (u.protocol === "http:") u.protocol = "https:";
+    const host = u.hostname.toLowerCase().replace(/^www\./, "");
+    const path = u.pathname;
+    const allowed =
+      (host === "aparat.com" && /^\/video\/video\/embed\/[a-z0-9_-]+/i.test(path)) ||
+      (host === "youtube.com" && /^\/embed\/[a-z0-9_-]+/i.test(path)) ||
+      (host === "youtube-nocookie.com" && /^\/embed\/[a-z0-9_-]+/i.test(path)) ||
+      (host === "player.vimeo.com" && /^\/video\/\d+/i.test(path)) ||
+      (host === "dailymotion.com" && /^\/embed\/video\/[a-z0-9]+/i.test(path)) ||
+      (host === "video.arvancloud.ir" && path.length > 1) ||
+      (host === "player.arvancloud.ir" && path.length > 1);
+    return allowed ? u.href : "";
+  } catch { return ""; }
+}
+function readerEmbedFrame(src){
+  const frame = document.createElement("iframe");
+  frame.setAttribute("src", src);
+  frame.setAttribute("title", document.documentElement.lang.startsWith("fa") ? "ویدیوی داخل خبر" : "Embedded video");
+  frame.setAttribute("loading", "lazy");
+  frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation");
+  frame.setAttribute("referrerpolicy", "no-referrer");
+  frame.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture; fullscreen");
+  frame.setAttribute("allowfullscreen", "");
+  frame.setAttribute("data-reader-embed", "true");
+  return frame;
+}
 function sanitizeTree(node, baseUrl){
   if (node.nodeType === 1){
+    if (node.tagName === "IFRAME"){
+      const src = safeReaderEmbedUrl(node.getAttribute("src"), baseUrl);
+      if (!src){ node.remove(); return; }
+      node.replaceWith(readerEmbedFrame(src));
+      return;
+    }
     if (!ALLOWED_TAGS.has(node.tagName)){
       const frag = document.createDocumentFragment();
       while (node.firstChild) frag.appendChild(node.firstChild);
@@ -2415,6 +2661,97 @@ function sanitizeTree(node, baseUrl){
     for (const child of [...node.childNodes]) sanitizeTree(child, baseUrl);
   }
 }
+function stripSyndicationCreditHtml(root){
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node;
+  while ((node = walker.nextNode())) nodes.push(node);
+  for (const textNode of nodes){
+    if (!root.contains(textNode)) continue;
+    const block = textNode.parentElement?.closest("p,li,div,small") || root;
+    if (!/\b(?:appeared\s+first\s+on|first\s+appeared\s+on)\b/i.test(block.textContent || "")) continue;
+    const value = textNode.nodeValue || "";
+    const marker = /\b(?:the|this)\s+(?:post|article)\b/i.exec(value);
+    if (!marker) continue;
+    let cut = marker.index;
+    if (cut > 0 && /\s/.test(value[cut - 1])) cut--;
+    textNode.nodeValue = value.slice(0, cut).replace(/\s+$/, "");
+    let current = textNode;
+    while (current && current !== block){
+      let sibling = current.nextSibling;
+      while (sibling){ const next = sibling.nextSibling; sibling.remove(); sibling = next; }
+      current = current.parentNode;
+    }
+  }
+  root.querySelectorAll("p,li,small").forEach(el => {
+    if (!(el.textContent || "").trim() && !el.querySelector("img,video,iframe,pre,code")) el.remove();
+  });
+}
+function sanitizeArticleHtml(html, baseUrl){
+  if (!html) return "";
+  const doc = new DOMParser().parseFromString("", "text/html");
+  const box = doc.createElement("div");
+  box.innerHTML = html;
+  box.querySelectorAll("script,style,noscript,object,embed,form,nav,header,footer,aside,svg,button,input,select,textarea,[aria-hidden=\"true\"]").forEach(n => n.remove());
+  restoreEncodedVideoEmbeds(box, baseUrl);
+  sanitizeTree(box, baseUrl);
+  stripSyndicationCreditHtml(box);
+  return box.innerHTML.trim();
+}
+function decodeEscapedMarkupText(value){
+  const decoder = document.createElement("textarea");
+  let decoded = String(value || "");
+  for (let i = 0; i < 2; i++){
+    decoder.innerHTML = decoded;
+    const next = decoder.value;
+    if (next === decoded) break;
+    decoded = next;
+  }
+  return decoded;
+}
+function restoreEncodedVideoEmbeds(root, baseUrl){
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node;
+  while ((node = walker.nextNode())) nodes.push(node);
+  for (const textNode of nodes){
+    if (!root.contains(textNode) || textNode.parentElement?.closest("pre,code")) continue;
+    const decoded = decodeEscapedMarkupText(textNode.nodeValue || "");
+    if (!/<iframe\b/i.test(decoded)) continue;
+    const iframeTag = /<iframe\b[^>]*>/i.exec(decoded);
+    if (!iframeTag) continue;
+    const srcAttr = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))/i.exec(iframeTag[0]);
+    const safeSrc = safeReaderEmbedUrl(srcAttr?.[1] || srcAttr?.[2] || srcAttr?.[3] || "", baseUrl);
+    const starts = [/<style\b[^>]*>/i, /\bstyle\s*>/i, /\[digivideo\]/i, /<div\b[^>]*(?:aparat|iframe)[^>]*>/i, /<iframe\b/i]
+      .map(re => re.exec(decoded)?.index).filter(Number.isFinite);
+    const start = starts.length ? Math.min(...starts) : iframeTag.index;
+    const iframeEnd = /<\/iframe\s*>/i.exec(decoded);
+    let end = iframeEnd ? iframeEnd.index + iframeEnd[0].length : iframeTag.index + iframeTag[0].length;
+    const wrappers = /^\s*(?:<\/div\s*>\s*)*(?:\[\/digivideo\]\s*)?/i.exec(decoded.slice(end));
+    if (wrappers) end += wrappers[0].length;
+    const fragment = document.createDocumentFragment();
+    const before = decoded.slice(0, start).trimEnd();
+    const after = decoded.slice(end).trimStart();
+    if (before) fragment.appendChild(document.createTextNode(before + " "));
+    if (safeSrc) fragment.appendChild(readerEmbedFrame(safeSrc));
+    if (after) fragment.appendChild(document.createTextNode(after));
+    textNode.replaceWith(fragment);
+  }
+}
+function jsonLdArticleBody(doc){
+  let best = "";
+  const visit = (value, depth = 0) => {
+    if (!value || depth > 12) return;
+    if (Array.isArray(value)){ value.forEach(v => visit(v, depth + 1)); return; }
+    if (typeof value !== "object") return;
+    if (typeof value.articleBody === "string" && value.articleBody.trim().length > best.length) best = value.articleBody.trim();
+    Object.values(value).forEach(v => visit(v, depth + 1));
+  };
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(node => {
+    try { if (node.textContent.length < 500000) visit(JSON.parse(node.textContent)); } catch {}
+  });
+  return best;
+}
 function extractArticle(html, url){
   const doc = new DOMParser().parseFromString(html || "", "text/html");
   const metaSel = (sel) => {
@@ -2429,7 +2766,8 @@ function extractArticle(html, url){
     htmlLang: (doc.documentElement.getAttribute("lang") || "").toLowerCase(),
     htmlDir: (doc.documentElement.getAttribute("dir") || "").toLowerCase()
   };
-  doc.querySelectorAll('script,style,noscript,iframe,form,nav,header,footer,aside,svg,button,input,select,textarea,[role="navigation"],[role="banner"],[role="complementary"],[role="contentinfo"],[aria-hidden="true"],.ad,.ads,.advert,.share,.social,.comments,.sidebar,.menu,.nav').forEach(n => n.remove());
+  const structuredBody = jsonLdArticleBody(doc);
+  doc.querySelectorAll('script,style,noscript,object,embed,form,nav,header,footer,aside,svg,button,input,select,textarea,[role="navigation"],[role="banner"],[role="complementary"],[role="contentinfo"],[aria-hidden="true"],.ad,.ads,.advert,.share,.social,.comments,.sidebar,.menu,.nav').forEach(n => n.remove());
   const score = el => {
     if (!el || !el.textContent) return 0;
     const text = el.textContent.trim();
@@ -2456,6 +2794,7 @@ function extractArticle(html, url){
   }
   if (!best) best = doc.body;
   const clone = best.cloneNode(true);
+  restoreEncodedVideoEmbeds(clone, url);
   clone.querySelectorAll("div:empty, p:empty, span:empty").forEach(n => n.remove());
   clone.querySelectorAll("img").forEach(img => {
     let src = img.getAttribute("src") || img.getAttribute("data-src") || img.getAttribute("data-lazy-src") || img.getAttribute("data-original") || "";
@@ -2467,13 +2806,49 @@ function extractArticle(html, url){
     img.removeAttribute("sizes");
   });
   sanitizeTree(clone, url);
-  const contentText = (clone.textContent || "").replace(/\s+/g, " ").trim();
+  let contentHTML = clone.innerHTML;
+  let contentText = (clone.textContent || "").replace(/\s+/g, " ").trim();
+  const structuredText = structuredBody.replace(/\s+/g, " ").trim();
+  if (structuredText.length > contentText.length + 100){
+    const blocks = structuredBody.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    contentHTML = (blocks.length ? blocks : [structuredText]).map(p => "<p>" + esc(p) + "</p>").join("");
+    contentText = blocks.join(" ") || structuredText;
+  }
   let direction = "";
   if (meta.htmlDir === "rtl") direction = "rtl";
   else if (meta.htmlDir === "ltr") direction = "ltr";
   else if (/^(fa|ar|he|ur|ckb|ps|sd|ug|yi|dv)(-|$)/.test(meta.htmlLang)) direction = "rtl";
   else direction = detectDirection(meta.title + " " + contentText);
-  return {title: meta.title, image: meta.image, description: meta.description, siteName: meta.siteName, contentHTML: clone.innerHTML, contentText, direction};
+  return {title: meta.title, image: meta.image, description: meta.description, siteName: meta.siteName, contentHTML, contentText, direction};
+}
+
+function readerInlineSourceMarkup(link){
+  return '<section class="rd-inline-source" id="rdInlineSource" hidden>'
+    + '<div class="rd-inline-source-head"><button class="btn ghost" type="button" id="rdBackSummary">' + esc(t("backToSummary")) + '</button><h2>' + esc(t("inlineArticleTitle")) + '</h2></div>'
+    + '<p class="rd-inline-source-note">' + esc(t("inlineArticleHint")) + '</p>'
+    + '<iframe class="rd-inline-source-frame" id="rdFullFrame" title="' + escAttr(t("inlineArticleTitle")) + '" data-src="' + escAttr(link) + '" sandbox="allow-scripts allow-same-origin allow-forms" referrerpolicy="no-referrer"></iframe>'
+    + '</section>';
+}
+function readerSummaryMarkup(summaryHtml, link){
+  return '<section class="rd-summary-block" id="rdSummaryBlock"><div class="rd-fallback-note"><span>' + esc(t("readerSummaryFallback")) + '</span><button class="rd-show-full" type="button" id="rdShowFull">' + esc(t("showFullArticle")) + ' ↗</button></div><div class="rd-body">' + summaryHtml + '</div></section>' + readerInlineSourceMarkup(link);
+}
+function bindReaderSummaryControls(){
+  const summary = $("#rdSummaryBlock"), source = $("#rdInlineSource");
+  const show = $("#rdShowFull"), back = $("#rdBackSummary"), frame = $("#rdFullFrame");
+  if (!summary || !source || !show || !back || !frame) return;
+  show.onclick = () => {
+    summary.hidden = true;
+    source.hidden = false;
+    if (frame.dataset.loaded !== "true"){ frame.src = frame.dataset.src; frame.dataset.loaded = "true"; }
+    source.scrollIntoView({block:"start"});
+    back.focus({preventScroll:true});
+  };
+  back.onclick = () => {
+    source.hidden = true;
+    summary.hidden = false;
+    $("#rdScroll").scrollTop = 0;
+    show.focus({preventScroll:true});
+  };
 }
 
 /* ============ Prefetch ============ */
@@ -2548,19 +2923,33 @@ function findItem(link){
   return null;
 }
 let readerCurrentLink = null;
-function openReader(link){
+let readerDuplicateVersions = [];
+function openReader(link, versions = []){
   if (!link) return;
   resetTranslateState();
+  readerDuplicateVersions = Array.isArray(versions) ? versions : [];
   const _tr = liveTranslateAll ? translateCache[link] : null; 
   readerCurrentLink = link;
   history.pushState({reader: link}, "", "#!r=" + b64urlEncode(link));
   showReader(link);
+}
+function duplicateVersionsMarkup(currentLink){
+  const versions = readerDuplicateVersions.filter(item => item && item.link && item.link !== currentLink);
+  const links = versions.map(item => {
+    let href = "";
+    try { const url = new URL(item.link); if (url.protocol === "http:" || url.protocol === "https:") href = url.href; } catch {}
+    if (!href) return "";
+    const label = item.source || (() => { try { return new URL(href).hostname; } catch { return item.title || href; } })();
+    return '<a data-source-name dir="auto" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer" title="' + esc(item.title || label) + '">' + esc(label) + '</a>';
+  }).filter(Boolean).join("");
+  return links ? '<div class="rd-versions" aria-label="' + esc(t("otherVersions")) + '"><span>' + esc(t("otherVersions")) + '</span>' + links + '</div>' : "";
 }
 function applyReaderContentDirection(dir){
   $("#rdContent").setAttribute("dir", dir === "rtl" ? "rtl" : "ltr");
 }
 async function showReader(link){
   readerCurrentLink = link;
+  applyReaderPreferences();
   const rd = $("#reader");
   rd.hidden = false;
   rd.setAttribute("aria-hidden", "false");
@@ -2592,33 +2981,61 @@ async function showReader(link){
     art = entry ? (entry.article || await entry.promise) : await prefetch(link);
     if (!art) throw new Error("empty");
   } catch (err){
+    const fallbackHtml = sanitizeArticleHtml(item?.html || "", link);
+    const fallbackText = plain(fallbackHtml);
+    const fallbackMarkup = fallbackText
+      ? readerSummaryMarkup(fallbackHtml, link)
+      : '<p class="rd-reader-error">' + esc(t("readerErr")) + '</p>';
     $("#rdContent").innerHTML = `
       <h1 class="rd-h1">${esc(item ? item.title : link)}</h1>
-      <div class="rd-byline">${item ? esc(item.source || "") : ""}</div>
-      <p style="color:var(--mute)">${esc(t("readerErr"))}</p>
+      <div class="rd-byline" data-source-name dir="auto">${item ? esc(item.source || "") : ""}</div>
+      ${duplicateVersionsMarkup(link)}
+      ${fallbackMarkup}
       <div class="rd-end"><button class="btn" id="rdFallbackOpen">${esc(t("openOriginal"))} ⧉</button></div>`;
+    bindReaderSummaryControls();
     const b = $("#rdFallbackOpen");
     if (b) b.onclick = () => window.open(link, "_blank", "noopener");
     return;
   }
-  applyReaderContentDirection(art.direction || provisionalDir);
+  const feedSummaryHtml = sanitizeArticleHtml(item?.html || "", link);
+  const feedSummaryText = plain(feedSummaryHtml);
+  let contentHTML = art.contentHTML || "";
+  let contentText = (art.contentText || plain(contentHTML)).trim();
+  let usingSummary = false;
+  if (contentText.length < 220){
+    if (feedSummaryText.length > contentText.length + 35){
+      contentHTML = feedSummaryHtml;
+      contentText = feedSummaryText;
+      usingSummary = true;
+    } else if (contentText.length < 80 && art.description && art.description.trim().length > contentText.length + 25){
+      contentText = art.description.trim();
+      contentHTML = "<p>" + esc(contentText) + "</p>";
+      usingSummary = true;
+    }
+  }
+  const bodyHtml = contentText ? contentHTML : '<p class="rd-reader-error">' + esc(t("readerErr")) + '</p>';
+  const contentMarkup = usingSummary ? readerSummaryMarkup(bodyHtml, link) : '<div class="rd-body">' + bodyHtml + '</div>';
+  const readerDirection = usingSummary ? detectDirection((item?.title || art.title || "") + " " + contentText.slice(0, 300)) : (art.direction || provisionalDir);
+  applyReaderContentDirection(readerDirection);
   const title = (item && item.title) || art.title || "";
-  const rtm = readingTime(art.contentText || art.contentHTML);
-  $("#rdTime").textContent = [item ? (item.source || "") : art.siteName, dateStr, rtm ? t("minReadLong", {n: rtm}) : ""].filter(Boolean).join(" · ");
+  const rtm = readingTime(contentText || contentHTML);
+  $("#rdTime").textContent = [dateStr, rtm ? t("minReadLong", {n: rtm}) : ""].filter(Boolean).join(" · ");
   $("#rdSrc").textContent = item ? (item.source || "") : (art.siteName || "");
   let hero = (item && item.ok && item.img) ? item.img : (art.image || "");
   hero = resolveImgUrl(hero, link);
   const html =
     `${hero ? `<div class="rd-hero" style="background-image:${cssUrl(hero)}"></div>` : ""}
      <h1 class="rd-h1">${esc(title)}</h1>
-     <div class="rd-byline">${item && item.source ? `<span>${esc(item.source)}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rtm ? `<span class="dot"></span><span>${esc(t("minReadLong", {n: rtm}))}</span>` : ""}</div>
-     <div class="rd-body">${art.contentHTML}</div>
+     <div class="rd-byline">${item && item.source ? `<span data-source-name dir="auto">${esc(item.source)}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rtm ? `<span class="dot"></span><span>${esc(t("minReadLong", {n: rtm}))}</span>` : ""}</div>
+     ${duplicateVersionsMarkup(link)}
+     ${contentMarkup}
      <div class="rd-end">
        <button class="btn ghost" id="rdEndOpen">${esc(t("openOriginal"))} ⧉</button>
        <button class="btn" id="rdEndSave">★ ${esc(isSaved(link) ? t("savedBtn") : t("save"))}</button>
      </div>`;
   $("#rdContent").innerHTML = html;
-  applyReaderContentDirection(art.direction || provisionalDir);
+  bindReaderSummaryControls();
+  applyReaderContentDirection(readerDirection);
   const endOpen = $("#rdEndOpen");
   if (endOpen) endOpen.onclick = () => window.open(link, "_blank", "noopener");
   const endSave = $("#rdEndSave");
@@ -2638,9 +3055,9 @@ async function showReader(link){
         source: (item && item.source) || art.siteName || "",
         date: (item && item.date) || Date.now(),
         image: hero || art.image || "",
-        text: art.contentText || plain(art.contentHTML || ""),
-        html: art.contentHTML || "",
-        direction: art.direction || provisionalDir,
+        text: contentText || plain(contentHTML || ""),
+        html: contentHTML || "",
+        direction: readerDirection,
         archivedAt: Date.now()
       };
       if (!existing || Math.abs((existing.text || "").length - rec.text.length) > 20){
@@ -2652,11 +3069,14 @@ async function showReader(link){
 function closeReader(){
   stopTTS();
   resetTranslateState();
+  const frame = $("#rdFullFrame");
+  if (frame){ frame.src = "about:blank"; frame.dataset.loaded = "false"; }
   const rd = $("#reader");
   rd.hidden = true;
   rd.setAttribute("aria-hidden", "true");
   document.body.classList.remove("reader-open");
   readerCurrentLink = null;
+  readerDuplicateVersions = [];
   if (location.hash.startsWith("#!r=")){
     history.replaceState(null, "", location.pathname + location.search);
   }
@@ -2870,7 +3290,6 @@ async function toggleTranslate() {
   const btn = $("#rdTranslate");
   if (!content || !btn) return;
 
-  /* بازگشت به متن اصلی */
   if (readerTranslated) {
     if (readerTranslation) {
       const h1 = content.querySelector(".rd-h1");
@@ -2879,6 +3298,12 @@ async function toggleTranslate() {
       if (body) body.innerHTML = readerTranslation.originalBody;
       content.setAttribute("dir", readerTranslation.originalDir || "ltr");
       content.removeAttribute("lang");
+      for (const saved of readerTranslation.originalSources || []) {
+        if (!saved.element) continue;
+        saved.element.textContent = saved.text;
+        if (saved.dir == null) saved.element.removeAttribute("dir"); else saved.element.setAttribute("dir", saved.dir);
+        if (saved.lang == null) saved.element.removeAttribute("lang"); else saved.element.setAttribute("lang", saved.lang);
+      }
     }
     readerTranslated = false;
     btn.classList.remove("active");
@@ -2889,31 +3314,42 @@ async function toggleTranslate() {
   const body = content.querySelector(".rd-body");
   if (!body) { toast(t("translateError"), "err"); return; }
   const h1 = content.querySelector(".rd-h1");
-
-  /* فقط المان‌های متنی را بگیر (بدون عکس/کد) */
   const els = [...body.querySelectorAll("p, h2, h3, h4, li, blockquote")]
     .filter(el => (el.textContent || "").trim() &&
                   !el.querySelector("img, figure, video, iframe, pre, code"));
   const texts = els.map(el => el.textContent.trim());
   const titleText = h1 ? h1.textContent.trim() : "";
+  const sourceElements = [$("#rdSrc"), ...content.querySelectorAll("[data-source-name]")]
+    .filter(el => el && (el.textContent || "").trim());
+  const sourceTexts = sourceElements.map(el => el.textContent.trim());
+  const uniqueSourceTexts = [...new Set(sourceTexts)];
 
   readerTranslation = {
     originalTitle: titleText,
     originalBody: body.innerHTML,
-    originalDir: content.getAttribute("dir") || "ltr"
+    originalDir: content.getAttribute("dir") || "ltr",
+    originalSources: sourceElements.map((element, i) => ({
+      element, text: sourceTexts[i], dir: element.getAttribute("dir"), lang: element.getAttribute("lang")
+    }))
   };
 
   btn.classList.add("active", "loading");
   btn.title = t("translating");
   toast(t("translating"));
 
-  const target = "fa"; /* همیشه به فارسی */
   try {
-    const results = await translateAll([titleText, ...texts], target);
+    const results = await translateAll([titleText, ...texts, ...uniqueSourceTexts], "fa");
     if (h1 && results[0]) h1.textContent = results[0];
     els.forEach((el, i) => {
       const tx = results[i + 1];
       if (tx) el.textContent = tx;
+    });
+    const sourceStart = 1 + texts.length;
+    const translatedSources = new Map(uniqueSourceTexts.map((source, i) => [source, results[sourceStart + i] || source]));
+    sourceElements.forEach((el, i) => {
+      el.textContent = translatedSources.get(sourceTexts[i]) || sourceTexts[i];
+      el.setAttribute("dir", "rtl");
+      el.setAttribute("lang", "fa");
     });
     content.setAttribute("dir", "rtl");
     content.setAttribute("lang", "fa");
@@ -2957,7 +3393,7 @@ async function translateItem(item){
     const results = await translateAll(texts, "fa");
     translateCache[item.link] = {
       title: results[0] || item.title,
-      summary: results[1] || summary,
+      summary: summary ? (results[1] || summary) : "",
       ts: Date.now()
     };
     saveTranslateCache();
@@ -2966,17 +3402,37 @@ async function translateItem(item){
   translatePending.delete(item.link);
   updateLiveTranslateBusy();
 }
-function ensureLiveTranslations(items){
-  if (!liveTranslateAll) return;
-  const todo = items.filter(a => a && a.link && a.title &&
-    !translateCache[a.link] && !translatePending.has(a.link));
-  todo.forEach(translateItem);
+async function translateSourceName(source){
+  const original = String(source || "").trim();
+  if (!original || sourceTranslateCache[original] || sourceTranslatePending.has(original)) return;
+  sourceTranslatePending.add(original);
+  try {
+    const results = await translateAll([original], "fa");
+    sourceTranslateCache[original] = results[0] || original;
+    store.set("sourceTranslateCache", sourceTranslateCache);
+    scheduleLiveRerender();
+  } catch {}
+  sourceTranslatePending.delete(original);
   updateLiveTranslateBusy();
 }
+function ensureLiveTranslations(items){
+  if (!liveTranslateAll) return;
+  const candidates = items.flatMap(item => item && item._duplicateItems ? item._duplicateItems : (item ? [item] : []));
+  const seenLinks = new Set();
+  candidates.forEach(item => {
+    if (item.link && item.title && !seenLinks.has(item.link)){
+      seenLinks.add(item.link);
+      if (!translateCache[item.link] && !translatePending.has(item.link)) translateItem(item);
+    }
+    if (item.source) translateSourceName(item.source);
+  });
+  updateLiveTranslateBusy();
+}
+
 function updateLiveTranslateBusy(){
   const btn = $("#liveTranslateBtn");
   if (!btn) return;
-  btn.classList.toggle("busy", translatePending.size > 0);
+  btn.classList.toggle("busy", translatePending.size > 0 || sourceTranslatePending.size > 0);
 }
 function setLiveTranslate(on){
   liveTranslateAll = !!on;
@@ -2997,10 +3453,18 @@ function displayTitle(a){
   }
   return a.title;
 }
+function displaySource(a){
+  if (liveTranslateAll){
+    const original = String(a.source || "").trim();
+    const translated = sourceTranslateCache[original];
+    if (translated) return translated;
+  }
+  return a.source || "";
+}
 function displaySummary(a, max){
   if (liveTranslateAll){
     const tr = translateCache[a.link];
-    if (tr && tr.summary) return tr.summary;
+    if (tr && tr.summary) return stripSyndicationCreditText(tr.summary);
   }
   return plain(a.html || "").slice(0, max || 260);
 }
@@ -3048,7 +3512,7 @@ document.addEventListener("click", e => {
 $("#rdFontMenu").addEventListener("click", e => {
   const b = e.target.closest("button[data-f]");
   if (!b) return;
-  setFont(b.dataset.f);
+  setPreviewFont(b.dataset.f);
   $("#rdFontMenu").classList.remove("open");
 });
 window.addEventListener("popstate", () => {
@@ -3192,6 +3656,10 @@ function renderSide(){
       <span class="ico">★</span><span class="lbl">${esc(t("savedItems"))}</span>
       ${savedCount ? `<span class="badge">${formatNum(savedCount)}</span>` : ""}
     </a>
+    <a class="nav-link ${state.page==="following"?"on":""}" data-go="following">
+      <span class="ico">◎</span><span class="lbl">${esc(t("followedStories"))}</span>
+      ${followedStories.length ? `<span class="badge">${formatNum(followedStories.length)}</span>` : ""}
+    </a>
     <a class="nav-link ${state.page==="archive"?"on":""}" data-go="archive">
       <span class="ico">🗄</span><span class="lbl">${esc(t("archiveTitle"))}</span>
       ${arcCount ? `<span class="badge">${formatNum(arcCount)}</span>` : ""}
@@ -3221,17 +3689,19 @@ function cardHtml(a){
   const rtm = readingTime(a.html);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
   const sharePayload = escAttr(JSON.stringify({link:a.link, title:a.title}));
-  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="card:${appLang}:${esc(a.link)}">
+  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="card:${appLang}:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
     <div class="bd">
       <div class="meta">
         <span class="dot"></span>
-        <b dir="auto">${esc(a.source)}</b>
+        <b dir="auto">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
         ${rtm ? `<span class="tm">· ${esc(t("minRead", {n: rtm}))}</span>` : ""}
       </div>
+      ${duplicateMetaHtml(a)}
       <div class="t" dir="auto">${esc(a.title)}</div>
       <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div>
+      ${relatedNewsHtml(a, true)}
     </div>
     <span class="card-action share-btn" role="button" tabindex="0" title="${esc(t("share"))}" data-share='${sharePayload}'>↗</span>
     <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
@@ -3240,12 +3710,14 @@ function cardHtml(a){
 function channelRowHtml(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
-  return `<a class="ch-row ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="ch:${appLang}:${esc(a.link)}">
+  return `<a class="ch-row ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="ch:${appLang}:${esc(a.link)}">
     <span class="ch-dot"></span>
-    <span class="ch-src" dir="auto">${esc(a.source)}</span>
+    <span class="ch-src" dir="auto">${esc(displaySource(a))}</span>
+    ${duplicateMetaHtml(a, true)}
     <span class="ch-title" dir="auto">${esc(displayTitle(a))}</span>
     <span class="ch-time">${esc(ago(a.date))}</span>
     <span class="ch-star ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
+    ${relatedNewsHtml(a)}
   </a>`;
 }
 
@@ -3284,6 +3756,214 @@ function mosaic(items){
   return out;
 }
 
+const DUPLICATE_STOP_WORDS = new Set("و در از به با برای که را این آن یک روی تا یا هم می شود شده هستند است هستند زیرا اگر اما چرا آیا یکم خبر گزارش the a an and or but of in on at to for with by from as is are was were be been being this that these those about after before over under".split(" "));
+function normalizeDuplicateTitle(title){
+  return String(title || "").normalize("NFKC").toLowerCase()
+    .replace(/[\u200c\u200d\u200e\u200f\u202a-\u202e]/g, "")
+    .replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/[أإآ]/g, "ا")
+    .replace(/https?:\/\/\S+/gi, " ").replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/\s+/g, " ");
+}
+function duplicateTitleTokens(normalized){
+  return new Set(normalized.split(" ").filter(token => token.length > 1 && !DUPLICATE_STOP_WORDS.has(token)));
+}
+function duplicateTitleScore(left, right){
+  if (left.normalized && left.normalized === right.normalized) return 1;
+  if (left.tokens.size < 4 || right.tokens.size < 4) return 0;
+  let shared = 0;
+  for (const token of left.tokens) if (right.tokens.has(token)) shared++;
+  if (shared < 4) return 0;
+  const smallest = Math.min(left.tokens.size, right.tokens.size);
+  const largest = Math.max(left.tokens.size, right.tokens.size);
+  const jaccard = shared / (left.tokens.size + right.tokens.size - shared);
+  return jaccard >= .76 || (shared / smallest >= .9 && largest / smallest <= 1.2) ? jaccard : 0;
+}
+function storyVersions(article){
+  const items = article && Array.isArray(article._duplicateItems) ? article._duplicateItems : [article];
+  const seen = new Set(), result = [];
+  for (const item of items){
+    if (!item || !item.link || seen.has(String(item.link))) continue;
+    seen.add(String(item.link)); result.push(item);
+  }
+  return result;
+}
+function storyPayloadFromMembers(members, title){
+  const versions = storyVersions({_duplicateItems: members});
+  return {
+    title: title || (versions[0] ? displayTitle(versions[0]) : ""),
+    links: [...new Set(versions.map(item => String(item.link || "")).filter(Boolean))],
+    titleKeys: [...new Set(versions.map(item => normalizeDuplicateTitle(item.title)).filter(key => duplicateTitleTokens(key).size >= 4))]
+  };
+}
+function storyFollowTitleMatch(left, right){
+  if (!left || !right) return false;
+  const a = {normalized:left, tokens:duplicateTitleTokens(left)};
+  const b = {normalized:right, tokens:duplicateTitleTokens(right)};
+  return a.tokens.size >= 4 && b.tokens.size >= 4 && duplicateTitleScore(a, b) > 0;
+}
+function storyFollowMatches(record, payload){
+  if (!record || !payload) return false;
+  const knownLinks = new Set(Array.isArray(record.links) ? record.links : []);
+  if ((payload.links || []).some(link => knownLinks.has(link))) return true;
+  const oldTitles = Array.isArray(record.titleKeys) ? record.titleKeys : [];
+  return (payload.titleKeys || []).some(title => oldTitles.some(old => storyFollowTitleMatch(title, old)));
+}
+function storyFollowFor(article){
+  const payload = storyPayloadFromMembers([article], displayTitle(article));
+  return followedStories.find(record => storyFollowMatches(record, payload)) || null;
+}
+function persistFollowedStories(){
+  store.set("followedStories", followedStories);
+}
+function toggleStoryFollow(payload){
+  const existing = followedStories.findIndex(record => storyFollowMatches(record, payload));
+  if (existing >= 0){
+    followedStories.splice(existing, 1);
+    persistFollowedStories();
+    toast(t("storyUnfollowed"));
+  } else {
+    followedStories.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+      title: payload.title || "",
+      links: [...new Set(payload.links || [])],
+      titleKeys: [...new Set(payload.titleKeys || [])],
+      seenLinks: [...new Set(payload.links || [])],
+      createdAt: Date.now()
+    });
+    persistFollowedStories();
+    toast(t("storyFollowed"), "ok");
+  }
+  render();
+}
+function markStoryCoverageSeen(payload, id){
+  const record = id
+    ? followedStories.find(item => item.id === id)
+    : followedStories.find(item => storyFollowMatches(item, payload));
+  if (!record) return;
+  record.links = [...new Set([...(record.links || []), ...(payload.links || [])])];
+  record.titleKeys = [...new Set([...(record.titleKeys || []), ...(payload.titleKeys || [])])];
+  record.seenLinks = [...new Set([...(record.seenLinks || []), ...(payload.links || [])])];
+  persistFollowedStories();
+  if (id) toast(t("coverageSeen"), "ok");
+  render();
+}
+function removeStoryFollow(id){
+  followedStories = followedStories.filter(item => item.id !== id);
+  persistFollowedStories();
+  toast(t("storyUnfollowed"));
+  render();
+}
+function duplicateMetaHtml(article, compact = false){
+  const members = article._duplicateItems;
+  if (!members || members.length < 2) return "";
+  const sourceKeys = new Set(), sourceNames = [];
+  for (const item of members){
+    const key = item.sourceUrl || item.source || item.link;
+    if (key && !sourceKeys.has(key)){ sourceKeys.add(key); const sourceLabel = displaySource(item); if (sourceLabel && !sourceNames.includes(sourceLabel)) sourceNames.push(sourceLabel); }
+  }
+  const count = sourceKeys.size || members.length;
+  const countLabel = appLang === "fa" ? formatNum(count) + " منبع" : count + " sources";
+  const label = compact ? countLabel : countLabel + (sourceNames.length ? " · " + sourceNames.slice(0, 3).join(appLang === "fa" ? "، " : ", ") : "");
+  return '<span class="dup-meta" dir="' + document.documentElement.dir + '" title="' + escAttr(sourceNames.join(" · ")) + '" data-dup-key="' + escAttr(members.map(item => String(item.sourceUrl || "") + "::" + String(item.source || "") + "::" + String(item.link || "") + "::" + String(item.title || "")).sort().join("|")) + '"><span aria-hidden="true">↻</span> ' + esc(label) + '</span>';
+}
+function duplicateLinksAttr(article){
+  const members = article._duplicateItems;
+  if (!members || members.length < 2) return "";
+  const links = [...new Set(members.map(item => item.link).filter(Boolean))];
+  const versions = members.map(item => ({link: item.link || "", source: item.source || "", title: item.title || ""})).filter(item => item.link);
+  return 'data-duplicate-links="' + escAttr(JSON.stringify(links)) + '" data-duplicate-versions="' + escAttr(JSON.stringify(versions)) + '"';
+}
+function relatedNewsHtml(article, compact = false){
+  const members = article._duplicateItems;
+  if (!members || members.length < 2) return "";
+  const sourceKey = item => String(item.sourceUrl || item.source || "") + "::" + String(item.link || "");
+  const currentKey = sourceKey(article);
+  const others = members.filter(item => item.link && sourceKey(item) !== currentKey)
+    .sort((left, right) => (Number(left.date) || 0) - (Number(right.date) || 0));
+  if (!others.length) return "";
+  const payload = storyPayloadFromMembers(members, displayTitle(article));
+  const follow = followedStories.find(record => storyFollowMatches(record, payload));
+  const seenLinks = new Set(follow && Array.isArray(follow.seenLinks) ? follow.seenLinks : []);
+  const fresh = follow ? members.filter(item => item.link && !seenLinks.has(item.link)) : [];
+  const ordered = members.filter(item => Number(item.date) > 0).slice().sort((left, right) => Number(left.date) - Number(right.date));
+  const sourceCount = new Set(members.map(item => item.sourceUrl || item.source || item.link).filter(Boolean)).size || members.length;
+  const timeline = ordered.length ? '<div class="related-timeline"><span><b>' + esc(t("firstCoverage")) + ':</b> ' + esc(displaySource(ordered[0])) + ' · ' + esc(ago(ordered[0].date)) + '</span><span><b>' + esc(t("latestCoverage")) + ':</b> ' + esc(displaySource(ordered[ordered.length - 1])) + ' · ' + esc(ago(ordered[ordered.length - 1].date)) + '</span></div>' : "";
+  const followLabel = follow ? t("unfollowStory") : t("followStory");
+  const followButton = '<span class="related-follow ' + (follow ? "on" : "") + '" role="button" tabindex="0" data-follow-story data-follow-payload="' + escAttr(JSON.stringify(payload)) + '" aria-pressed="' + String(!!follow) + '" aria-label="' + escAttr(followLabel) + '" title="' + escAttr(followLabel) + '">' + (follow ? "✓ " : "☆ ") + esc(followLabel) + '</span>';
+  const newNotice = follow && fresh.length
+    ? '<div class="related-new"><span>' + esc(t("newCoverage", {n: fresh.length})) + '</span><span class="related-seen" role="button" tabindex="0" data-follow-seen data-follow-payload="' + escAttr(JSON.stringify(payload)) + '">' + esc(t("markCoverageSeen")) + '</span></div>'
+    : "";
+  const renderItems = items => items.map(item => '<span class="related-item ' + (follow && !seenLinks.has(item.link) ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b>' + esc(displaySource(item)) + '</b><span class="related-title">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>').join("");
+  const visibleCount = compact ? 1 : 3;
+  const visible = others.slice(0, visibleCount), extra = others.slice(visibleCount);
+  const moreLabel = t("relatedMore", {n: extra.length}), lessLabel = t("relatedLess");
+  return '<div class="related-news"><div class="related-top"><div class="related-head">' + esc(t("coverage")) + ' · ' + esc(formatNum(sourceCount)) + ' ' + esc(t("sourceWord")) + '</div>' + followButton + '</div>' + timeline + newNotice + '<div class="related-list">' + renderItems(visible) + (extra.length ? '<div class="related-extra" hidden>' + renderItems(extra) + '</div><span class="related-more" role="button" tabindex="0" data-related-toggle aria-expanded="false" data-more-label="' + escAttr(moreLabel) + '" data-less-label="' + escAttr(lessLabel) + '">' + esc(moreLabel) + '</span>' : "") + '</div></div>';
+}
+
+function groupDuplicateItems(items){
+  if (!groupDuplicates || state.src || items.length < 2) return items;
+  const clusters = [], tokenIndex = new Map(), exactIndex = new Map(), linkIndex = new Map();
+  const maxPostings = 60, windowMs = 48 * 3600e3;
+  const prepared = items.map(article => ({
+    article,
+    sourceKey: String(article.sourceUrl || article.source || ""),
+    linkKey: normLink(article.link),
+    normalized: normalizeDuplicateTitle(article.title),
+    tokens: duplicateTitleTokens(normalizeDuplicateTitle(article.title)),
+    date: Number(article.date) || 0
+  }));
+  const addPosting = (index, key, groupId) => {
+    if (!key) return;
+    let list = index.get(key);
+    if (!list){ list = []; index.set(key, list); }
+    if (list[list.length - 1] !== groupId) list.push(groupId);
+    if (list.length > maxPostings) list.shift();
+  };
+  const addCandidates = (index, key, candidates) => {
+    const list = key ? index.get(key) : null;
+    if (list) for (let i = Math.max(0, list.length - maxPostings); i < list.length; i++) candidates.add(list[i]);
+  };
+  for (const entry of prepared){
+    const candidates = new Set();
+    addCandidates(exactIndex, entry.normalized, candidates);
+    addCandidates(linkIndex, entry.linkKey, candidates);
+    for (const token of entry.tokens) addCandidates(tokenIndex, token, candidates);
+    let bestGroup = -1, bestScore = 0;
+    for (const groupId of candidates){
+      const group = clusters[groupId];
+      if (!entry.sourceKey || group.members.some(previous => previous.sourceKey === entry.sourceKey)) continue;
+      let score = 0;
+      for (const previous of group.members){
+        if (!previous.sourceKey || entry.sourceKey === previous.sourceKey) continue;
+        if (entry.linkKey && entry.linkKey === previous.linkKey){ score = 2; break; }
+        if ((!entry.date || !previous.date) && entry.normalized !== previous.normalized) continue;
+        if (entry.date && previous.date && Math.abs(entry.date - previous.date) > windowMs) continue;
+        score = Math.max(score, duplicateTitleScore(entry, previous));
+      }
+      if (score > bestScore){ bestScore = score; bestGroup = groupId; }
+    }
+    if (bestGroup < 0){ bestGroup = clusters.length; clusters.push({members: []}); }
+    clusters[bestGroup].members.push(entry);
+    addPosting(exactIndex, entry.normalized, bestGroup);
+    addPosting(linkIndex, entry.linkKey, bestGroup);
+    for (const token of entry.tokens) addPosting(tokenIndex, token, bestGroup);
+  }
+  const grouped = clusters.map(group => {
+    if (group.members.length < 2) return group.members[0].article;
+    const ranked = group.members.slice().sort((left, right) => {
+      const unreadDiff = Number(!isRead(right.article.link)) - Number(!isRead(left.article.link));
+      if (unreadDiff) return unreadDiff;
+      const readyDiff = Number(right.article.done !== false) - Number(left.article.done !== false);
+      if (readyDiff) return readyDiff;
+      const textDiff = Math.min(plain(right.article.html || "").length, 5000) - Math.min(plain(left.article.html || "").length, 5000);
+      if (textDiff) return textDiff;
+      return (right.date || 0) - (left.date || 0);
+    });
+    return {...ranked[0].article, _duplicateItems: group.members.map(entry => entry.article)};
+  });
+  grouped.sort((left, right) => sortMode === "oldest" ? (left.date || 0) - (right.date || 0) : (right.date || 0) - (left.date || 0));
+  return grouped;
+}
+
 /* ============ Render: News ============ */
 function filteredItems(){
   let srcList;
@@ -3301,7 +3981,13 @@ function filteredItems(){
     : srcList.flatMap(s => articles[s.url] || []);
   let items = scope.filter(a => a.title);
   const seenK = new Set();
-  items = items.filter(a => { const k = normLink(a.link); if (!k) return true; if (seenK.has(k)) return false; seenK.add(k); return true; });
+  const keepCrossSourceCopies = groupDuplicates && !state.src;
+  items = items.filter(a => {
+    const k = normLink(a.link); if (!k) return true;
+    const sourceKey = keepCrossSourceCopies ? String(a.sourceUrl || a.source || "") : "";
+    const key = sourceKey ? k + "::" + sourceKey : k;
+    if (seenK.has(key)) return false; seenK.add(key); return true;
+  });
   if (filterUnread){
     items = items.filter(a => !isRead(a.link));
   }
@@ -3315,7 +4001,7 @@ function filteredItems(){
   }
   items.sort((a, b) => (b.date || 0) - (a.date || 0));
   if (sortMode === "oldest") items.reverse();
-  return items;
+  return groupDuplicateItems(items);
 }
 
 /* ============ Render: Newspaper layout ============ */
@@ -3324,18 +4010,20 @@ function newspaperHero(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const heroImg = (a.ok && a.img) ? `<div class="np-hero-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
-  return `<a class="np-hero ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-hero:${appLang}:${esc(a.link)}">
+  return `<a class="np-hero ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-hero:${appLang}:${esc(a.link)}">
     ${heroImg}
     <div class="np-hero-body">
       <div class="np-meta">
-        <b dir="auto">${esc(a.source)}</b>
+        <b dir="auto">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
         ${rtm ? `<span class="tm">· ${esc(t("minRead",{n:rtm}))}</span>` : ""}
+        ${duplicateMetaHtml(a)}
       </div>
       <h2 class="np-hero-title" dir="auto">${esc(displayTitle(a))}</h2>
       <p class="np-hero-summary" dir="auto">${esc(displaySummary(a, 320))}</p>
       <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
     </div>
+    ${relatedNewsHtml(a)}
   </a>`;
 }
 function newspaperSecondary(a){
@@ -3343,27 +4031,31 @@ function newspaperSecondary(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const img = (a.ok && a.img) ? `<div class="np-sec-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
-  return `<a class="np-sec ${r?"read":""} ${a.ok?"has-img":"no-img"}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-sec:${appLang}:${esc(a.link)}">
+  return `<a class="np-sec ${r?"read":""} ${a.ok?"has-img":"no-img"}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-sec:${appLang}:${esc(a.link)}">
     ${img}
     <div class="np-sec-body">
       <div class="np-meta">
-        <b dir="auto">${esc(a.source)}</b>
+        <b dir="auto">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
+        ${duplicateMetaHtml(a)}
       </div>
       <h3 class="np-sec-title" dir="auto">${esc(displayTitle(a))}</h3>
       ${rtm ? `<span class="tm">${esc(t("minRead",{n:rtm}))}</span>` : ""}
       <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
     </div>
+    ${relatedNewsHtml(a)}
   </a>`;
 }
 function newspaperHeadline(a){
   if (!a) return "";
   const r = isRead(a.link), sv = isSaved(a.link);
-  return `<a class="np-head ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" data-recycle="np-head:${appLang}:${esc(a.link)}">
-    <span class="np-head-src" dir="auto">${esc(a.source)}</span>
+  return `<a class="np-head ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-head:${appLang}:${esc(a.link)}">
+    <span class="np-head-src" dir="auto">${esc(displaySource(a))}</span>
+    ${duplicateMetaHtml(a, true)}
     <span class="np-head-title" dir="auto">${esc(displayTitle(a))}</span>
     <span class="np-head-time">${esc(ago(a.date))}</span>
     <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
+    ${relatedNewsHtml(a)}
   </a>`;
 }
 function newspaperHTML(items){
@@ -3385,13 +4077,14 @@ function newspaperHTML(items){
 }
 function renderNewsHTML(){
   const list0 = filteredItems();
+  const duplicateCopies = list0.reduce((n, a) => n + Math.max(0, (a._duplicateItems || []).length - 1), 0);
   const readyItems = viewMode === "channel" ? list0 : list0.filter(a => a.done !== false);
   const loading = state.page !== "saved" && (
     !feedCacheReady || sources.some(s => (!articles[s.url] || (refreshing && !articles[s.url].length)) && (!state.src || state.src === s.url)) ||
     (viewMode !== "channel" && readyItems.length < list0.length)
   );
   const cnt = $("#cnt");
-  if (cnt) cnt.textContent = list0.length ? t("articleCount", {n: list0.length}) : "";
+  if (cnt) cnt.textContent = list0.length ? t("articleCount", {n: list0.length}) + (duplicateCopies ? " · " + t("duplicateGrouped", {n: duplicateCopies}) : "") : "";
   const list = readyItems.slice(0, visibleNewsCount);
   if (!list.length){
     if (loading) return `<div class="feed">${"<div class='skel'></div>".repeat(5)}</div>`;
@@ -3671,26 +4364,33 @@ function computeDigest(){
 }
 function digestItemHtml(a){
   const r = isRead(a.link);
-  return `<a class="digest-item ${r ? "read" : ""}" href="${esc(a.link)}" data-link="${esc(a.link)}" target="_blank" rel="noopener noreferrer" dir="${itemDir(a)}">
+  return `<a class="digest-item ${r ? "read" : ""}" href="${esc(a.link)}" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} target="_blank" rel="noopener noreferrer" dir="${document.documentElement.dir}">
     <span class="dot"></span>
     <span style="flex:1;min-width:0">
       <span class="t" dir="auto">${esc(displayTitle(a))}</span>
-      <span class="meta"><b dir="auto">${esc(a.source || "")}</b><span>· ${esc(ago(a.date))}</span></span>
+      <span class="meta"><b dir="auto">${esc(displaySource(a))}</b><span>· ${esc(ago(a.date))}</span>${duplicateMetaHtml(a, true)}</span>
     </span>
+    ${relatedNewsHtml(a)}
   </a>`;
 }
 function todayQueue(){
   const y0 = startOfDay(Date.now()) - 864e5, seen = new Set(), list = [];
   for (const s of sources) for (const a of (articles[s.url] || [])){
     if (!a || !a.title || !a.date || a.date < y0 || isRead(a.link)) continue;
-    const k = normLink(a.link); if (seen.has(k)) continue;
-    seen.add(k); list.push(a);
+    const linkKey = normLink(a.link);
+    const sourceKey = groupDuplicates ? String(a.sourceUrl || s.url || a.source || "") : "";
+    const key = (linkKey || String(a.title)) + (sourceKey ? "::" + sourceKey : "");
+    if (seen.has(key)) continue;
+    seen.add(key); list.push(a);
   }
   list.sort((a, b) => b.date - a.date);
-  return {total: list.length, shown: list.slice(0, 20)};
+  const displayList = groupDuplicates ? groupDuplicateItems(list) : list;
+  return {total: displayList.length, shown: displayList.slice(0, 20)};
 }
 function markItemsRead(list){
-  list.forEach(a => { if (!read.has(a.link)){ read.add(a.link); readLog[a.link] = {ts: Date.now(), source: a.source || "", title: a.title || ""}; } });
+  const unique = new Map();
+  list.forEach(item => (item._duplicateItems || [item]).forEach(a => { if (a.link) unique.set(a.link, a); }));
+  unique.forEach(a => { if (!read.has(a.link)){ read.add(a.link); readLog[a.link] = {ts: Date.now(), source: a.source || "", title: a.title || ""}; } });
   store.set("read", [...read]); store.set("readLog", readLog);
   render();
   toast(appLang === "fa" ? "علامت‌گذاری شد" : "Marked as read", "ok");
@@ -3715,9 +4415,10 @@ function renderDigestHTML(){
     ? t("digestSubArticles", {n: d.todayItems.length, srcs: d.sourceSet.size}) +
       (d.unreadToday.length ? ` · ${t("digestSubUnread", {n: d.unreadToday.length})}` : "")
     : t("digestNoNew");
-  const newList = d.todayItems.slice(0, 6);
-  const topList = d.topPicks;
-  const savedList = d.yesterdaySaved.slice(0, 6);
+  const groupList = list => groupDuplicates ? groupDuplicateItems(list) : list;
+  const newList = groupList(d.todayItems).slice(0, 6);
+  const topList = groupList(d.topPicks);
+  const savedList = groupList(d.yesterdaySaved).slice(0, 6);
   const statCard = (label, value, color) => `
     <div class="digest-card" style="--accent:${color}">
       <h3>${esc(label)}</h3>
@@ -3739,6 +4440,49 @@ function renderDigestHTML(){
       </div>
     </div>
   </div>`;
+}
+
+function renderFollowingHTML(){
+  if (!followedStories.length){
+    return '<div class="following-page"><div class="following-empty">' + esc(t("noFollowedStories")) + '</div></div>';
+  }
+  const allItems = sources.flatMap(source => articles[source.url] || []).filter(item => item && item.title && item.link);
+  const entries = followedStories.map(record => {
+    const byLink = new Map();
+    for (const item of allItems){
+      const payload = storyPayloadFromMembers([item], displayTitle(item));
+      if (storyFollowMatches(record, payload)) byLink.set(item.link, item);
+    }
+    const members = [...byLink.values()].sort((left, right) => (Number(left.date) || 0) - (Number(right.date) || 0));
+    const seen = new Set(Array.isArray(record.seenLinks) ? record.seenLinks : []);
+    const freshCount = members.filter(item => !seen.has(item.link)).length;
+    return {record, members, freshCount, latest: members[members.length - 1] || null};
+  }).sort((left, right) => right.freshCount - left.freshCount || (Number(right.latest && right.latest.date) || 0) - (Number(left.latest && left.latest.date) || 0));
+  const cards = entries.map(({record, members, freshCount, latest}) => {
+    const title = latest ? displayTitle(latest) : record.title || t("followedStories");
+    const remove = '<button type="button" data-follow-remove="' + escAttr(record.id) + '">' + esc(t("unfollowStory")) + '</button>';
+    if (!members.length){
+      return '<article class="followed-card"><div class="followed-head"><span class="followed-title">' + esc(title) + '</span><div class="followed-actions">' + remove + '</div></div><div class="followed-meta">' + esc(t("followedUnavailable")) + '</div></article>';
+    }
+    const payload = storyPayloadFromMembers(members, title);
+    const versions = members.map(item => ({link:item.link || "", source:item.source || "", title:item.title || ""}));
+    const sourceCount = new Set(members.map(item => item.sourceUrl || item.source || item.link).filter(Boolean)).size || members.length;
+    const orderedDates = members.filter(item => Number(item.date) > 0);
+    const first = orderedDates[0], last = orderedDates[orderedDates.length - 1];
+    const timeline = first && last
+      ? esc(t("firstCoverage")) + ": " + esc(displaySource(first)) + " · " + esc(ago(first.date)) + "　" + esc(t("latestCoverage")) + ": " + esc(displaySource(last)) + " · " + esc(ago(last.date))
+      : "";
+    const rows = members.map(item => {
+      const isNew = !(record.seenLinks || []).includes(item.link);
+      return '<span class="related-item ' + (isNew ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b>' + esc(displaySource(item)) + '</b><span class="related-title">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>';
+    }).join("");
+    const seen = freshCount
+      ? '<button type="button" data-follow-seen data-follow-id="' + escAttr(record.id) + '" data-follow-payload="' + escAttr(JSON.stringify(payload)) + '">' + esc(t("markCoverageSeen")) + '</button>'
+      : "";
+    const newBadge = freshCount ? '<span class="followed-new">' + esc(t("newCoverage", {n:freshCount})) + '</span>' : "";
+    return '<article class="followed-card" data-link="' + escAttr(latest.link) + '" data-duplicate-versions="' + escAttr(JSON.stringify(versions)) + '"><div class="followed-head"><a class="followed-title" href="' + esc(latest.link) + '" target="_blank" rel="noopener noreferrer" data-follow-open="' + escAttr(latest.link) + '" data-follow-versions="' + escAttr(JSON.stringify(versions)) + '">' + esc(title) + '</a>' + newBadge + '<div class="followed-actions">' + seen + remove + '</div></div><div class="followed-meta">' + esc(formatNum(sourceCount)) + ' ' + esc(t("sourceWord")) + (timeline ? ' · ' + timeline : '') + '</div><div class="followed-versions">' + rows + '</div></article>';
+  }).join("");
+  return '<div class="following-page"><p class="following-intro">' + esc(t("followedHint")) + '</p><div class="following-list">' + cards + '</div></div>';
 }
 
 /* ============ Render: Archive page ============ */
@@ -3764,7 +4508,7 @@ function renderArchiveHTML(){
           <div class="arc-body">
             <div class="arc-title" dir="auto" data-arc-open="${escAttr(a.link)}">${esc(a.title || a.link)}</div>
             <div class="arc-meta">
-              <b dir="auto">${esc(a.source || "")}</b>
+              <b dir="auto">${esc(displaySource(a))}</b>
               <span>· ${esc(a.date ? ago(a.date) : "")}</span>
               <span>· ${esc(t("archivedOn", {d: ago(a.archivedAt)}))}</span>
             </div>
@@ -3825,6 +4569,14 @@ function fillSettings(){
       <span class="fp-sample">${esc(secondary)}${def}</span>
     </button>`;
   }).join("");
+  const previewFontPicker = FONTS.map(f => {
+    const primary = appLang === "fa" ? f.labelFa : f.label;
+    const secondary = appLang === "fa" ? f.label : f.labelFa;
+    return '<button type="button" data-preview-font="' + escAttr(f.id) + '" class="' + (f.id === previewFontId ? "on" : "") + '"><span class="fp-name" style="font-family:' + escAttr(f.family) + '">' + esc(primary) + '</span><span class="fp-sample">' + esc(secondary) + '</span></button>';
+  }).join("");
+  const previewAlignOptions = [["auto","previewAlignAuto"],["right","previewAlignRight"],["left","previewAlignLeft"],["justify","previewAlignJustify"]].map(([value,key]) => '<option value="' + value + '" '+ (previewAlign === value ? "selected" : "") + '">' + esc(t(key)) + '</option>').join("");
+  const previewThemeOptions = [["inherit","previewThemeInherit"],["light","previewThemeLight"],["dark","previewThemeDark"],["sepia","previewThemeSepia"]].map(([value,key]) => '<option value="' + value + '" '+ (previewTheme === value ? "selected" : "") + '">' + esc(t(key)) + '</option>').join("");
+  const previewSettingsMarkup = '<section class="preview-settings-block"><h4>' + esc(t("previewSettings")) + '</h4><label for="previewAlign">' + esc(t("previewAlignment")) + '</label><select id="previewAlign">' + previewAlignOptions + '</select><label for="previewTheme">' + esc(t("previewTheme")) + '</label><select id="previewTheme">' + previewThemeOptions + '</select><label>' + esc(t("previewFont")) + '</label><div class="font-picker" id="previewFontPicker">' + previewFontPicker + '</div></section>';
   const langPicker = Object.entries(LANGS).map(([id, l]) =>
     `<button data-lang="${id}" class="${id === appLang ? "on" : ""}">
       <span class="fp-name">${esc(l.nativeName)}</span>
@@ -3856,6 +4608,7 @@ function fillSettings(){
 
       <label>${esc(t("font"))}</label>
       <div class="font-picker" id="fontPicker">${fontPicker}</div>
+      ${previewSettingsMarkup}
 
       <label for="setAuto">${esc(t("autoRefresh"))}</label>
       <input id="setAuto" type="number" min="0" max="180" step="5" value="${autoMin}">
@@ -3914,6 +4667,16 @@ function fillSettings(){
   $("#fontPicker").querySelectorAll("button[data-f]").forEach(x =>
     x.classList.toggle("on", x.dataset.f === fontId));
 });
+  $("#previewAlign").addEventListener("change", e => {
+    previewAlign = e.target.value; store.set("previewAlign", previewAlign); applyReaderPreferences();
+  });
+  $("#previewTheme").addEventListener("change", e => {
+    previewTheme = e.target.value; store.set("previewTheme", previewTheme); applyReaderPreferences();
+  });
+  $("#previewFontPicker").addEventListener("click", e => {
+    const button = e.target.closest("button[data-preview-font]");
+    if (button) setPreviewFont(button.dataset.previewFont);
+  });
   $("#setTheme").addEventListener("change", e => { theme = e.target.value; store.set("theme", theme); render(); });
   $("#setAuto").addEventListener("change", e => { autoMin = Math.max(0, +e.target.value || 0); store.set("autoRefresh", autoMin); setupAuto(); toast(autoMin ? t("autoOn", {n: autoMin}) : t("autoOff")); });
   $("#setProxy").addEventListener("change", e => { store.set("proxy", e.target.value.trim()); toast(t("proxySaved"), "ok"); });
@@ -3933,7 +4696,7 @@ function fillSettings(){
   });
   $("#resetAll").addEventListener("click", async () => {
     if (!(await askConfirm(t("resetConfirm")))) return;
-    ["sources","view","density","sort","theme","accent","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"].forEach(store.del);
+    ["sources","view","density","sort","theme","accent","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache","sourceTranslateCache","previewAlign","previewTheme","previewFont"].forEach(store.del);
     Promise.all([idb.clear("articles"), idb.clear("feedItems")]).finally(() => location.reload());
   });
   $("#opmlExport").addEventListener("click", () => {
@@ -3954,7 +4717,7 @@ function fillSettings(){
     a.click(); URL.revokeObjectURL(a.href);
     toast(t("opmlExported"), "ok");
   });
-  const backupKeys = ["sources","view","density","sort","theme","accent","saved","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache"];
+  const backupKeys = ["sources","view","density","sort","theme","accent","saved","followedStories","read","readLog","autoRefresh","proxy","ic","openInReader","prefetchOn","readerFont","font","lang","sideW","filterUnread","activeTag","groupByTags","ttsRate","ttsVoice","liveTranslateAll","translateCache","sourceTranslateCache","previewAlign","previewTheme","previewFont"];
   $("#backupExport").addEventListener("click", async () => {
     try {
       const [feeds, archived] = await Promise.all([idb.all("feedItems"), idb.all("articles")]);
@@ -4157,7 +4920,7 @@ function render(){
   $$("#sortSeg button").forEach(b => b.classList.toggle("on", b.dataset.sort === sortMode));
   $$("#filterSeg button").forEach(b => b.classList.toggle("on",
     b.dataset.filter === "unread" ? filterUnread : !filterUnread));
-  const hideAllSeg = state.page === "add" || state.page === "stats" || state.page === "archive" || state.page === "digest";
+  const hideAllSeg = state.page === "add" || state.page === "stats" || state.page === "archive" || state.page === "digest" || state.page === "following";
   $("#tg").classList.toggle("hide", hideAllSeg);
   $("#densSeg").classList.toggle("hide", hideAllSeg || viewMode === "channel" || viewMode === "newspaper");
   $("#sortSeg").classList.toggle("hide", hideAllSeg);
@@ -4191,6 +4954,10 @@ function render(){
     $("#ttl").textContent = t("digestTitle");
     html = renderDigestHTML();
     after = null;
+  } else if (state.page === "following"){
+    $("#ttl").textContent = t("followedStories");
+    html = renderFollowingHTML();
+    after = null;
   } else if (state.page === "archive"){
     $("#ttl").textContent = t("archiveTitle");
     html = renderArchiveHTML();
@@ -4222,6 +4989,9 @@ function render(){
     const oldEl = oldEls.get(key);
     if (!oldEl) return;
     if (oldEl.className !== newEl.className) return;
+    const oldDupKey = oldEl.querySelector(".dup-meta")?.dataset.dupKey || "";
+    const newDupKey = newEl.querySelector(".dup-meta")?.dataset.dupKey || "";
+    if (oldDupKey !== newDupKey) return;
     const os = oldEl.querySelector("[data-save]");
     const ns = newEl.querySelector("[data-save]");
     if (os && ns){
@@ -4270,6 +5040,54 @@ function bindHeatmapTooltip(){
 
 /* ============ Events: clicks ============ */
 document.addEventListener("click", e => {
+  const followToggle = e.target.closest("[data-follow-story]");
+  if (followToggle){
+    e.preventDefault(); e.stopPropagation();
+    try { toggleStoryFollow(JSON.parse(followToggle.dataset.followPayload || "{}")); } catch {}
+    return;
+  }
+  const followSeen = e.target.closest("[data-follow-seen]");
+  if (followSeen){
+    e.preventDefault(); e.stopPropagation();
+    let payload = {};
+    try { payload = JSON.parse(followSeen.dataset.followPayload || "{}"); } catch {}
+    markStoryCoverageSeen(payload, followSeen.dataset.followId || "");
+    return;
+  }
+  const followRemove = e.target.closest("[data-follow-remove]");
+  if (followRemove){ e.preventDefault(); e.stopPropagation(); removeStoryFollow(followRemove.dataset.followRemove); return; }
+  const followOpen = e.target.closest("[data-follow-open]");
+  if (followOpen){
+    e.preventDefault(); e.stopPropagation();
+    let versions = [];
+    try { versions = JSON.parse(followOpen.dataset.followVersions || "[]"); } catch {}
+    if (openInReader) openReader(followOpen.dataset.followOpen, versions);
+    else window.open(followOpen.dataset.followOpen, "_blank", "noopener");
+    return;
+  }
+  const toggle = e.target.closest("[data-related-toggle]");
+  if (toggle){
+    e.preventDefault(); e.stopPropagation();
+    const extra = toggle.parentElement.querySelector(".related-extra");
+    if (!extra) return;
+    extra.hidden = !extra.hidden;
+    toggle.setAttribute("aria-expanded", String(!extra.hidden));
+    toggle.textContent = extra.hidden ? toggle.dataset.moreLabel : toggle.dataset.lessLabel;
+    return;
+  }
+  const related = e.target.closest("[data-related-link]");
+  if (related){
+    e.preventDefault(); e.stopPropagation();
+    const card = related.closest("[data-link]");
+    if (openInReader && card){
+      let versions = [];
+      try { versions = JSON.parse(card.dataset.duplicateVersions || "[]"); } catch {}
+      openReader(related.dataset.relatedLink, versions);
+    } else {
+      window.open(related.dataset.relatedLink, "_blank", "noopener");
+    }
+    return;
+  }
   const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link], .digest-item[data-link]");
   if (!c) return;
   if (e.target.closest("[data-save]")) return;
@@ -4278,7 +5096,14 @@ document.addEventListener("click", e => {
   if (e.button && e.button !== 0) return;
   if (!openInReader) return;
   e.preventDefault();
-  openReader(c.dataset.link);
+  let versions = [];
+  try { versions = JSON.parse(c.dataset.duplicateVersions || "[]"); } catch {}
+  openReader(c.dataset.link, versions);
+});
+document.addEventListener("keydown", e => {
+  const related = e.target.closest("[data-related-link],[data-related-toggle],[data-follow-story],[data-follow-seen]");
+  if (!related || (e.key !== "Enter" && e.key !== " ")) return;
+  e.preventDefault(); related.click();
 });
 document.addEventListener("click", async e => {
   const more = e.target.closest("[data-load-more]");
@@ -4340,6 +5165,7 @@ document.addEventListener("click", async e => {
   if (d.go){
     if (d.go === "stats"){ state.page = "stats"; state.src = null; closeDrawerIfMobile(); return render(); }
     if (d.go === "digest"){ state.page = "digest"; state.src = null; closeDrawerIfMobile(); return render(); }
+    if (d.go === "following"){ state.page = "following"; state.src = null; activeTag = null; closeDrawerIfMobile(); return render(); }
     if (d.go === "archive"){
       state.page = "archive"; state.src = null;
       closeDrawerIfMobile();
@@ -4413,8 +5239,11 @@ document.addEventListener("click", async e => {
 });
 document.addEventListener("click", e => {
   const c = e.target.closest(".card[data-link], .ch-row[data-link], .np-hero[data-link], .np-sec[data-link], .np-head[data-link], .digest-item[data-link]");
-  if (c && !e.target.closest("[data-save]") && !e.target.closest("[data-share]")){
-    markRead(c.dataset.link);
+  if (c && !e.target.closest("[data-save]") && !e.target.closest("[data-share]") && !e.target.closest("[data-related-toggle]") && !e.target.closest("[data-follow-story]") && !e.target.closest("[data-follow-seen]")){
+    let groupedLinks = [];
+    try { groupedLinks = JSON.parse(c.dataset.duplicateLinks || "[]"); } catch {}
+    const linksToRead = groupedLinks.length ? groupedLinks : [c.dataset.link];
+    linksToRead.forEach(link => markRead(link));
     c.classList.add("read");
     renderSide();
   }
@@ -4582,12 +5411,21 @@ function askConfirm(msg){
 (function setupOpts(){
   const b = $("#optsBtn"), p = $("#optsPop");
   const set = o => { p.hidden = !o; b.setAttribute("aria-expanded", String(o)); };
+  const dupToggle = $("#groupDupToggle");
+  dupToggle.checked = groupDuplicates;
+  dupToggle.addEventListener("change", () => {
+    groupDuplicates = dupToggle.checked;
+    store.set("groupDuplicates", groupDuplicates);
+    render();
+  });
   b.addEventListener("click", e => {
     e.stopPropagation();
     if (p.hidden){
       const fa = appLang === "fa";
       $("#optSortLbl").textContent = fa ? "مرتب‌سازی" : "Sort";
       $("#optDensLbl").textContent = fa ? "تراکم" : "Density";
+      $("#optDupLbl").textContent = t("groupDuplicates");
+      dupToggle.checked = groupDuplicates;
       $("#keysBtnLbl").textContent = fa ? "میانبرهای کیبورد" : "Keyboard shortcuts";
       b.title = fa ? "گزینه‌های نمایش" : "View options";
     }
