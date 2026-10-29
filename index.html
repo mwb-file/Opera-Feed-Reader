@@ -633,18 +633,42 @@ html[dir="rtl"] .rd-back{transform:scaleX(-1)}
 .rd-content h2{font-size:calc(var(--rd-size) * 1.35)}
 .rd-content h3{font-size:calc(var(--rd-size) * 1.15)}
 .rd-content p{margin:0 0 1.2em}
-html[dir="rtl"] .card .t,html[dir="rtl"] .card .s,html[dir="rtl"] .ch-title,html[dir="rtl"] .ch-src,html[dir="rtl"] .np-hero-title,html[dir="rtl"] .np-hero-summary,html[dir="rtl"] .np-sec-title,html[dir="rtl"] .np-head-title,html[dir="rtl"] .np-head-src,html[dir="rtl"] .digest-item .t{ text-align:right }
-html[dir="ltr"] .card .t,html[dir="ltr"] .card .s,html[dir="ltr"] .ch-title,html[dir="ltr"] .ch-src,html[dir="ltr"] .np-hero-title,html[dir="ltr"] .np-hero-summary,html[dir="ltr"] .np-sec-title,html[dir="ltr"] .np-head-title,html[dir="ltr"] .np-head-src,html[dir="ltr"] .digest-item .t{ text-align:left }
-html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-h1,html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-byline,html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-versions{direction:rtl;text-align:right;justify-content:flex-start}
-html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-h1,html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-byline,html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-versions{direction:ltr;text-align:left;justify-content:flex-start}
-html[dir="rtl"] #rdContent[data-preview-align="auto"] .rd-body > *{text-align:right}
-html[dir="ltr"] #rdContent[data-preview-align="auto"] .rd-body > *{text-align:left}
+.card .t,.card .s,.ch-title,.ch-src,.np-hero-title,.np-hero-summary,.np-sec-title,.np-head-title,.np-head-src,.digest-item .t{ text-align:start }
+
+#rdContent[data-preview-align="auto"] .rd-h1,#rdContent[data-preview-align="auto"] .rd-byline,#rdContent[data-preview-align="auto"] .rd-versions{ text-align:start;justify-content:flex-start }
+
+#rdContent[data-preview-align="auto"] .rd-body > *{ text-align:start }
+
 #rdContent[data-preview-align="right"]{text-align:right}
 #rdContent[data-preview-align="left"]{text-align:left}
 #rdContent[data-preview-align="justify"]{text-align:justify}
 #rdContent[data-preview-align="justify"] .rd-h1,#rdContent[data-preview-align="justify"] .rd-byline,#rdContent[data-preview-align="justify"] .rd-versions{text-align:right}
 .rd-content img{max-width:100%;height:auto;border-radius:8px;margin:.6em 0;display:block}
 .rd-content figure{margin:1.4em 0}
+.rd-content .rd-body>*:first-child{margin-block-start:0}
+.rd-content .rd-body>*:last-child{margin-block-end:0}
+.rd-content .rd-body p{overflow-wrap:anywhere}
+.rd-content .rd-body h2{padding-block-end:.25em;border-block-end:1px solid var(--line)}
+.rd-content .rd-body h3,.rd-content .rd-body h4{font-weight:650}
+.rd-content figure{margin:1.5em 0}
+.rd-content figure img{margin:.2em auto}
+.rd-content .rd-table-wrap{max-width:100%;overflow:auto;margin:1.35em 0;border:1px solid var(--line);border-radius:10px;background:var(--panel);overscroll-behavior-inline:contain}
+.rd-content .rd-table-wrap table{width:max-content;min-width:100%;margin:0;border:0}
+.rd-content .rd-table-wrap th,.rd-content .rd-table-wrap td{min-width:88px;max-width:360px;vertical-align:top;overflow-wrap:anywhere;border-inline-end:1px solid var(--line);border-block-end:1px solid var(--line)}
+.rd-content .rd-table-wrap tr:last-child td{border-block-end:0}
+.rd-content .rd-table-wrap th:last-child,.rd-content .rd-table-wrap td:last-child{border-inline-end:0}
+.rd-content video{display:block;width:100%;max-width:100%;max-height:72vh;aspect-ratio:16/9;object-fit:contain;background:#05070b;border-radius:10px;margin:1.2em auto}
+.rd-content audio{display:block;width:min(100%,560px);margin:1.2em auto}
+
+.rd-content blockquote{background:var(--panel-2);border-radius:10px}
+.rd-content code:not(pre code){border:1px solid var(--line);font-size:.88em}
+.rd-content pre code{display:block;white-space:pre;line-height:1.65}
+.rd-content kbd{padding:.12em .4em;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;background:var(--panel-2);font:600 .82em/1.5 var(--font-app)}
+.rd-content abbr[title]{text-decoration:underline dotted;text-underline-offset:3px}
+.rd-content mark{padding:.08em .22em;border-radius:3px;background:var(--blue-soft);color:var(--text)}
+.rd-content details{margin:1em 0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.rd-content summary{cursor:pointer;font-weight:650}
+@media(max-width:640px){.rd-content{padding:24px 16px 80px}.rd-content .rd-table-wrap th,.rd-content .rd-table-wrap td{min-width:76px;padding:7px 9px}.rd-content pre{padding:12px;font-size:.82em}}
 .rd-content iframe[data-reader-embed="true"]{display:block;width:100%;max-width:100%;aspect-ratio:16/9;height:auto;border:0;border-radius:10px;background:var(--panel-2);margin:1.2em auto}
 .rd-content figcaption{font-size:12px;color:var(--mute);text-align:center;margin-top:6px}
 .rd-content a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-glow)}
@@ -2593,8 +2617,8 @@ function buildReaderFontMenu(){
 }
 
 /* ============ Article extraction ============ */
-const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL","IFRAME"]);
-const ALLOWED_ATTRS = new Set(["href","src","alt","title","colspan","rowspan","width","height","loading"]);
+const ALLOWED_TAGS = new Set(["P","H1","H2","H3","H4","H5","H6","UL","OL","LI","BLOCKQUOTE","PRE","CODE","A","IMG","FIGURE","FIGCAPTION","EM","STRONG","B","I","U","BR","HR","TABLE","THEAD","TBODY","TR","TD","TH","SPAN","DIV","SUP","SUB","MARK","TIME","CITE","SMALL","IFRAME","DEL","INS","S","KBD","SAMP","ABBR","Q","BDI","BDO","WBR","PICTURE","VIDEO","AUDIO","SOURCE","TRACK","DETAILS","SUMMARY","DL","DT","DD"]);
+const ALLOWED_ATTRS = new Set(["href","src","srcset","sizes","alt","title","colspan","rowspan","width","height","loading","dir","lang","datetime","controls","preload","poster","playsinline","type","media","kind","srclang","label","default","data-reader-table"]);
 function safeReaderEmbedUrl(raw, baseUrl){
   try{
     const u = new URL(String(raw || "").trim(), baseUrl);
@@ -2625,12 +2649,58 @@ function readerEmbedFrame(src){
   frame.setAttribute("data-reader-embed", "true");
   return frame;
 }
+function safeReaderMediaUrl(raw, baseUrl){
+  try { const u = new URL(String(raw || "").trim(), baseUrl); return /^https?:$/.test(u.protocol) ? u.href : ""; } catch { return ""; }
+}
+function safeReaderImageUrl(raw, baseUrl){
+  const value = String(raw || "").trim();
+  if (/^data:image\/(?:png|jpe?g|gif|webp|avif);base64,[a-z0-9+/=\s]+$/i.test(value)) return value;
+  return safeReaderMediaUrl(value, baseUrl);
+}
+function sanitizeReaderSrcset(value, baseUrl){
+  return String(value || "").split(",").map(part => {
+    const match = /^\s*(\S+)(?:\s+(\d+(?:\.\d+)?[wx]))?\s*$/.exec(part);
+    if (!match) return "";
+    const src = safeReaderImageUrl(match[1], baseUrl);
+    return src ? src + (match[2] ? " " + match[2] : "") : "";
+  }).filter(Boolean).join(", ");
+}
 function sanitizeTree(node, baseUrl){
   if (node.nodeType === 1){
     if (node.tagName === "IFRAME"){
       const src = safeReaderEmbedUrl(node.getAttribute("src"), baseUrl);
       if (!src){ node.remove(); return; }
       node.replaceWith(readerEmbedFrame(src));
+      return;
+    }
+    if (node.tagName === "VIDEO" || node.tagName === "AUDIO"){
+      const directSrc = safeReaderMediaUrl(node.getAttribute("src") || node.getAttribute("data-src") || node.getAttribute("data-original"), baseUrl);
+      if (directSrc) node.setAttribute("src", directSrc); else node.removeAttribute("src");
+      const poster = safeReaderImageUrl(node.getAttribute("poster") || node.getAttribute("data-poster"), baseUrl);
+      if (poster) node.setAttribute("poster", poster); else node.removeAttribute("poster");
+      const allowedMediaAttrs = new Set(["src","poster","width","height","controls","preload","playsinline"]);
+      for (const attr of [...node.attributes]) if (!allowedMediaAttrs.has(attr.name.toLowerCase())) node.removeAttribute(attr.name);
+      node.setAttribute("controls", "");
+      node.setAttribute("preload", "metadata");
+      if (node.tagName === "VIDEO") node.setAttribute("playsinline", "");
+      for (const child of [...node.childNodes]) sanitizeTree(child, baseUrl);
+      if (!node.getAttribute("src") && !node.querySelector("source[src]")) node.remove();
+      return;
+    }
+    if (node.tagName === "SOURCE"){
+      const src = safeReaderMediaUrl(node.getAttribute("src") || node.getAttribute("data-src") || node.getAttribute("data-original"), baseUrl);
+      const srcset = sanitizeReaderSrcset(node.getAttribute("srcset") || node.getAttribute("data-srcset"), baseUrl);
+      if (src) node.setAttribute("src", src); else node.removeAttribute("src");
+      if (srcset) node.setAttribute("srcset", srcset); else node.removeAttribute("srcset");
+      for (const attr of [...node.attributes]) if (!["src","srcset","type","media","sizes"].includes(attr.name.toLowerCase())) node.removeAttribute(attr.name);
+      if (!node.hasAttribute("src") && !node.hasAttribute("srcset")) node.remove();
+      return;
+    }
+    if (node.tagName === "TRACK"){
+      const src = safeReaderMediaUrl(node.getAttribute("src") || node.getAttribute("data-src"), baseUrl);
+      if (!src){ node.remove(); return; }
+      node.setAttribute("src", src);
+      for (const attr of [...node.attributes]) if (!["src","kind","srclang","label","default"].includes(attr.name.toLowerCase())) node.removeAttribute(attr.name);
       return;
     }
     if (!ALLOWED_TAGS.has(node.tagName)){
@@ -2644,6 +2714,18 @@ function sanitizeTree(node, baseUrl){
       if (name === "class" || name === "id" || name === "style"){ node.removeAttribute(attr.name); continue; }
       if (!ALLOWED_ATTRS.has(name)){ node.removeAttribute(attr.name); continue; }
       const v = attr.value.trim();
+      if (name === "dir" && !/^(ltr|rtl|auto)$/i.test(v)){ node.removeAttribute(attr.name); continue; }
+      if (name === "lang" && !/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i.test(v)){ node.removeAttribute(attr.name); continue; }
+      if (name === "srcset"){
+        const safe = sanitizeReaderSrcset(v, baseUrl);
+        if (safe) node.setAttribute(attr.name, safe); else node.removeAttribute(attr.name);
+        continue;
+      }
+      if (name === "src"){
+        const safe = node.tagName === "IMG" ? safeReaderImageUrl(v, baseUrl) : safeReaderMediaUrl(v, baseUrl);
+        if (safe) node.setAttribute(attr.name, safe); else node.removeAttribute(attr.name);
+        continue;
+      }
       if (name === "href" || name === "src"){
         if (/^javascript:/i.test(v) || /^data:(?!image\/)/i.test(v) || /^vbscript:/i.test(v)){ node.removeAttribute(attr.name); continue; }
         if (!/^(https?:|mailto:|#|\/)/i.test(v)){
@@ -2687,6 +2769,16 @@ function stripSyndicationCreditHtml(root){
     if (!(el.textContent || "").trim() && !el.querySelector("img,video,iframe,pre,code")) el.remove();
   });
 }
+function wrapReaderTables(root){
+  root.querySelectorAll("table").forEach(table => {
+    if (table.parentElement?.hasAttribute("data-reader-table")){ table.parentElement.classList.add("rd-table-wrap"); return; }
+    const wrap = document.createElement("div");
+    wrap.setAttribute("data-reader-table", "true");
+    wrap.className = "rd-table-wrap";
+    table.replaceWith(wrap);
+    wrap.appendChild(table);
+  });
+}
 function sanitizeArticleHtml(html, baseUrl){
   if (!html) return "";
   const doc = new DOMParser().parseFromString("", "text/html");
@@ -2696,6 +2788,7 @@ function sanitizeArticleHtml(html, baseUrl){
   restoreEncodedVideoEmbeds(box, baseUrl);
   sanitizeTree(box, baseUrl);
   stripSyndicationCreditHtml(box);
+  wrapReaderTables(box);
   return box.innerHTML.trim();
 }
 function decodeEscapedMarkupText(value){
@@ -2777,8 +2870,8 @@ function extractArticle(html, url){
     const linkDensity = len ? linkLen / len : 1;
     const commas = (text.match(/[,،.]/g) || []).length;
     const ps = el.querySelectorAll("p").length;
-    const imgs = el.querySelectorAll("img").length;
-    return len * (1 - linkDensity) + commas * 20 + ps * 40 + imgs * 25;
+    const media = el.querySelectorAll("img,video,audio,iframe").length;
+    return len * (1 - linkDensity) + commas * 20 + ps * 40 + media * 28;
   };
   const seeds = [...doc.querySelectorAll('article, main, [role="main"], .post, .article, .entry-content, .post-content, .article-content, .article-body, #content, #main, .content, [itemprop="articleBody"]')];
   let best = null, bestScore = 0;
@@ -2797,22 +2890,47 @@ function extractArticle(html, url){
   restoreEncodedVideoEmbeds(clone, url);
   clone.querySelectorAll("div:empty, p:empty, span:empty").forEach(n => n.remove());
   clone.querySelectorAll("img").forEach(img => {
-    let src = img.getAttribute("src") || img.getAttribute("data-src") || img.getAttribute("data-lazy-src") || img.getAttribute("data-original") || "";
+    const pictureSource = img.closest("picture")?.querySelector("source[srcset],source[data-srcset]");
+    const pictureSet = pictureSource?.getAttribute("srcset") || pictureSource?.getAttribute("data-srcset") || "";
+    const imgSet = img.getAttribute("srcset") || img.getAttribute("data-srcset") || pictureSet;
+    const setFirst = String(imgSet).split(",")[0].trim().split(/\s+/)[0] || "";
+    let src = img.getAttribute("src") || img.getAttribute("data-src") || img.getAttribute("data-lazy-src") || img.getAttribute("data-original") || setFirst;
     if (!src){ img.remove(); return; }
     src = resolveImgUrl(src, url);
     img.setAttribute("src", src);
+    if (imgSet) img.setAttribute("srcset", imgSet);
+    if (!img.getAttribute("sizes") && img.getAttribute("data-sizes")) img.setAttribute("sizes", img.getAttribute("data-sizes"));
     img.setAttribute("loading", "lazy");
-    img.removeAttribute("srcset");
-    img.removeAttribute("sizes");
+    img.removeAttribute("data-srcset");
+    img.removeAttribute("data-sizes");
   });
+
   sanitizeTree(clone, url);
+  wrapReaderTables(clone);
   let contentHTML = clone.innerHTML;
   let contentText = (clone.textContent || "").replace(/\s+/g, " ").trim();
   const structuredText = structuredBody.replace(/\s+/g, " ").trim();
+  const hasRichContent = !!clone.querySelector("h1,h2,h3,h4,ul,ol,blockquote,pre,code,figure,img,table,iframe,video,audio");
   if (structuredText.length > contentText.length + 100){
     const blocks = structuredBody.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-    contentHTML = (blocks.length ? blocks : [structuredText]).map(p => "<p>" + esc(p) + "</p>").join("");
-    contentText = blocks.join(" ") || structuredText;
+    const usableBlocks = blocks.length ? blocks : [structuredText];
+    if (hasRichContent){
+      const flatBlocks = usableBlocks.map(p => p.replace(/\s+/g, " ").trim());
+      let supplement = [];
+      if (flatBlocks.length === 1 && contentText.length >= 80 && flatBlocks[0].startsWith(contentText)){
+        const remainder = flatBlocks[0].slice(contentText.length).trim();
+        if (remainder) supplement = [remainder];
+      } else {
+        supplement = flatBlocks.filter(block => block && !contentText.includes(block));
+      }
+      if (supplement.length){
+        contentHTML += supplement.map(p => "<p>" + esc(p) + "</p>").join("");
+        contentText = [contentText, ...supplement].filter(Boolean).join(" ").trim();
+      }
+    } else {
+      contentHTML = usableBlocks.map(p => "<p>" + esc(p) + "</p>").join("");
+      contentText = usableBlocks.join(" ") || structuredText;
+    }
   }
   let direction = "";
   if (meta.htmlDir === "rtl") direction = "rtl";
@@ -2957,7 +3075,8 @@ async function showReader(link){
   /* Ensure archive is loaded (sync read below) */
   if (!archiveCache) await loadArchive();
   const item = findItem(link);
-  $("#rdSrc").textContent = item ? (item.source || "") : "";
+  $("#rdSrc").textContent = item ? displaySource(item) : "";
+  $("#rdSrc").setAttribute("dir", detectDirection($("#rdSrc").textContent));
   const dateStr = item && item.date ? ago(item.date) : "";
   $("#rdTime").textContent = dateStr;
   $("#rdStar").style.color = isSaved(link) ? "var(--star)" : "";
@@ -2969,7 +3088,7 @@ async function showReader(link){
     $("#rdStar").style.color = isSaved(link) ? "var(--star)" : "";
   };
   buildReaderFontMenu();
-  const provisionalDir = (item && itemDir(item)) || detectDirection(item?.title || "");
+  const provisionalDir = item ? itemDir(item) : "ltr";
   applyReaderContentDirection(provisionalDir);
   $("#rdContent").innerHTML = `<div class="rd-loading">${esc(t("readerLoading"))}</div>`;
   $("#rdScroll").scrollTop = 0;
@@ -2981,14 +3100,15 @@ async function showReader(link){
     art = entry ? (entry.article || await entry.promise) : await prefetch(link);
     if (!art) throw new Error("empty");
   } catch (err){
-    const fallbackHtml = sanitizeArticleHtml(item?.html || "", link);
+    const fallbackSummary = liveTranslateAll && item ? translateCache[link]?.summary : "";
+    const fallbackHtml = fallbackSummary ? "<p>" + esc(stripSyndicationCreditText(fallbackSummary)) + "</p>" : sanitizeArticleHtml(item?.html || "", link);
     const fallbackText = plain(fallbackHtml);
     const fallbackMarkup = fallbackText
       ? readerSummaryMarkup(fallbackHtml, link)
       : '<p class="rd-reader-error">' + esc(t("readerErr")) + '</p>';
     $("#rdContent").innerHTML = `
-      <h1 class="rd-h1">${esc(item ? item.title : link)}</h1>
-      <div class="rd-byline" data-source-name dir="auto">${item ? esc(item.source || "") : ""}</div>
+      <h1 class="rd-h1" dir="${itemDir(item)}">${esc(item ? displayTitle(item) : link)}</h1>
+      <div class="rd-byline" data-source-name dir="${detectDirection(displaySource(item))}">${item ? esc(displaySource(item)) : ""}</div>
       ${duplicateVersionsMarkup(link)}
       ${fallbackMarkup}
       <div class="rd-end"><button class="btn" id="rdFallbackOpen">${esc(t("openOriginal"))} ⧉</button></div>`;
@@ -2997,7 +3117,8 @@ async function showReader(link){
     if (b) b.onclick = () => window.open(link, "_blank", "noopener");
     return;
   }
-  const feedSummaryHtml = sanitizeArticleHtml(item?.html || "", link);
+  const translatedSummary = liveTranslateAll && item ? translateCache[link]?.summary : "";
+  const feedSummaryHtml = translatedSummary ? "<p>" + esc(stripSyndicationCreditText(translatedSummary)) + "</p>" : sanitizeArticleHtml(item?.html || "", link);
   const feedSummaryText = plain(feedSummaryHtml);
   let contentHTML = art.contentHTML || "";
   let contentText = (art.contentText || plain(contentHTML)).trim();
@@ -3015,18 +3136,19 @@ async function showReader(link){
   }
   const bodyHtml = contentText ? contentHTML : '<p class="rd-reader-error">' + esc(t("readerErr")) + '</p>';
   const contentMarkup = usingSummary ? readerSummaryMarkup(bodyHtml, link) : '<div class="rd-body">' + bodyHtml + '</div>';
-  const readerDirection = usingSummary ? detectDirection((item?.title || art.title || "") + " " + contentText.slice(0, 300)) : (art.direction || provisionalDir);
+  const readerDirection = usingSummary ? detectDirection(contentText || displayTitle(item) || art.title || "") : (art.direction || provisionalDir);
   applyReaderContentDirection(readerDirection);
-  const title = (item && item.title) || art.title || "";
+  const title = (item && displayTitle(item)) || art.title || "";
   const rtm = readingTime(contentText || contentHTML);
   $("#rdTime").textContent = [dateStr, rtm ? t("minReadLong", {n: rtm}) : ""].filter(Boolean).join(" · ");
-  $("#rdSrc").textContent = item ? (item.source || "") : (art.siteName || "");
+  $("#rdSrc").textContent = item ? displaySource(item) : (art.siteName || "");
+  $("#rdSrc").setAttribute("dir", detectDirection($("#rdSrc").textContent));
   let hero = (item && item.ok && item.img) ? item.img : (art.image || "");
   hero = resolveImgUrl(hero, link);
   const html =
     `${hero ? `<div class="rd-hero" style="background-image:${cssUrl(hero)}"></div>` : ""}
-     <h1 class="rd-h1">${esc(title)}</h1>
-     <div class="rd-byline">${item && item.source ? `<span data-source-name dir="auto">${esc(item.source)}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rtm ? `<span class="dot"></span><span>${esc(t("minReadLong", {n: rtm}))}</span>` : ""}</div>
+     <h1 class="rd-h1" dir="${detectDirection(title)}">${esc(title)}</h1>
+     <div class="rd-byline">${item && item.source ? `<span data-source-name dir="${detectDirection(displaySource(item))}">${esc(displaySource(item))}</span>` : ""}${dateStr ? `<span class="dot"></span><span>${esc(dateStr)}</span>` : ""}${rtm ? `<span class="dot"></span><span>${esc(t("minReadLong", {n: rtm}))}</span>` : ""}</div>
      ${duplicateVersionsMarkup(link)}
      ${contentMarkup}
      <div class="rd-end">
@@ -3293,7 +3415,7 @@ async function toggleTranslate() {
   if (readerTranslated) {
     if (readerTranslation) {
       const h1 = content.querySelector(".rd-h1");
-      if (h1) h1.textContent = readerTranslation.originalTitle;
+      if (h1){ h1.textContent = readerTranslation.originalTitle; if (readerTranslation.originalTitleDir == null) h1.removeAttribute("dir"); else h1.setAttribute("dir", readerTranslation.originalTitleDir); }
       const body = content.querySelector(".rd-body");
       if (body) body.innerHTML = readerTranslation.originalBody;
       content.setAttribute("dir", readerTranslation.originalDir || "ltr");
@@ -3326,6 +3448,7 @@ async function toggleTranslate() {
 
   readerTranslation = {
     originalTitle: titleText,
+    originalTitleDir: h1 ? h1.getAttribute("dir") : null,
     originalBody: body.innerHTML,
     originalDir: content.getAttribute("dir") || "ltr",
     originalSources: sourceElements.map((element, i) => ({
@@ -3339,7 +3462,7 @@ async function toggleTranslate() {
 
   try {
     const results = await translateAll([titleText, ...texts, ...uniqueSourceTexts], "fa");
-    if (h1 && results[0]) h1.textContent = results[0];
+    if (h1 && results[0]) { h1.textContent = results[0]; h1.setAttribute("dir", "rtl"); }
     els.forEach((el, i) => {
       const tx = results[i + 1];
       if (tx) el.textContent = tx;
@@ -3445,6 +3568,15 @@ function setLiveTranslate(on){
   toast(liveTranslateAll ? t("liveTranslateOn") : t("liveTranslateOff"),
         liveTranslateAll ? "ok" : "");
   render();
+}
+function itemDir(a){
+  return a ? detectDirection(displayTitle(a) || a.title || "") : "ltr";
+}
+function itemRenderKey(a){
+  if (!liveTranslateAll || !a) return "original";
+  const tr = translateCache[a.link] || {};
+  const source = sourceTranslateCache[String(a.source || "").trim()];
+  return (tr.title ? "title-fa" : "title-src") + (tr.summary ? "-summary-fa" : "-summary-src") + (source ? "-source-fa" : "-source-src");
 }
 function displayTitle(a){
   if (liveTranslateAll){
@@ -3689,18 +3821,18 @@ function cardHtml(a){
   const rtm = readingTime(a.html);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
   const sharePayload = escAttr(JSON.stringify({link:a.link, title:a.title}));
-  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="card:${appLang}:${esc(a.link)}">
+  return `<a class="card ${a.ok?"m":"tx"} ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="card:${appLang}:${itemRenderKey(a)}:${esc(a.link)}">
     ${a.ok ? `<div class="im" style="background-image:${cssUrl(a.img)}"></div>` : ""}
     <div class="bd">
       <div class="meta">
         <span class="dot"></span>
-        <b dir="auto">${esc(displaySource(a))}</b>
+        <b dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
         ${rtm ? `<span class="tm">· ${esc(t("minRead", {n: rtm}))}</span>` : ""}
       </div>
       ${duplicateMetaHtml(a)}
-      <div class="t" dir="auto">${esc(a.title)}</div>
-      <div class="s" dir="auto">${esc(plain(a.html).slice(0, 260))}</div>
+      <div class="t" dir="${itemDir(a)}">${esc(displayTitle(a))}</div>
+      <div class="s" dir="${detectDirection(displaySummary(a, 260))}">${esc(displaySummary(a, 260))}</div>
       ${relatedNewsHtml(a, true)}
     </div>
     <span class="card-action share-btn" role="button" tabindex="0" title="${esc(t("share"))}" data-share='${sharePayload}'>↗</span>
@@ -3710,11 +3842,11 @@ function cardHtml(a){
 function channelRowHtml(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const payload = escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}));
-  return `<a class="ch-row ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="ch:${appLang}:${esc(a.link)}">
+  return `<a class="ch-row ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="ch:${appLang}:${itemRenderKey(a)}:${esc(a.link)}">
     <span class="ch-dot"></span>
-    <span class="ch-src" dir="auto">${esc(displaySource(a))}</span>
+    <span class="ch-src" dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</span>
     ${duplicateMetaHtml(a, true)}
-    <span class="ch-title" dir="auto">${esc(displayTitle(a))}</span>
+    <span class="ch-title" dir="${itemDir(a)}">${esc(displayTitle(a))}</span>
     <span class="ch-time">${esc(ago(a.date))}</span>
     <span class="ch-star ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${payload}'>★</span>
     ${relatedNewsHtml(a)}
@@ -3892,7 +4024,7 @@ function relatedNewsHtml(article, compact = false){
   const newNotice = follow && fresh.length
     ? '<div class="related-new"><span>' + esc(t("newCoverage", {n: fresh.length})) + '</span><span class="related-seen" role="button" tabindex="0" data-follow-seen data-follow-payload="' + escAttr(JSON.stringify(payload)) + '">' + esc(t("markCoverageSeen")) + '</span></div>'
     : "";
-  const renderItems = items => items.map(item => '<span class="related-item ' + (follow && !seenLinks.has(item.link) ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b>' + esc(displaySource(item)) + '</b><span class="related-title">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>').join("");
+  const renderItems = items => items.map(item => '<span class="related-item ' + (follow && !seenLinks.has(item.link) ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b dir="' + detectDirection(displaySource(item)) + '">' + esc(displaySource(item)) + '</b><span class="related-title" dir="' + detectDirection(displayTitle(item)) + '">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>').join("");
   const visibleCount = compact ? 1 : 3;
   const visible = others.slice(0, visibleCount), extra = others.slice(visibleCount);
   const moreLabel = t("relatedMore", {n: extra.length}), lessLabel = t("relatedLess");
@@ -4010,17 +4142,17 @@ function newspaperHero(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const heroImg = (a.ok && a.img) ? `<div class="np-hero-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
-  return `<a class="np-hero ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-hero:${appLang}:${esc(a.link)}">
+  return `<a class="np-hero ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-hero:${appLang}:${itemRenderKey(a)}:${esc(a.link)}">
     ${heroImg}
     <div class="np-hero-body">
       <div class="np-meta">
-        <b dir="auto">${esc(displaySource(a))}</b>
+        <b dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
         ${rtm ? `<span class="tm">· ${esc(t("minRead",{n:rtm}))}</span>` : ""}
         ${duplicateMetaHtml(a)}
       </div>
-      <h2 class="np-hero-title" dir="auto">${esc(displayTitle(a))}</h2>
-      <p class="np-hero-summary" dir="auto">${esc(displaySummary(a, 320))}</p>
+      <h2 class="np-hero-title" dir="${itemDir(a)}">${esc(displayTitle(a))}</h2>
+      <p class="np-hero-summary" dir="${detectDirection(displaySummary(a, 320))}">${esc(displaySummary(a, 320))}</p>
       <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
     </div>
     ${relatedNewsHtml(a)}
@@ -4031,15 +4163,15 @@ function newspaperSecondary(a){
   const r = isRead(a.link), sv = isSaved(a.link);
   const rtm = readingTime(a.html);
   const img = (a.ok && a.img) ? `<div class="np-sec-img" style="background-image:${cssUrl(a.img)}"></div>` : "";
-  return `<a class="np-sec ${r?"read":""} ${a.ok?"has-img":"no-img"}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-sec:${appLang}:${esc(a.link)}">
+  return `<a class="np-sec ${r?"read":""} ${a.ok?"has-img":"no-img"}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-sec:${appLang}:${itemRenderKey(a)}:${esc(a.link)}">
     ${img}
     <div class="np-sec-body">
       <div class="np-meta">
-        <b dir="auto">${esc(displaySource(a))}</b>
+        <b dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</b>
         <span class="tm">· ${esc(ago(a.date))}</span>
         ${duplicateMetaHtml(a)}
       </div>
-      <h3 class="np-sec-title" dir="auto">${esc(displayTitle(a))}</h3>
+      <h3 class="np-sec-title" dir="${itemDir(a)}">${esc(displayTitle(a))}</h3>
       ${rtm ? `<span class="tm">${esc(t("minRead",{n:rtm}))}</span>` : ""}
       <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
     </div>
@@ -4049,10 +4181,10 @@ function newspaperSecondary(a){
 function newspaperHeadline(a){
   if (!a) return "";
   const r = isRead(a.link), sv = isSaved(a.link);
-  return `<a class="np-head ${r?"read":""}" dir="${document.documentElement.dir}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-head:${appLang}:${esc(a.link)}">
-    <span class="np-head-src" dir="auto">${esc(displaySource(a))}</span>
+  return `<a class="np-head ${r?"read":""}" dir="${itemDir(a)}" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} data-recycle="np-head:${appLang}:${itemRenderKey(a)}:${esc(a.link)}">
+    <span class="np-head-src" dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</span>
     ${duplicateMetaHtml(a, true)}
-    <span class="np-head-title" dir="auto">${esc(displayTitle(a))}</span>
+    <span class="np-head-title" dir="${itemDir(a)}">${esc(displayTitle(a))}</span>
     <span class="np-head-time">${esc(ago(a.date))}</span>
     <span class="save-btn ${sv?"on":""}" role="button" tabindex="0" title="${esc(sv?t("removeFromSaved"):t("saveLater"))}" data-save='${escAttr(JSON.stringify({link:a.link,title:a.title,source:a.source,date:a.date,img:a.img,ok:a.ok,html:a.html}))}'>★</span>
     ${relatedNewsHtml(a)}
@@ -4364,11 +4496,11 @@ function computeDigest(){
 }
 function digestItemHtml(a){
   const r = isRead(a.link);
-  return `<a class="digest-item ${r ? "read" : ""}" href="${esc(a.link)}" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} target="_blank" rel="noopener noreferrer" dir="${document.documentElement.dir}">
+  return `<a class="digest-item ${r ? "read" : ""}" href="${esc(a.link)}" data-link="${esc(a.link)}" ${duplicateLinksAttr(a)} target="_blank" rel="noopener noreferrer" dir="${itemDir(a)}">
     <span class="dot"></span>
     <span style="flex:1;min-width:0">
-      <span class="t" dir="auto">${esc(displayTitle(a))}</span>
-      <span class="meta"><b dir="auto">${esc(displaySource(a))}</b><span>· ${esc(ago(a.date))}</span>${duplicateMetaHtml(a, true)}</span>
+      <span class="t" dir="${itemDir(a)}">${esc(displayTitle(a))}</span>
+      <span class="meta"><b dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</b><span>· ${esc(ago(a.date))}</span>${duplicateMetaHtml(a, true)}</span>
     </span>
     ${relatedNewsHtml(a)}
   </a>`;
@@ -4403,7 +4535,7 @@ function todayQueueHtml(){
   const groups = new Map();
   q.shown.forEach(a => { const k = a.source || ""; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(a); });
   let html = "";
-  for (const [src, items] of groups) html += `<div class="today-src" dir="auto">${esc(src)}</div><div class="digest-items">${items.map(digestItemHtml).join("")}</div>`;
+  for (const [src, items] of groups) html += `<div class="today-src" dir="${detectDirection(src)}">${esc(src)}</div><div class="digest-items">${items.map(digestItemHtml).join("")}</div>`;
   const more = q.total - q.shown.length;
   html += `<div class="today-foot"><button class="btn" data-today-read>${fa ? `علامت‌زدن این ${q.shown.length} مورد به‌عنوان خوانده` : `Mark these ${q.shown.length} as read`}</button>${more > 0 ? `<button class="btn ghost" data-go="all">${fa ? `${more} خبر دیگر در فید` : `${more} more in the feed`}</button>` : ""}</div>`;
   return html;
@@ -4462,7 +4594,7 @@ function renderFollowingHTML(){
     const title = latest ? displayTitle(latest) : record.title || t("followedStories");
     const remove = '<button type="button" data-follow-remove="' + escAttr(record.id) + '">' + esc(t("unfollowStory")) + '</button>';
     if (!members.length){
-      return '<article class="followed-card"><div class="followed-head"><span class="followed-title">' + esc(title) + '</span><div class="followed-actions">' + remove + '</div></div><div class="followed-meta">' + esc(t("followedUnavailable")) + '</div></article>';
+      return '<article class="followed-card"><div class="followed-head"><span class="followed-title" dir="' + detectDirection(title) + '">' + esc(title) + '</span><div class="followed-actions">' + remove + '</div></div><div class="followed-meta">' + esc(t("followedUnavailable")) + '</div></article>';
     }
     const payload = storyPayloadFromMembers(members, title);
     const versions = members.map(item => ({link:item.link || "", source:item.source || "", title:item.title || ""}));
@@ -4474,13 +4606,13 @@ function renderFollowingHTML(){
       : "";
     const rows = members.map(item => {
       const isNew = !(record.seenLinks || []).includes(item.link);
-      return '<span class="related-item ' + (isNew ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b>' + esc(displaySource(item)) + '</b><span class="related-title">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>';
+      return '<span class="related-item ' + (isNew ? "fresh" : "") + '" role="button" tabindex="0" data-related-link="' + escAttr(item.link) + '" title="' + escAttr(displayTitle(item)) + '"><b dir="' + detectDirection(displaySource(item)) + '">' + esc(displaySource(item)) + '</b><span class="related-title" dir="' + detectDirection(displayTitle(item)) + '">' + esc(displayTitle(item)) + '</span><small>' + esc(ago(item.date)) + '</small></span>';
     }).join("");
     const seen = freshCount
       ? '<button type="button" data-follow-seen data-follow-id="' + escAttr(record.id) + '" data-follow-payload="' + escAttr(JSON.stringify(payload)) + '">' + esc(t("markCoverageSeen")) + '</button>'
       : "";
     const newBadge = freshCount ? '<span class="followed-new">' + esc(t("newCoverage", {n:freshCount})) + '</span>' : "";
-    return '<article class="followed-card" data-link="' + escAttr(latest.link) + '" data-duplicate-versions="' + escAttr(JSON.stringify(versions)) + '"><div class="followed-head"><a class="followed-title" href="' + esc(latest.link) + '" target="_blank" rel="noopener noreferrer" data-follow-open="' + escAttr(latest.link) + '" data-follow-versions="' + escAttr(JSON.stringify(versions)) + '">' + esc(title) + '</a>' + newBadge + '<div class="followed-actions">' + seen + remove + '</div></div><div class="followed-meta">' + esc(formatNum(sourceCount)) + ' ' + esc(t("sourceWord")) + (timeline ? ' · ' + timeline : '') + '</div><div class="followed-versions">' + rows + '</div></article>';
+    return '<article class="followed-card" data-link="' + escAttr(latest.link) + '" data-duplicate-versions="' + escAttr(JSON.stringify(versions)) + '"><div class="followed-head"><a class="followed-title" dir="' + detectDirection(title) + '" href="' + esc(latest.link) + '" target="_blank" rel="noopener noreferrer" data-follow-open="' + escAttr(latest.link) + '" data-follow-versions="' + escAttr(JSON.stringify(versions)) + '">' + esc(title) + '</a>' + newBadge + '<div class="followed-actions">' + seen + remove + '</div></div><div class="followed-meta">' + esc(formatNum(sourceCount)) + ' ' + esc(t("sourceWord")) + (timeline ? ' · ' + timeline : '') + '</div><div class="followed-versions">' + rows + '</div></article>';
   }).join("");
   return '<div class="following-page"><p class="following-intro">' + esc(t("followedHint")) + '</p><div class="following-list">' + cards + '</div></div>';
 }
@@ -4506,9 +4638,9 @@ function renderArchiveHTML(){
         <div class="arc-item">
           ${a.image ? `<div class="arc-img" style="background-image:${cssUrl(a.image)}"></div>` : ""}
           <div class="arc-body">
-            <div class="arc-title" dir="auto" data-arc-open="${escAttr(a.link)}">${esc(a.title || a.link)}</div>
+            <div class="arc-title" dir="${detectDirection(displayTitle(a))}" data-arc-open="${escAttr(a.link)}">${esc(displayTitle(a) || a.link)}</div>
             <div class="arc-meta">
-              <b dir="auto">${esc(displaySource(a))}</b>
+              <b dir="${detectDirection(displaySource(a))}">${esc(displaySource(a))}</b>
               <span>· ${esc(a.date ? ago(a.date) : "")}</span>
               <span>· ${esc(t("archivedOn", {d: ago(a.archivedAt)}))}</span>
             </div>
